@@ -1,0 +1,201 @@
+@charset "utf-8"; 
+/*浅色*/
+html {
+  height: 100%;
+  --background-color: #ffffff;
+  --border-color:#00000030;
+  --selected-color:#03A9F4;
+  --preselect-color:#aabbcc3a;
+  --frozon-color:#ececec;
+  --drag-color:#2196F3;
+  --color:#000000;
+  --thead-color:#ffffff;
+  --animate-color:#3F51B5;
+  --back-color-disabled:#ececec;
+  --font-color-disabled:#999999;
+/*   counter-reset: ct; */
+}
+
+/*深色*/
+html.dark-color {
+  height: 100%;
+  --background-color: #313131;
+  --border-color:#ffffff30;
+  --selected-color:#03A9F4;
+  --preselect-color:#aabbcc3a;
+  --frozon-color:#111111;
+  --drag-color:#a9ffad;
+  --color:#ffffffba;
+  --thead-color:var(--background-color);
+  --animate-color:#FFC107;
+  --back-color-disabled:#454545;
+  --font-color-disabled:#999999;
+  /* counter-reset: ct; */
+}
+
+body {
+  margin: 0;
+  height: calc(100% - 1px);
+  background-color: var(--background-color);
+}
+
+* {
+  font-size: 12px;
+  color: var(--color);
+  box-sizing: border-box;
+}
+
+::-webkit-scrollbar {
+  width: 1em;
+  height: 1em;
+}
+::-webkit-scrollbar-button {
+  /*   background-color: var(--border-color); */
+  border-color: var(--border-color);
+  border-style: solid;
+  border-radius: 50%;
+  width: 1em;
+  height: 1em;
+}
+::-webkit-scrollbar-button:hover {
+  border-color: var(--color);
+}
+::-webkit-scrollbar-button:active {
+  border-color: var(--selected-color);
+}
+::-webkit-scrollbar-button:horizontal:end {
+  border-left-width: .9em;
+  border-top: .5em solid transparent;
+  border-bottom: .5em solid transparent;
+}
+
+::-webkit-scrollbar-button:horizontal:start {
+  border-right-width: 1em;
+  border-top: .5em solid transparent;
+  border-bottom: .5em solid transparent;
+}
+
+::-webkit-scrollbar-button:vertical:start {
+  border-bottom-width: 1em;
+  border-left: .5em solid transparent;
+  border-right: .5em solid transparent;
+}
+
+::-webkit-scrollbar-button:vertical:end {
+  border-top-width: 1em;
+  border-left: .5em solid transparent;
+  border-right: .5em solid transparent;
+}
+
+::-webkit-scrollbar-track {
+  /*   background-color:#ffffff2b; */
+  border: 1px solid var(--border-color);
+  border-radius: 1em;
+}
+/* 
+::-webkit-scrollbar-track-piece {
+} 
+*/
+::-webkit-scrollbar-thumb {
+  /*   background-color:#ffffff80; */
+  border: 2px solid var(--border-color);
+  box-shadow: inset 0 0 1.5em var(--border-color);
+  -webkit-box-shadow: inset 0 0 1.5em var(--border-color);
+  border-radius: 1em;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color:var(--preselect-color);
+}
+::-webkit-scrollbar-thumb:active {
+  background-color:var(--selected-color);
+}
+::-webkit-scrollbar-corner {
+  background-color: transparent;
+}
+/* 
+::-webkit-resize {
+} 
+*/
+
+input[type="date"] {
+  height: calc(1em + 6px);
+}
+
+input[type="checkbox"] {
+  -webkit-appearance: none;
+  border: 1px solid var(--border-color);
+  border-radius: .2em;
+}
+
+input[type="checkbox"]:checked:before {
+  content: "✔";
+  color: red;
+  vertical-align: bottom;
+  font-size: 1.5em;
+}
+
+/*去除数字框上下箭头*/
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none !important;
+  margin: 0;
+}
+
+input {
+  background-color: transparent;
+  border: 1px solid var(--border-color);
+}
+
+select {
+  background-color: transparent;
+  border: 1px solid var(--border-color);
+}
+
+button,::-webkit-file-upload-button {
+  margin: 2px;
+  padding: .2em .2em;
+  background-color: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--color);
+}
+
+*[disabled],*:hover[disabled],input[readOnly]{
+  color: var(--font-color-disabled);
+  background-color: var(--back-color-disabled);
+}
+input[disabled]{
+  cursor: auto;
+}
+table[disabled] td{
+  color: var(--font-color-disabled);
+}
+.btn-inline,::-webkit-file-upload-button {
+  padding: 0 .2em;
+  margin: 0;
+}
+
+button:hover,::-webkit-file-upload-button:hover {
+  background-color: var(--preselect-color);
+}
+
+button:active,::-webkit-file-upload-button:active {
+  background-color: var(--selected-color);
+}
+
+::-webkit-file-upload-button {
+  /* float: right; */
+  border: 0;
+  /* position: absolute; */
+  /* right: 0; */
+  padding: 0;
+  width: 0;
+  margin: 0;
+  /* display: none; */
+}
+
+hr {
+  border: 1px solid var(--border-color);
+  margin: 2px 0;
+}
+
+
+
