@@ -693,7 +693,7 @@ window.App = (() => {
 	}
 
 	function createWebSocket(win, protocol){		
-		const p=location.protocol==="https" ? "wss" : "ws";
+		const p=location.protocol==="https:" ? "wss" : "ws";
 		return new win.WebSocket(`${p}://${location.host}/websocket`, protocol);
 	}
 
