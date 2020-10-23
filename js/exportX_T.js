@@ -6,8 +6,10 @@ window.addEventListener('DOMContentLoaded', ()=>{
 	const App = top.window.App;
 	const CommonFunc=top.window.CommonFunc;
 	const myMenu = App.myMenu;
-	const uploadURL = top.location.origin + "/upload";
-	const downloadURL = top.location.origin + "/upload";
+// 	const uploadURL = top.location.origin + "/upload";
+// 	const downloadURL = top.location.origin + "/upload";
+	const uploadURL = "/upload";
+	const downloadURL = "/upload";
 	const _cmd = "/filelist?type=";
 	const cmdExporting = _cmd + "exporting";
 	const cmdExported = _cmd + "exported";
@@ -87,7 +89,7 @@ window.addEventListener('DOMContentLoaded', ()=>{
 	}
 
 	function reqFileList(type) {
-		App.myHttpRequest("GET", type, undefined, true).then(req=>{
+		App.myHttpRequest("GET", type, undefined).then(req=>{
 // 			console.log(req);
 			let list = JSON.parse(req.responseText);
 			if (type === cmdExporting) {

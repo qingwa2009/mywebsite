@@ -375,12 +375,11 @@ window.App = (() => {
 	 * @param {string} method 
 	 * @param {string} cmd 
 	 * @param {*} data 
-	 * @param {bool} useBaseOrigin  true时cmd前面会自动拼接上location.origin
 	 */
-	function myHttpRequest(method, cmd, data, useBaseOrigin) {
+	function myHttpRequest(method, cmd, data) {
 		return new Promise((resolve, reject) => {
 			const req = new XMLHttpRequest();
-			req.open(method, useBaseOrigin ? location.origin + cmd : cmd, true);
+			req.open(method, cmd, true);
 			if (userId !== "")
 				req.setRequestHeader("User-Id", userId);
 			req.onload = () => {
@@ -453,7 +452,7 @@ window.App = (() => {
 		let ID=0;
 
 		for (let i = 0; i < ms.length; i++) {
-			_create(ms[i], root, "/");
+			_create(ms[i], root, "");
 			let t;
 			if (root[i] instanceof Array) {
 				t = root[i].shift();
