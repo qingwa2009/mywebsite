@@ -692,8 +692,9 @@ window.App = (() => {
 		btnStatisticInfo.textContent = s;
 	}
 
-	function createWebSocket(win, protocol){
-		return new win.WebSocket(`ws://${location.host}/websocket`, protocol);
+	function createWebSocket(win, protocol){		
+		const p=location.protocol==="https" ? "wss" : "ws";
+		return new win.WebSocket(`${p}://${location.host}/websocket`, protocol);
 	}
 
 	/*-------------------释放占有recordset资源相关-----------------------*/
