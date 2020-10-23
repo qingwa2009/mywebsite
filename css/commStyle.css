@@ -1,0 +1,245 @@
+@charset "utf-8";
+
+iframe{
+  width:100%;
+  height:100%;
+  min-height:0;
+}
+
+fieldset{
+  border:1px solid var(--border-color);
+}
+
+input,select{
+  min-width: 1em;
+}
+
+
+
+tr{
+  white-space:nowrap; 
+  margin:0px; 
+  padding:0px;
+}
+
+td{
+  padding:0px .2em;
+}
+
+td input{
+  width:100%;
+}
+
+td select{
+  width:100%;
+}
+
+.must-input,label[required]{
+  color:#F00;
+}
+
+.no-wrap{
+  white-space:nowrap;
+}
+
+.grid{
+  display:grid;
+  grid-gap:3px;
+  padding: 3px;
+  justify-items: stretch;
+  align-items: center;
+}
+
+[style*="grid"]>label{
+  -ms-grid-row-align: center;
+  -ms-text-overflow: ellipsis;
+  display:inline-block;
+  /* overflow: hidden; */
+  white-space: nowrap;
+  /* text-overflow: clip; */
+}
+/*-------------*/
+
+.gd-2c-1fr-auto{
+  display: grid;
+  grid: 100% / 1fr auto;
+  /*ie*/
+  display:-ms-grid;
+  -ms-grid-rows:100%;
+  -ms-grid-columns:1fr auto;
+}
+
+.gd-2c-1fr-auto>*:first-child{
+  /*ie*/
+  -ms-grid-column:1;
+  border-right:0px;
+}
+
+.gd-2c-1fr-auto>*:nth-child(2){
+  /*ie*/
+  -ms-grid-column:2;
+  border-left:0px;
+}
+/*-------------*/
+.fx-2r-auto-fr{
+  display:flex;
+  flex-flow: column nowrap;
+}
+.fx-2r-auto-fr>*:first-child{
+  flex-shrink:0;
+}
+.fx-2r-auto-fr>*:nth-child(2){
+  flex-grow:1;
+}
+
+input[type="checkbox"]{
+  width:1em;
+  height:1em;
+  margin:0;
+}
+label>input[type="checkbox"]{
+  vertical-align: middle;
+}
+/*------tab选选项卡-------*/
+.my-tab{
+  user-select:none;
+  display:grid;
+  grid: auto 1fr / repeat(10, auto) 1fr;
+/*   grid-column-gap: 0.5em; */
+}
+.my-tab>[type="radio"]{
+  display:none;
+}
+.my-tab>label{
+  text-overflow:clip;
+  overflow:hidden;
+  position:relative;
+  padding: 0 .2em;
+  margin-top: .3em;
+  white-space: nowrap;
+  border-left: 1px solid var(--border-color);
+  border-top: 1px solid var(--border-color);
+}
+.my-tab>input:checked+label{
+  /* background-color:var(--selected-color); */
+  border: 1px solid var(--border-color);
+  border-bottom: 0;
+  border-radius: 0 .5em 0 0;
+  margin-top: 0;
+  padding-bottom: .3em;
+  overflow: unset;
+  box-shadow: 2px -1px 5px var(--selected-color);
+}
+.my-tab>input:checked+label:after {
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:-2px;
+  height:4px;
+  background-color: var(--background-color);
+}
+.my-tab>.my-tab-ct{
+  grid-column:1/-1;
+  grid-row:2;
+  height:auto;
+  align-self: stretch;
+  display:none;
+  overflow: auto;
+  border: 1px solid var(--border-color);
+}
+.my-tab>input:checked+label+.my-tab-ct{
+  display:block;
+}
+
+/*-----------------------*/    
+my-splitter[vertical]{
+  cursor: w-resize; 
+  margin: 2px 0;
+  border: 2px dotted var(--border-color);
+}
+my-splitter[horizontal]{
+  cursor: n-resize; 
+  margin: 2px 0;
+  border: 3px dotted var(--border-color);
+}
+my-splitter:hover{
+/*       border-color:var(--color); */
+  border-style:dashed;
+}
+/*-----------------------*/    
+
+.add,.remove{
+  position:relative;
+}
+
+.add::before,.remove::before{  
+  position:absolute;
+  line-height: 1;
+  font-size: 1.5em;
+  /* top: 0; */
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.add::before{
+  content:"✚";
+  color: #00FF00;
+}
+.remove::before{
+  content:"━";
+  line-height: 0.9;
+  color: #FF0000;
+}
+.add[disabled]:before,.remove[disabled]:before{
+  color:var(--font-color-disabled);
+}
+
+#btnSelect::after{
+  content:"🔍";
+}
+.help:after{
+/*   counter-increment: ct; */
+/*   content: counter(ct); */
+  content:"💡";
+  background-color:#0000001c;
+  border-radius: 50%;
+  padding-left:.1em;
+  padding-right:.1em;
+}
+.help:hover:after{
+  background-color:#ffa50075;
+  color:white;
+  /* font-weight: 600; */
+}
+
+progress{
+  -webkit-appearance:none;
+  position: relative;
+}
+progress::-webkit-progress-bar{
+  background-color:var(--background-color);
+  border:1px;
+  border-color:var(--border-color);
+  border-style: double;
+  border-radius: .5em;
+  padding:2px;
+}
+progress::-webkit-progress-value {
+  background-color:var(--selected-color);
+  border-radius: .5em;
+  border: 1px;
+/*   box-shadow: lightblue 0px 0px 3px 0px; */
+}
+progress::after {
+  content:attr(value)"%";
+  position:absolute;
+  top:0;
+  left:0;
+  bottom:0;
+  right:0;
+  text-align: center;
+  transform: scale(.75);
+/*   text-shadow: 0 0 3px lightgray; */
+}

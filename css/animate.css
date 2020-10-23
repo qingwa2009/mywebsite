@@ -1,0 +1,393 @@
+@charset "utf-8";
+
+.animate-searching{
+  position:relative;
+}
+
+.animate-searching::after{
+  content:"🔍";
+  color:var(--animate-color);
+  text-shadow: 0.1em 0.1em 1em var(--animate-color);
+  position:absolute;
+  animation: circleY 1s infinite,circleX 1s infinite;
+  /*   animation-duration:1s,1s;
+  animation-iteration-count: infinite; */
+}
+
+@keyframes circleY{
+  0%{
+    top:0;
+    animation-timing-function:ease-in;
+  }
+  25%{
+    top:.2em;
+    animation-timing-function:ease-out;
+  }
+  50%{
+    top:.4em;
+    
+    animation-timing-function:ease-in;
+  }
+  75%{
+    top:.2em;
+    animation-timing-function:ease-out;
+  }
+  100%{
+    top:0;
+  }
+}
+
+@keyframes circleX{
+  0%{
+/*     transform: translateX(0); */
+    right:0;
+    animation-timing-function:ease-out;
+  }
+  25%{
+/*     transform: translateX(-.5em); */
+    right:.2em;
+    animation-timing-function:ease-in;
+  }
+  50%{
+/*     transform: translateX(0em); */
+    right:0;
+    animation-timing-function:ease-out;
+  }
+  75%{
+/*     transform: translateX(.5em); */
+    right:-.2em;
+    animation-timing-function:ease-in;
+  }
+  100%{
+/*     transform: translateX(0); */
+    right:0;
+  }
+}
+
+.animate-walking{
+  position:relative;
+}
+
+.animate-walking::after,.animate-walking::before{
+  content: "🐾";
+/*   font-size: 1em; */
+  width: 0.55em;
+  height: 0.8em;
+  bottom:0;
+  overflow:hidden;
+  color:#2196F3;
+  position:absolute;
+  left:0;
+  bottom:0;
+  animation: walkR 6s steps(1) infinite;
+  /*   animation-duration:1s,1s;
+  animation-iteration-count: infinite; */
+  /* border: 1px solid; */
+}
+.animate-walking::before{
+  animation: walkL 6s steps(1) infinite;
+  animation-delay:.3s;
+}
+
+@keyframes walkL{
+  0%{
+    left:0;
+    bottom:0.5em;
+    transform:rotate(90deg);
+  }
+   10%{
+    left:2em;
+    bottom:0.3em;
+  }
+  20%{
+    left:4em;
+  }
+  30%{
+    left:6em;
+    bottom:0.5em;
+  }
+  40%{
+    left:6em;
+  }
+  50%{
+    left:6em;
+    transform: scaleX(-1) rotate(90deg);
+  }
+  60%{
+    left:4em;
+    bottom:0.3em;
+  }
+  70%{
+    left:2em;
+  }
+  80%{
+    left:0;
+    bottom:0.5em;
+  }
+  90%{
+    left:0;
+  }
+}
+
+@keyframes walkR{
+  0%{
+    left:0;
+    transform: scaleX(-1) rotate(-90deg);
+  }
+  10%{
+    left:1em;
+  }
+  20%{
+    left:3em;
+  }
+  30%{
+    left:5em;
+  }
+  40%{
+    left:6em;
+  }
+  50%{
+    left:6em;
+    transform: scaleX(1) rotate(270deg);
+  }
+  60%{
+    left:5em;
+  }
+  70%{
+    left:3em;
+  }
+  80%{
+    left:1em;
+  }
+  90%{
+    left:0;
+  }
+}
+
+.animate-clock{
+  position:relative;
+}
+
+.animate-clock::after{
+  content:"🕐";
+  color: var(--color);
+  position:absolute;
+  left: 0;
+  background-color: var(--selected-color);
+  animation: clock 2s infinite;
+  border-radius: 100%;
+  width: 1em;
+  height: 1em;
+  line-height: 1em;
+  font-size: 1.3em;
+  /* box-shadow: white 1px 0px 12px 3px inset; */
+}
+
+@keyframes clock{
+  0%{
+    content:"🕐";
+  }
+  8%{
+    content:"🕑";
+  }
+  17%{
+    content:"🕒";
+  }
+  25%{
+    content:"🕓";
+  }
+  33%{
+    content:"🕔";
+  }
+  42%{
+    content:"🕕";
+  }
+  50%{
+    content:"🕖";
+  }
+  58%{
+    content:"🕗";
+  }
+  67%{
+    content:"🕘";
+  }
+  75%{
+    content:"🕙";
+  }
+  83%{
+    content:"🕚";
+  }
+  92%{
+    content:"🕛";
+  }
+}
+
+.animate-sorting{
+  position:relative;
+}
+
+.animate-sorting::before{
+  content:"▃ ▅ ▇";
+  color:var(--animate-color);
+  text-shadow: 0.1em 0.1em 0.1em var(--animate-color);
+  position:absolute;
+  right: 0;
+  bottom: 0;
+  transform: scaleX(0.5);
+  animation: sorting 1s infinite;
+}
+
+@keyframes sorting{
+  0%{
+    content:"▃ ▅ ▇";
+  }
+  17%{
+    content:"▃ ▇ ▅";
+  }
+  33%{
+    content:"▇ ▃ ▅";
+  }
+  50%{
+    content:"▇ ▅ ▃";
+  } 
+  67%{
+    content:"▅ ▇ ▃";
+  }
+  83%{
+    content:"▅ ▃ ▇";
+  }
+  100%{
+    content:"▃ ▅ ▇";
+  }
+}
+
+.animate-car{
+  position:relative;
+}
+
+.animate-car::after{
+  content:"🚒";
+  font-size: 2em;
+  line-height: .5em;
+  width:1em;
+  color:orange;
+  position:absolute;
+  left: 0;
+  bottom:0;
+  animation: car 10s infinite;
+  transform: scaleX(-1);
+  transform-origin: bottom center;
+}
+
+@keyframes car{
+  0%{
+/*     transform:scaleY(-1); */
+  }
+  12.5%{
+    left: calc(100% - 1em);
+    bottom:0;
+    transform:scaleX(-1) rotate(0);
+  }
+  25%{
+    left: calc(100% - .5em);
+    bottom:.5em;
+    transform:scaleX(-1) rotate(90deg);
+  } 
+  37.5%{
+    left: calc(100% - .5em);
+    bottom:calc(100% - .5em);
+    transform:scaleX(-1) rotate(90deg);
+  }
+  50%{
+    left: calc(100% - 1em);
+    bottom:calc(100%);
+    transform:scaleX(-1) rotate(180deg);
+  }
+  62.5%{
+    left: 0;
+    bottom:calc(100%);
+    transform:scaleX(-1) rotate(180deg);
+  }
+  75%{
+    left: -.5em;
+    bottom:calc(100% - .5em);
+    transform:scaleX(-1) rotate(270deg);
+  }
+  87.5%{
+    left: -.5em;
+    bottom:.5em;
+    transform:scaleX(-1) rotate(270deg);
+  }
+/*   100%{
+    transform:scaleY(-1);
+  } */
+}
+
+.animate-shiningW{
+  animation: shiningW 1s linear 3;
+}
+
+@keyframes shiningW{
+  50%{
+    color:#FFF;
+    text-shadow: 0 0 0.5em rgb(255, 123, 123), 0 0 1em rgba(255, 48, 48, 0.8), 0 0 2em rgba(255, 0, 0, 0.3);
+  }
+}
+
+.animate-shiningI{
+  animation: shiningI 1s linear 3;
+}
+
+@keyframes shiningI{
+  50%{
+    color:#FFF;
+    text-shadow: 0 0 0.5em rgb(131, 254, 131), 0 0 1em rgba(75, 252, 75, 0.8), 0 0 2em rgba(0, 255, 0, 0.3);
+  }
+}
+
+.animate-shiningOW{
+  animation: shiningOW 1s linear 3;
+}
+
+@keyframes shiningOW{
+  50%{
+    box-shadow: 0 0 1em #F00;
+  }
+}
+
+.animate-shiningOI{
+  animation: shiningOI 1s linear 3;
+}
+
+@keyframes shiningOI{
+  50%{
+    box-shadow: 0 0 1em #0F0;
+  }
+}
+
+
+.animate-progress::after{
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 100%;
+  bottom: -2px;
+  height: 4px;
+  background-color: var(--selected-color);
+  animation: progress 1s linear infinite;
+}
+
+@keyframes progress{
+  30%{
+    left:0;
+    right:40%;
+  }
+  70%{
+    left:70%;
+    right:0;
+  }
+  100%{
+    left:100%;
+    right:0;
+  }
+}

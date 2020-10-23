@@ -1,0 +1,167 @@
+.player{
+	position: absolute;
+	width: 1em;
+	height: 1em;
+	background-color: bisque;
+	display: block;
+	border-radius: .5em;
+}
+.self{
+	background-color: blue !important;
+}
+
+
+.box{
+	width:30px;
+	height:30px;
+	margin-left:20px;
+	margin-right:20px;		
+}
+
+.box>div{
+	width:100%;
+	height:100%;
+	background-color:gray;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: white;
+	border: 1px solid black;	
+}
+
+[clicked]{
+	background-color:green !important;
+}
+
+
+@keyframes right0{
+	0%{
+		animation-timing-function:ease-in-out;
+	}
+	100%{
+		transform:translateX(70px);
+	}
+}
+@keyframes right1{
+	0%{
+		animation-timing-function:ease-in-out;
+	}
+	100%{
+		transform:translateX(70px);
+	}
+}
+@keyframes right2{
+	0%{
+		animation-timing-function:ease-in-out;
+	}
+	100%{
+		transform:translateX(140px);
+	}
+}
+@keyframes left1{
+	0%{
+		animation-timing-function:ease-in-out;
+	}
+	100%{
+		transform:translateX(-70px);
+	}
+}
+@keyframes left0{
+	0%{
+		animation-timing-function:ease-in-out;
+	}
+	100%{
+		transform:translateX(-70px);
+	}
+}
+@keyframes left2{
+	0%{
+		animation-timing-function:ease-in-out;
+	}
+	100%{
+		transform:translateX(-140px);
+	}
+}
+
+
+@keyframes up0{
+	0%{
+		animation-timing-function:ease-out;
+	}
+	50%{
+		transform:translateY(-100%);
+		animation-timing-function:ease-in;
+	}
+	100%{}
+}
+@keyframes up1{
+	0%{
+		animation-timing-function:ease-out;
+	}
+	50%{
+		transform:translateY(-100%);
+		animation-timing-function:ease-in;
+	}
+	100%{}
+}
+@keyframes down0{
+	0%{
+		animation-timing-function:ease-out;
+	}
+	50%{
+		transform:translateY(100%);
+		animation-timing-function:ease-in;
+	}
+	100%{}
+}
+@keyframes down1{
+	0%{
+		animation-timing-function:ease-out;
+	}
+	50%{
+		transform:translateY(100%);
+		animation-timing-function:ease-in;
+	}
+	100%{}
+}
+
+@keyframes up20{
+	0%{
+		animation-timing-function:ease-out;
+	}
+	50%{
+		transform:translateY(-200%);
+		animation-timing-function:ease-in;
+	}
+	100%{}
+}
+@keyframes up21{
+	0%{
+		animation-timing-function:ease-out;
+	}
+	50%{
+		transform:translateY(-200%);
+		animation-timing-function:ease-in;
+	}
+	100%{}
+}
+@keyframes down20{
+	0%{
+		animation-timing-function:ease-out;
+	}
+	50%{
+		transform:translateY(200%);
+		animation-timing-function:ease-in;
+	}
+	100%{}
+}
+@keyframes down21{
+	0%{
+		animation-timing-function:ease-out;
+	}
+	50%{
+		transform:translateY(200%);
+		animation-timing-function:ease-in;
+	}
+	100%{}
+}
