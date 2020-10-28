@@ -124,13 +124,15 @@ window.addEventListener('DOMContentLoaded', ()=>{
 
 	const drawEms=[];
 	function handleDraw(){
+		ctx.save();
 		ctx.strokeStyle="#000";
 		for(let i=0; i<drawEms.length; i++){
 			ctx.beginPath();
 			ctx.moveTo(...drawEms[i][0]);
 			ctx.lineTo(...drawEms[i][1]);	
 			ctx.stroke();		
-		}		
+		}	
+		ctx.restore();	
 	}
 
 	function resizeCanvas(){
@@ -153,7 +155,7 @@ window.addEventListener('DOMContentLoaded', ()=>{
 // 		ctx.fillRect(0, 0, cv.width, cv.height);
 		ctx.clearRect(0, 0, cv.width, cv.height);
 
-		
+		ctx.save();
 		ctx.fillStyle="#00ff0010";
 		ctx.fillRect(0,0,100,100);
 		ctx.fillStyle="#ff00ff10";
@@ -232,12 +234,18 @@ window.addEventListener('DOMContentLoaded', ()=>{
 			let y=player[P_Y]||0;
 			ctx.beginPath();
 			ctx.arc(x,y,10,0,Math.PI*2,true);
-			ctx.fillStyle=selfID==k ? "#00aaff" : "#ff0000";
-			
+			ctx.fillStyle=selfID==k ? "#00aaff" : "#ff0000";	
 			ctx.fill();
 		}
 
+
+		ctx.restore();
+
 		handleDraw();
+
+		drawChart(ctx, 200, 200, 150, 100, 5);
+		drawPolyline(ctx, 200, 200, 150, 100, [10,50,30,20,100], "red", true);
+		drawPolyline(ctx, 200, 200, 150, 100, [0,80,20,50,70], "blue", true);
 	}
 
 
@@ -324,6 +332,77 @@ window.addEventListener('DOMContentLoaded', ()=>{
 		const b1=boxes[arr.splice(i,1)[0]];
 		clicked=[b0,b1];		
 		playSwapAnim(b0, b1);
+	}
+
+	
+	function drawChart(ctx, x, y, width, height, count){
+		const x1=x+width, y1=y+height;
+		const dy=height/count;
+		ctx.save();
+		
+		ctx.beginPath();
+		ctx.moveTo(x, y);
+		ctx.lineTo(x, y1);
+		ctx.lineTo(x1, y1);
+		
+		ctx.strokeStyle="#000";
+		ctx.lineWidth=1;
+		ctx.stroke();
+		ctx.closePath();
+
+		ctx.textAlign="right";		
+		const dn=100/count;
+		ctx.beginPath();
+		for (let i=0; i<=count; i++){
+			let y2=y+i*dy;
+			ctx.fillText(100-i*dn, x-3, y+i*dy);	
+			ctx.moveTo(x, y2);
+			ctx.lineTo(x1, y2);
+		}
+		ctx.strokeStyle="#999";
+		ctx.lineWidth=0.5
+		ctx.stroke();	
+		ctx.closePath();
+		ctx.restore();	
+	}
+	
+	var dashOffset=0;
+	function animDash(){
+		dashOffset=(dashOffset-1)%6;
+		setTimeout(animDash,20);
+	}
+	animDash();
+	function drawPolyline(ctx, x, y, width, height, ps, lineColor, isDotLine){
+		const x1=x+width, y1=y+height;
+		let isSingle=false;
+		if (ps.length===1){
+			isSingle=true;
+			ps.push(ps[0]);			
+		}
+		const count=ps.length;
+		const dx=width/(count-1);
+		const dy=height/100;
+		ctx.beginPath();
+		ctx.moveTo(x,y1-ps[0]*dy);
+		for (let i=1; i<count; i++){
+			let x2=x+i*dx;
+			ctx.lineTo(x+dx*i, y1-ps[i]*dy);
+		}
+
+		ctx.save();
+		ctx.strokeStyle=lineColor;
+		ctx.lineWidth=1.0;
+		if (isDotLine) {
+			ctx.setLineDash([2,4]);
+			ctx.lineDashOffset=dashOffset;
+		}
+		ctx.stroke();
+		ctx.closePath();
+		ctx.restore();
+		
+		if (isSingle) {
+			ps.pop();
+		}
 	}
 
 }
