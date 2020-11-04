@@ -437,6 +437,40 @@ window.addEventListener('DOMContentLoaded', ()=>{
 	}
 
 	
+	const letters=["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
+	const lts={"lt0":undefined, "lt1":undefined, "lt2":undefined, "lt3":undefined, "lt4":undefined, "lt5":undefined, "lt6":undefined}
+	for(let k in lts){
+		lts[k]=document.getElementById(k);
+		lts[k].addEventListener("animationend", letterAnimEnd);		
+	}
 	
+	var ilt=0;
+	var ianim=1;
+	var lt=lts[`lt${ilt}`];	
+	lt.style.animation=`mov${ianim} 0.1s linear both`;	
+	function letterAnimEnd(e){	
+		if (ilt===6 && ianim===6) {
+			lt.style.color="transparent";
+			return;
+		}			
+		
+		var t;	
+		do{
+			t=letters[Math.floor((Math.random()*letters.length))];
+		}while(lt.textContent===t);
+
+		if(ianim===7 || ianim===0){
+			lt.style.color="transparent";
+			ilt++;
+			lt=lts[`lt${ilt}`];			
+		}		
+		let isPositive=ilt%2===0;
+		ianim=isPositive ? ianim+1 : ianim-1;
+		let reverse=isPositive ? "" : "reverse";
+		console.log(ilt,ianim,t);
+		lt.textContent=t;				
+		lt.style.animation=`mov${ianim} 0.1s linear ${reverse} both`;
+		lt.style.color="";
+	}
 }
 );

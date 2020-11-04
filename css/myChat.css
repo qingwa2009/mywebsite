@@ -168,12 +168,13 @@
 
 /*-------------------letter count-------------------*/
 .desk_lts{
-	font-size:18px;
-	width:13em;
-	height:20em;
+	font-size:30px;
+	width:7em;
+	height:10em;
 	display: flex;
-	justify-content: start;
-	align-content: start;
+/* 	justify-content: start; */
+/* 	align-content: start; */
+	flex-direction:column;
 	flex-wrap: wrap;
 }
 
@@ -182,5 +183,75 @@
 	width: 1em;
 	height: 1em;
 	text-align: center;
+	color:#ffffb8;
 }
-
+/* 
+.letter:nth-child(2n){
+	color:red;	
+	align-self:flex-end;
+}
+ */
+@keyframes mov0{
+	0%{
+		transform:translate(0, 1em);
+	}
+	100%{
+		transform:translate(0, 0em);
+	}
+}
+@keyframes mov1{
+	0%{
+		transform:translateX(0);
+	}
+	100%{
+		transform:translateX(1em);
+	}
+}
+@keyframes mov2{
+	0%{
+		transform:translateX(1em);
+	}
+	100%{
+		transform:translateX(2em);
+	}
+}
+@keyframes mov3{
+	0%{
+		transform:translateX(2em);
+	}
+	100%{
+		transform:translateX(3em);
+	}
+}
+@keyframes mov4{
+	0%{
+		transform:translateX(3em);
+	}
+	100%{
+		transform:translateX(4em);
+	}
+}
+@keyframes mov5{
+	0%{
+		transform:translateX(4em);
+	}
+	100%{
+		transform:translateX(5em);
+	}
+}
+@keyframes mov6{
+	0%{
+		transform:translateX(5em);
+	}
+	100%{
+		transform:translateX(6em);
+	}
+}
+@keyframes mov7{
+	0%{
+		transform:translate(6em, 0);
+	}
+	100%{
+		transform:translate(6em, 1em);
+	}
+}
