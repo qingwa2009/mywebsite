@@ -141,14 +141,10 @@ window.addEventListener('DOMContentLoaded', ()=>{
 		cv.height=cv.clientHeight;
 	}
 
-	function update(){
-		resizeCanvas();
-		draw();
-		requestAnimationFrame(update);
-	}
 	
-	update();
 
+	const ps=new Array(3);
+	var dashOffset=0;
 	function draw(){
 // 		ctx.globalCompositeOperation="lighter";
 // 		ctx.fillStyle="#FFFFFF01";
@@ -156,76 +152,7 @@ window.addEventListener('DOMContentLoaded', ()=>{
 		ctx.clearRect(0, 0, cv.width, cv.height);
 
 		ctx.save();
-		ctx.fillStyle="#00ff0010";
-		ctx.fillRect(0,0,100,100);
-		ctx.fillStyle="#ff00ff10";
-		ctx.fillRect(50,50,100,100);
-		ctx.clearRect(60,60,30,30);
-		ctx.strokeRect(70,70,10,10);
-
-		ctx.fillStyle="#0000ff10";
-		ctx.beginPath();
-		ctx.moveTo(100,50);
-		ctx.lineTo(50,100);
-		ctx.lineTo(100,150);
-		ctx.lineTo(150,100);
-		ctx.closePath();
-		ctx.stroke();
 		
-		ctx.beginPath();
-		ctx.moveTo(0,0);
-		ctx.lineTo(0,100);
-		ctx.lineTo(100,100);
-		ctx.strokeStyle="#000";
-		ctx.lineWidth=1;
-		ctx.stroke();
-		
-		ctx.beginPath();
-		for(let i=1; i<11; i++){
-			ctx.moveTo(0, i*10);
-			ctx.lineTo(100, i*10);
-			ctx.moveTo(i*10, 0);
-			ctx.lineTo(i*10, 100);
-		}
-		ctx.strokeStyle="#aaa";
-		ctx.lineWidth=0.2;
-		ctx.stroke();
-
-		ctx.beginPath();
-		for(let j=0; j<1;j++){
-			ctx.moveTo(0,50);
-			for(let i=0; i<10; i++){
-				ctx.lineTo((i+1)*10,Math.floor(Math.random()*100));	
-			}
-			ctx.strokeStyle="#f005";
-			ctx.lineWidth=0.2;
-			ctx.stroke();
-		}
-
-		ctx.beginPath();
-		ctx.moveTo(0,100);
-		ctx.lineTo(0,200);
-		ctx.lineTo(100,200);
-		ctx.strokeStyle="#000";
-		ctx.lineWidth=1;
-		ctx.stroke();
-	
-		ctx.beginPath();
-		ctx.moveTo(0,200);
-		for(let i=0; i<10; i++){	
-		 	const step=100/10;			
-			let x=i*step;			
-			let y=Math.floor(Math.random()*100)+100;			
-// 			ctx.fillRect(x,y,5,200-y);
-			ctx.lineTo(x, y);
-			ctx.lineTo(x+step, y);
-		}
-		ctx.lineTo(100,200);
-		ctx.fillStyle="#ff01";
-		ctx.fill();
-		ctx.strokeStyle="#00f2";
-		ctx.lineWidth=0.5;		
-		ctx.stroke();
 
 // 		ctx.globalCompositeOperation="source-over";
 		for(let k in players){
@@ -244,10 +171,40 @@ window.addEventListener('DOMContentLoaded', ()=>{
 		handleDraw();
 
 		drawChart(ctx, 200, 200, 150, 100, 5);
-		drawPolyline(ctx, 200, 200, 150, 100, [10,50,30,20,100], "red", true);
-		drawPolyline(ctx, 200, 200, 150, 100, [0,80,20,50,70], "blue", true);
+		ctx.save();
+		ctx.lineWidth=1.0
+		ctx.setLineDash([2,4]);
+		ctx.lineDashOffset=0;
+		ps[0] = ps[0] || createPolyline(ctx, 200, 200, 150, 100, [10,50,30,20,100]);						
+		ctx.strokeStyle="red";
+		ctx.stroke(ps[0]);		
+		ps[1] = ps[1] || createPolyline(ctx, 200, 200, 150, 100, [50,20,10,8,10]);
+		ctx.strokeStyle="purple";
+		ctx.stroke(ps[1]);		
+		ps[2] = ps[2] || createPolyline(ctx, 200, 200, 150, 100, [0,80,20,50,70]);
+		ctx.setLineDash([]);
+		ctx.strokeStyle="blue";
+		ctx.stroke(ps[2]);
+		ctx.setLineDash([4,2]);
+		dashOffset=(dashOffset-1)%6;
+		ctx.lineDashOffset=dashOffset;
+		ctx.strokeStyle="white";
+		ctx.lineWidth=0.5;
+		ctx.stroke(ps[2]);		
+		ctx.restore();
+
+
+		drawChart2(ctx, 20, 200, 150, 100, 5);
+		drawHistogram(ctx, 20, 200, 150, 100, {5:5,12:8,26:7,29:50,60:80,80:6,90:1}, 72, 10, "#aabbcc99");
 	}
 
+	function update(){
+		resizeCanvas();
+		draw();
+		requestAnimationFrame(update);
+	}
+
+	update();
 
 	const boxes=[
 		document.getElementById("box0"),
@@ -334,7 +291,7 @@ window.addEventListener('DOMContentLoaded', ()=>{
 		playSwapAnim(b0, b1);
 	}
 
-	
+	//曲线图------------------------------------
 	function drawChart(ctx, x, y, width, height, count){
 		const x1=x+width, y1=y+height;
 		const dy=height/count;
@@ -348,7 +305,6 @@ window.addEventListener('DOMContentLoaded', ()=>{
 		ctx.strokeStyle="#000";
 		ctx.lineWidth=1;
 		ctx.stroke();
-		ctx.closePath();
 
 		ctx.textAlign="right";		
 		const dn=100/count;
@@ -360,19 +316,13 @@ window.addEventListener('DOMContentLoaded', ()=>{
 			ctx.lineTo(x1, y2);
 		}
 		ctx.strokeStyle="#999";
-		ctx.lineWidth=0.5
+		ctx.lineWidth=0.4;
 		ctx.stroke();	
-		ctx.closePath();
 		ctx.restore();	
 	}
 	
-	var dashOffset=0;
-	function animDash(){
-		dashOffset=(dashOffset-1)%6;
-		setTimeout(animDash,20);
-	}
-	animDash();
-	function drawPolyline(ctx, x, y, width, height, ps, lineColor, isDotLine){
+	
+	function createPolyline(ctx, x, y, width, height, ps){
 		const x1=x+width, y1=y+height;
 		let isSingle=false;
 		if (ps.length===1){
@@ -382,28 +332,111 @@ window.addEventListener('DOMContentLoaded', ()=>{
 		const count=ps.length;
 		const dx=width/(count-1);
 		const dy=height/100;
-		ctx.beginPath();
-		ctx.moveTo(x,y1-ps[0]*dy);
+
+		const p=new Path2D();
+
+		p.moveTo(x,y1-ps[0]*dy);
 		for (let i=1; i<count; i++){
 			let x2=x+i*dx;
-			ctx.lineTo(x+dx*i, y1-ps[i]*dy);
+			p.lineTo(x+dx*i, y1-ps[i]*dy);
 		}
-
-		ctx.save();
-		ctx.strokeStyle=lineColor;
-		ctx.lineWidth=1.0;
-		if (isDotLine) {
-			ctx.setLineDash([2,4]);
-			ctx.lineDashOffset=dashOffset;
-		}
-		ctx.stroke();
-		ctx.closePath();
-		ctx.restore();
-		
 		if (isSingle) {
 			ps.pop();
 		}
+		return p;
+
 	}
 
+	//直方图------------------------------------
+	function drawChart2(ctx, x, y, width, height, count){
+		const x1=x+width, y1=y+height;
+		const dx=width/count;
+		ctx.save();
+		
+		ctx.beginPath();
+		ctx.moveTo(x, y);
+		ctx.lineTo(x, y1);
+		ctx.lineTo(x1, y1);
+		
+		ctx.strokeStyle="#000";
+		ctx.lineWidth=1;
+		ctx.stroke();
+		
+		ctx.textAlign="center";		
+		const dn=100/count;
+		ctx.beginPath();
+		for (let i=0; i<=count; i++){
+			let x2=x+i*dx;
+			ctx.fillText(i*dn, x2, y1+15);
+			ctx.moveTo(x2, y1);
+			ctx.lineTo(x2, y1-5);
+		}
+		ctx.strokeStyle="#000";
+		ctx.lineWidth=0.4;
+		ctx.stroke();	
+		ctx.restore();	
+	}
+	
+	function drawHistogram(ctx, x, y, width, height, ps, target, count, color){
+		const x1=x+width, y1=y+height;
+		const dx=width/count;
+		const dn=100/count;
+		let maxY=0;
+		for(let k in ps){
+			if(ps[k]>maxY)maxY=ps[k];
+		}
+		const dy=(height-10)/maxY;
+
+		ctx.save()
+		ctx.beginPath();
+
+		let targetY=y1;
+		let x2=x, y2=y1;
+		ctx.moveTo(x2, y2);
+		for(let i=0; i<count; i++){
+			let dc=0;
+			let n0=dn*i;
+			if (n0===0) n0=-1;			
+			let n1=dn*(i+1);
+			for(let k in ps){
+				if(k>n0 && k<=n1){
+					dc+=ps[k];
+				}				
+			}
+
+			y2=y1-dc*dy;
+			if(target>n0 && target<=n1){
+				targetY=y2;
+			}
+			ctx.lineTo(x2, y2);
+			x2+=dx;
+			ctx.lineTo(x2, y2);			
+		}
+		ctx.lineTo(x1, y1);		
+		ctx.closePath();
+		ctx.fillStyle=color;
+		ctx.fill();		
+
+		ctx.lineWidth=1.0;	
+		ctx.strokeStyle="#456";
+		ctx.stroke();
+
+		ctx.beginPath();
+		x2=x+width/100*target;
+		ctx.moveTo(x2, targetY);
+		ctx.lineTo(x2, targetY-5);		
+		ctx.strokeStyle="green";
+// 		ctx.lineWidth=1.0;	
+		ctx.stroke();
+
+		ctx.fillStyle=ctx.strokeStyle;
+		ctx.textAlign="left";
+		ctx.fillText(target, x2, targetY-5);
+		
+		ctx.restore();
+	}
+
+	
+	
 }
 );

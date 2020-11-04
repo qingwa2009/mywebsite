@@ -7,9 +7,8 @@ window.addEventListener('DOMContentLoaded', ()=>{
 	const CommonFunc=top.window.CommonFunc;
 	const myMenu = App.myMenu;
 // 	const uploadURL = top.location.origin + "/upload";
-// 	const downloadURL = top.location.origin + "/upload";
+	const downloadURL = top.location.origin + "/upload";
 	const uploadURL = "/upload";
-	const downloadURL = "/upload";
 	const _cmd = "/filelist?type=";
 	const cmdExporting = _cmd + "exporting";
 	const cmdExported = _cmd + "exported";
