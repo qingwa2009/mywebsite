@@ -1,0 +1,199 @@
+<!doctype html>
+<html>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+	<head>
+		<title>Welcome</title>
+	</head>
+	<style>
+		html,body {
+			width: 100%;
+			height: 100%;
+			margin: 0;
+		}
+
+		body {
+			display: flex;
+			flex-wrap: wrap;
+		}
+
+		.box {
+			width: 100px;
+			height: 100px;
+			margin: 10px;
+			border: 10px solid;
+			padding: 10px;
+			background-color: yellow;
+			position:relative;
+			display: flex;
+			justify-content: stretch;
+			align-items: stretch;
+		}
+		.content{
+			flex: 1;
+			background-color: purple;
+		}
+		
+
+		.box:nth-child(1) {
+			box-sizing: border-box;/*width,height包含border+padding+content*/
+		}
+		
+		.box:nth-child(2) {
+			box-sizing: border-box;/*width,height包含border+padding+content*/
+			padding: 0px;
+		}
+
+		.box:nth-child(3) {
+			box-sizing: content-box;/*width,height仅包含content*/
+		}
+
+		.box:nth-child(4) {
+			box-sizing: content-box;/*width,height仅包含content*/
+			padding: 0;
+		}
+		
+		.box:nth-child(5){
+			display:block;
+			/* overflow: hidden; *//*截断在border里面*/
+		}
+		.box:nth-child(5)::after {
+			content:"";
+			background-color:blue;
+			position: absolute;
+			width:100%;/*子元素百分比尺寸按父元素content+padding计算*/
+			height:100%;/*子元素百分比尺寸按父元素content+padding计算*/
+		}
+
+		.box:nth-child(6) {
+			display:flex;
+			justify-content: stretch;
+			align-items: stretch;			
+		}
+
+		.box:nth-child(6)::after{
+			content: "";
+			background-color:blue;
+			flex: 1;
+		}
+
+		.pdBox{
+			width: 150px;
+			height: 200px;
+			margin: 10px;
+			border: 10px solid;
+			/* box-sizing: content-box; */
+			padding: 0;/*margin, padding的百分比取值按其parent的width来计算*/
+			background-color: yellow;
+			position:relative;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+		.pdBox::after{
+			content: "";
+			background-color:blue;
+			width:100%;			
+			height:50px;			
+			margin:0 33%;/*margin, padding的百分比取值按其parent的width来计算*/
+		}
+		.sbox{
+			margin: 10px;
+			border: 10px solid;
+			padding: 10px;
+			background-color: yellow;
+			position:relative;
+			display: flex;
+			flex-flow: row wrap;
+			justify-content: space-evenly;
+			align-content: center;
+		}
+		.sbox>div{
+			width: 21px;
+			height: 21px;
+			box-sizing: border-box;
+			background-color: purple;
+			border: 5px solid;
+			margin: 5px;
+			flex: 0 1 25.1%;
+		}
+		.btn1,.btn2,.btn3,.btn4{
+			margin: 10px;
+			border: 10px solid;
+			padding: 10px;
+			background-color: yellow;
+			width:200px;
+			height:100px;
+			box-sizing:border-box;
+			display: flex;
+			justify-content: stretch;
+			align-items: stretch;
+		}
+		.btn1::after,.btn2::after,.btn3::after,.btn4::after{
+			content: "";			
+			background-color:purple;			
+			flex:1;
+		}
+		.btn1:hover,.btn2:hover,.btn3:hover,.btn4:hover{
+			background-color: lightyellow;
+		}
+		.btn1:active, .btn3:active{
+			padding:20px;
+			transition:none;
+		}
+		.btn2:active, .btn4:active{
+			padding:20px;
+			transition: padding 1s cubic-bezier(0.55, 0.11, 0.66, 1.4);
+		}
+		.btn3, .btn4{
+			transition:padding 1s;
+		}
+		.rbtn{
+			width:100px;
+			height:100px;
+			margin:10px;
+			border:10px solid;
+			border-radius:50%;
+			display: flex;
+			justify-content: center;
+			transition: transform 1s cubic-bezier(0.63, 0.02, 0.84, 1.3);
+			background-image: linear-gradient(45deg, black 25%, transparent 25%), linear-gradient(-45deg, gray 25%, transparent 25%), linear-gradient(135deg, darkgray 25%, transparent 25%), linear-gradient(-135deg, lightgray 25%, transparent 25%);
+			background-size: 10px 10px;
+			clip-path:polygon(100% 50%, 97.5893533459429% 56.265257226562476%, 98.29629131445341% 62.940952255126035%, 94.34621756054176% 68.3688047535243%, 93.30127018922194% 75%, 88.08096033397929% 79.2205485924186%, 85.35533905932738% 85.35533905932738%, 79.2205485924186% 88.08096033397929%, 75% 93.30127018922192%, 68.36880475352432% 94.34621756054176%, 62.940952255126035% 98.29629131445341%, 56.26525722656247% 97.5893533459429%, 50% 100%, 43.734742773437524% 97.5893533459429%, 37.059047744873965% 98.29629131445341%, 31.63119524647569% 94.34621756054176%, 25.00000000000001% 93.30127018922194%, 20.779451407581426% 88.0809603339793%, 14.64466094067263% 85.35533905932738%, 11.919039666020716% 79.2205485924186%, 6.698729810778062% 75%, 5.65378243945824% 68.36880475352432%, 1.7037086855465873% 62.94095225512605%, 2.4106466540571034% 56.2652572265625%, 0% 50.00000000000001%, 2.4106466540570963% 43.73474277343754%, 1.7037086855465873% 37.05904774487396%, 5.653782439458233% 31.631195246475695%, 6.698729810778062% 25.000000000000014%, 11.919039666020701% 20.779451407581426%, 14.644660940672608% 14.644660940672644%, 20.779451407581398% 11.919039666020723%, 24.99999999999998% 6.698729810778076%, 31.631195246475663% 5.653782439458247%, 37.059047744873965% 1.7037086855465873%, 43.734742773437524% 2.4106466540571034%, 49.99999999999999% 0%, 56.26525722656246% 2.4106466540570963%, 62.940952255126014% 1.7037086855465802%, 68.36880475352427% 5.653782439458226%, 75% 6.698729810778069%, 79.2205485924186% 11.919039666020709%, 85.35533905932738% 14.644660940672615%, 88.08096033397928% 20.779451407581398%, 93.30127018922192% 24.99999999999998%, 94.34621756054176% 31.631195246475663%, 98.29629131445341% 37.05904774487392%, 97.5893533459429% 43.734742773437475%);
+		}
+		
+		.rbtn::after{
+			content:"";
+			width:10px;
+			height:10px;
+			background-color:red;
+			position:absolute;
+			border-radius: 50%;
+		}
+		.rbtn:active{
+			transform:rotateZ(120deg);
+			transition: transform 1s cubic-bezier(0.93, 0.01, 1, 1);
+		}
+
+	</style>
+	<body>
+		<div class="box"><div class="content"></div></div>
+		<div class="box"><div class="content"></div></div>
+		<div class="box"><div class="content"></div></div>
+		<div class="box"><div class="content"></div></div>
+		<div class="box"></div></div>
+		<div class="box"></div></div>
+		<div class="pdBox"></div>
+		<div class="sbox">
+			<div></div><div></div><div></div>
+			<div></div><div></div><div></div>
+			<div></div><div></div><div></div>
+					   <div></div>
+		</div>
+		<div class="btn1"></div>
+		<div class="btn2"></div>
+		<div class="btn3"></div>
+		<div class="btn4"></div>
+		<div class="rbtn"></div>
+	</body>
+</html>

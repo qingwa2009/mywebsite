@@ -145,6 +145,7 @@ window.addEventListener('DOMContentLoaded', ()=>{
 
 	const ps=new Array(3);
 	var dashOffset=0;
+	var textDashOffset=0;
 	function draw(){
 // 		ctx.globalCompositeOperation="lighter";
 // 		ctx.fillStyle="#FFFFFF01";
@@ -164,11 +165,18 @@ window.addEventListener('DOMContentLoaded', ()=>{
 			ctx.fillStyle=selfID==k ? "#00aaff" : "#ff0000";	
 			ctx.fill();
 		}
-
-
 		ctx.restore();
 
 		handleDraw();
+
+		ctx.save()
+		ctx.font="100px sans-serif"
+		ctx.strokeStyle="black";
+		ctx.setLineDash([30,250]);
+		textDashOffset=(textDashOffset+5)%280;
+		ctx.lineDashOffset=textDashOffset;
+		ctx.strokeText("ABC", 250, 200);		
+		ctx.restore();
 
 		drawChart(ctx, 200, 200, 150, 100, 5);
 		ctx.save();

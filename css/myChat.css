@@ -255,3 +255,79 @@
 		transform:translate(6em, 1em);
 	}
 }
+
+/*-------------------dir flash-------------------*/
+.desk_dir{
+	width: 150px;
+	height: 280px;
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: space-evenly;
+	align-content: space-evenly;
+	background-color:aliceblue;
+	position:absolute;
+	top: 0;
+}
+.dir{
+	width:3em;
+	height:3em;
+	border-radius:50%;
+	box-sizing: content-box;
+	border: 3px solid black;
+	flex: 0 0 25%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.dir::after{
+	content:"";
+	width: 2em;
+	height: 2em;
+	box-sizing: border-box;
+	border-radius: 50%;
+	border: 5px solid #9C27B0;
+	border-right: 3px solid transparent;
+}
+
+/*-------------------keyboard-------------------*/
+
+.keyboard{
+	position:absolute;
+	top: 160px;
+	background-color:#a52a2a00;
+	width: 100px;
+	height: 120px;
+	display:flex;
+	flex-flow: row wrap;
+	justify-content: center;
+	align-content: center;
+}
+
+.key{
+	border: 1px solid transparent;
+	flex: 0 0 25.1%;
+	/* width: 12px; */
+	height: 26px;
+	position:relative;
+	display:flex;
+	padding: 2px;
+	justify-content: stretch;
+	align-items: stretch;
+}
+
+.key::after{
+	content:attr(data-key);
+	flex:1;
+	background-color:#ffeb3b00;
+	border: 1px  solid transparent;
+	/* width: 15px; */
+	/* height: 15px; */
+	display: flex;
+	justify-content:center;
+	align-items:center;
+}
+
+.key:active{
+	padding:4px;
+/* 	transition:padding 1s; */
+}
