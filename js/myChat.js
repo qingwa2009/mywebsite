@@ -191,13 +191,18 @@ window.addEventListener('DOMContentLoaded', ()=>{
 		ctx.stroke(ps[1]);		
 		ps[2] = ps[2] || createPolyline(ctx, 200, 200, 150, 100, [0,80,20,50,70]);
 		ctx.setLineDash([]);
+		ctx.lineWidth=2;
+		ctx.shadowColor="gray";
+		ctx.shadowOffsetY=2;
+		ctx.shadowBlur=3;
 		ctx.strokeStyle="blue";
 		ctx.stroke(ps[2]);
 		ctx.setLineDash([4,2]);
 		dashOffset=(dashOffset-1)%6;
 		ctx.lineDashOffset=dashOffset;
 		ctx.strokeStyle="white";
-		ctx.lineWidth=0.5;
+		ctx.lineWidth=.5;
+		ctx.shadowColor="white";
 		ctx.stroke(ps[2]);		
 		ctx.restore();
 
@@ -480,5 +485,13 @@ window.addEventListener('DOMContentLoaded', ()=>{
 		lt.style.animation=`mov${ianim} 0.1s linear ${reverse} both`;
 		lt.style.color="";
 	}
+
+
+
+	/*--------------------------offset-path--------------------*/
+	const plane=document.getElementById("plane");
+	plane.addEventListener("animationiteration",e=>{
+		console.log(e);
+	},true);
 }
 );

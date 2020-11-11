@@ -14,9 +14,21 @@ window.addEventListener('DOMContentLoaded', ()=>{
 	const cmdExported = _cmd + "exported";
 	const cmdDelete= _cmd + "delete";
 
-	const menuEnum = {"删除": 1};
+	const menuEnum = {"下载":0, "删除": 1};
+
+	const A=document.createElement("a");
+	A.style.display="none";
+	document.body.appendChild(A);
+
 	const funcMenu = function (context, target) {
 		switch (this.id) {
+			case menuEnum.下载:
+				const filename=target.textContent;
+				A.download=filename;
+				const fn=encodeURI(filename);
+				A.href=`${downloadURL}/${fn}`;
+				A.click();
+				break;
 			case menuEnum.删除:
 				if(confirm("删除："+target.textContent+"？")){
 					reqDelFile(target.textContent);	
