@@ -233,59 +233,112 @@
 		cv.height=height;
 		
 		const ctx=cv.getContext("2d");
-		ctx.strokeStyle="red";
-		ctx.beginPath();
-		//0
-// 		ctx.moveTo(36.24, 82.63);		
-// 		ctx.bezierCurveTo(0, 95.07, 0, 5.63, 28.86, 16.04);
-// 		ctx.bezierCurveTo(50,23.67, 50, 80, 26.41, 88.85);
-
-		//1
-// 		ctx.moveTo(20.3, 31.68);
-// 		ctx.bezierCurveTo(35.87, 0, 25, 0, 23.35, 91.05);
-
-		//2
-// 		ctx.moveTo(4.85, 32.04);
-// 		ctx.bezierCurveTo(22.06, 3.54, 78.43, 12.85, 4.85, 88.92);
-// 		ctx.bezierCurveTo(32.46, 77.54, 44.97, 73.85,44.14, 77.33);	
-	
-		//3
-// 		ctx.moveTo(12.08, 25.16);
-// 		ctx.bezierCurveTo(28.30, -5.19, 60.53, 25.15, 27.24, 49.52);
-// 		ctx.bezierCurveTo(58.66, 44.72, 42.60, 106.37, 7.86, 83.63);
-
-		//4
-// 		ctx.moveTo(34.14, 10.14);
-// 		ctx.bezierCurveTo(3.66, 73.83, -20.29, 72.74, 47.21, 54.78);
-// 		ctx.moveTo(34.14, 18.98);
-// 		ctx.bezierCurveTo(34.64, 23.96, 29.10, 72.67,28.54, 95.00);
-
-		//5
-// 		ctx.moveTo(24.84, 9.03);
-// 		ctx.bezierCurveTo(-8.92, 48.36, 86.63, 47.08, 8.30, 88.85);
-// 		ctx.moveTo(13.99, 23.44);
-// 		ctx.bezierCurveTo(16.51, 19.66, 33.52, 13.99, 45.18, 13.99);
-
-		//6
-// 		ctx.moveTo(31.95, 7.32);
-// 		ctx.bezierCurveTo(-11.02, 60.94, 17.71, 113.42, 37.21, 72.20);
-// 		ctx.bezierCurveTo(50.02, 45.12, 24.88, 27.62, 4.33, 58.73);
-
-		//7
-// 		ctx.moveTo(5.25, 20.80);
-// 		ctx.bezierCurveTo(62.46, 16.66, 53.66, -5.59, 11.46, 93.02);
-
-		//8
-// 		ctx.moveTo(11.52, 57.50);
-// 		ctx.bezierCurveTo(87.32, 0.66, -5.30, 1.20, 22.04, 41.10);
-// 		ctx.bezierCurveTo(63.74, 105.63, -28.43, 101.86, 35.06, 40.91);
-
-		//9
-		ctx.moveTo(17.89, 49.85);
-		ctx.bezierCurveTo(79.51, 3.26, -8.15, -6.63, 23.39, 41.78);
-		ctx.bezierCurveTo(26.82, 47.04, 27.43, 53.88, 17.89, 94.23);
-		ctx.stroke();
 		
-// 		ctx.fillRect(0,0, cv.width, cv.height);
+		const sc=.5;
+		var x=10, y=10;
+		
+		AAA(0);
+		function AAA(i){
+			ctx.fillStyle="white";
+			ctx.fillRect(0, 0, width, height);
+			ctx.strokeStyle="red";	
+			ctx.beginPath();				
+			drawNum(ctx, x, y, sc, i);
+
+			ctx.stroke();
+			if(i<100)
+				setTimeout(()=>{
+					AAA(i+1);
+				}, 100);
+		}
+
+		function drawNum(ctx, x, y, sc, num){
+			const dx=50*sc;
+			const s=String(num);
+			var xx=x;
+			for(let i=0; i<s.length; i++){
+				eval(`draw${s[i]}(ctx, xx, y, sc)`)
+				xx+=dx;
+			}
+			const w=dx*s.length;
+			y+=100*sc;
+			ctx.moveTo(x+w*0.3333, y);
+			ctx.lineTo(x+w*0.6667, y-2);
+			y+=5;
+			ctx.moveTo(x, y);
+			ctx.lineTo(x+w, y-2);
+
+		}
+		//0
+		function draw0(ctx, x, y, sc){
+			ctx.moveTo(18.42*sc+x, 25.80*sc+y);		
+			ctx.bezierCurveTo(6.87*sc+x, 34.87*sc+y, 6.00*sc+x, 79.66*sc+y, 28.88*sc+x, 75.22*sc+y);
+			ctx.bezierCurveTo(46.70*sc+x, 71.76*sc+y, 46.15*sc+x, 7.23*sc+y, 19.44*sc+x, 22.74*sc+y);
+// 			ctx.stroke();
+		}
+		//1
+		function draw1(ctx, x, y, sc){
+			ctx.moveTo(20.3*sc+x, 31.68*sc+y);
+			ctx.bezierCurveTo(35.87*sc+x, 0*sc+y, 25*sc+x, 0*sc+y, 23.35*sc+x, 91.05*sc+y);
+// 			ctx.stroke();
+		}
+		//2
+		function draw2(ctx, x, y, sc){
+			ctx.moveTo(11.19*sc+x, 29.98*sc+y);
+			ctx.bezierCurveTo(21.48*sc+x, -4.11*sc+y, 71.63*sc+x, 19.83*sc+y, 4.84*sc+x, 88.91*sc+y);
+			ctx.bezierCurveTo(13.66*sc+x, 88.82*sc+y, 35.72*sc+x, 84.21*sc+y, 43.24*sc+x, 87.11*sc+y);	
+// 			ctx.stroke();
+		}
+		//3
+		function draw3(ctx, x, y, sc){
+			ctx.moveTo(13.40*sc+x, 23.36*sc+y);
+			ctx.bezierCurveTo(22.53*sc+x, 14.23*sc+y, 68.35*sc+x, 6.04*sc+y, 27.24*sc+x, 49.52*sc+y);
+			ctx.bezierCurveTo(58.66*sc+x, 44.72*sc+y, 42.60*sc+x, 106.37*sc+y, 7.86*sc+x, 83.63*sc+y);
+// 			ctx.stroke();
+		}
+		//4
+		function draw4(ctx, x, y, sc){
+			ctx.moveTo(34.14*sc+x, 10.14*sc+y);
+			ctx.bezierCurveTo(3.66*sc+x, 73.83*sc+y, -20.29*sc+x, 72.74*sc+y, 47.21*sc+x, 54.78*sc+y);
+			ctx.moveTo(34.14*sc+x, 18.98*sc+y);
+			ctx.bezierCurveTo(34.64*sc+x, 23.96*sc+y, 29.10*sc+x, 72.67*sc+y,28.54*sc+x, 95.00*sc+y);
+// 			ctx.stroke();
+		}
+		//5
+		function draw5(ctx, x, y, sc){
+			ctx.moveTo(24.84*sc+x, 9.03*sc+y);
+			ctx.bezierCurveTo(-8.92*sc+x, 48.36*sc+y, 86.63*sc+x, 47.08*sc+y, 8.30*sc+x, 88.85*sc+y);
+			ctx.moveTo(13.99*sc+x, 23.44*sc+y);
+			ctx.bezierCurveTo(16.51*sc+x, 19.66*sc+y, 33.52*sc+x, 13.99*sc+y, 45.18*sc+x, 13.99*sc+y);
+// 			ctx.stroke();
+		}
+		//6
+		function draw6(ctx, x, y, sc){
+			ctx.moveTo(31.95*sc+x, 7.32*sc+y);
+			ctx.bezierCurveTo(-11.02*sc+x, 60.94*sc+y, 17.71*sc+x, 113.42*sc+y, 37.21*sc+x, 72.20*sc+y);
+			ctx.bezierCurveTo(50.02*sc+x, 45.12*sc+y, 24.88*sc+x, 27.62*sc+y, 4.33*sc+x, 58.73*sc+y);
+// 			ctx.stroke();
+		}
+
+		//7		
+		function draw7(ctx, x, y, sc){
+			ctx.moveTo(5.25*sc+x, 20.80*sc+y);
+			ctx.bezierCurveTo(62.46*sc+x, 16.66*sc+y, 53.66*sc+x, -5.59*sc+y, 11.46*sc+x, 93.02*sc+y);
+// 			ctx.stroke();
+		}
+		//8
+		function draw8(ctx, x, y, sc){
+			ctx.moveTo(11.52*sc+x, 57.50*sc+y);
+			ctx.bezierCurveTo(87.32*sc+x, 0.66*sc+y, -5.30*sc+x, 1.20*sc+y, 22.04*sc+x, 41.10*sc+y);
+			ctx.bezierCurveTo(63.74*sc+x, 105.63*sc+y, -28.43*sc+x, 101.86*sc+y, 35.06*sc+x, 40.91*sc+y);
+// 			ctx.stroke();
+		}
+		//9				
+		function draw9(ctx, x, y, sc){
+			ctx.moveTo(17.89*sc+x, 49.85*sc+y);
+			ctx.bezierCurveTo(79.51*sc+x, 3.26*sc+y, -8.15*sc+x, -6.63*sc+y, 23.39*sc+x, 41.78*sc+y);
+			ctx.bezierCurveTo(26.82*sc+x, 47.04*sc+y, 27.43*sc+x, 53.88*sc+y, 17.89*sc+x, 94.23*sc+y);
+// 			ctx.stroke();
+		}
 	</script>
 </html>
