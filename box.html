@@ -174,7 +174,8 @@
 			transform:rotateZ(120deg);
 			transition: transform 1s cubic-bezier(0.93, 0.01, 1, 1);
 		}
-		
+
+		/*标签*/
 		.mark{
 			width:100px;
 			height:1.5em;
@@ -198,6 +199,7 @@
 			justify-content: center;
 		}
 
+		/*气泡*/
 		.log{
 			position:fixed;
 			max-width:20em;
@@ -228,7 +230,55 @@
 		.log_hide{
 			transform: translateX(110%);
 		}
-		 
+
+		/*立方*/
+		.cube{
+			height: 100px;
+			width: 100px;
+			position:relative;
+			transform: rotateX(-29deg) rotateY(-62deg) scale3d(0.5, 0.5, 0.5);
+			transform-style: preserve-3d;
+			--bkcolor: #6b869580;
+			--fkcolor: #45464d;
+			transition: transform 2s;
+		}
+		.cube:active{
+			transform: rotateX(-29deg) rotateY(298deg) scale3d(0.5, 0.5, 0.5);
+			transition: transform 1s;
+		}
+		.cube_side{
+			position:absolute;
+			left:0;
+			top:0;
+			background-color: var(--bkcolor);
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			color: var(--fkcolor);
+			font-size: 40px;
+			height:100%;
+			width:100%;
+			transform-style: preserve-3d;
+			box-shadow: inset 0 0 10px white;
+		}		
+		.cube_side:nth-of-type(1){
+			transform:translate3d(0,0,50px);
+		}
+		.cube_side:nth-of-type(2){
+			transform: rotateX(90deg) translate3d(0,0,50px);
+		}
+		.cube_side:nth-of-type(3){
+			transform: rotateY(180deg) translate3d(0,0,50px);
+		}
+		.cube_side:nth-of-type(4){
+			transform:rotateX(270deg) translate3d(0,0,50px);
+		}
+		.cube_side:nth-of-type(5){
+			transform:rotateY(90deg) translate3d(0,0,50px);
+		}
+		.cube_side:nth-of-type(6){
+			transform: rotateY(270deg) translate3d(0,0,50px);
+		}
 	</style>
 	<body>
 		<div class="box"><div class="content"></div></div>
@@ -259,6 +309,15 @@
 		<div id="log" class="log">
 			啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊
 			啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊
+		</div>
+
+		<div class="cube">
+			<div class="cube_side">1</div>
+			<div class="cube_side">2</div>
+			<div class="cube_side">3</div>
+			<div class="cube_side">4</div>
+			<div class="cube_side">5</div>
+			<div class="cube_side">6</div>
 		</div>
 	</body>
 	<script>
