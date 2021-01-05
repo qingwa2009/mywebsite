@@ -197,6 +197,38 @@
 			display: flex;
 			justify-content: center;
 		}
+
+		.log{
+			position:fixed;
+			max-width:20em;
+			border-radius:.5em;
+			padding:.5em;
+			background-color:white;
+			color:black;
+			bottom:100px;
+			right:10px;
+			transition: transform .5s;
+			filter: drop-shadow(1px 1px 5px gray);
+		}
+		.log::after{
+			position:absolute;
+			content:"";
+			width:1em;
+			height:1em;
+			right:0;
+			top:.6em;
+			background-color:transparent;
+			border-left:solid white 1em;
+			border-right:solid transparent .5em;
+			border-top:solid transparent .5em;
+			border-bottom:solid transparent .5em;
+			box-sizing:border-box;
+			transform:translateX(100%);
+		}
+		.log_hide{
+			transform: translateX(110%);
+		}
+		 
 	</style>
 	<body>
 		<div class="box"><div class="content"></div></div>
@@ -222,10 +254,43 @@
 				<div class="mark_tx">标签</div>
 			</div>
 		</div>
-		<canvas id="cv" width=100>
-		</canvas>
-	</body>
+		<canvas id="cv" width=100></canvas>
 
+		<div id="log" class="log">
+			啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊
+			啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊
+		</div>
+	</body>
+	<script>
+		function rand_range(a, b){
+			return Math.random()*(b-a)+a;
+		}
+		const cHide="log_hide";
+		const log=document.getElementById("log");
+		log.classList.add(cHide);
+		showLog();
+		function showLog(){
+			var s="啊".repeat(rand_range(1, 100));
+			var t=Math.max(Math.min(5, s.length/10+0.5), 2);
+			log.textContent=s;
+			log.classList.remove(cHide);
+			setTimeout(
+				()=>{					
+					hideLog();
+				},t*1000
+			);	
+		}
+		function hideLog(){
+			var t=rand_range(0,3);
+			log.classList.add(cHide);
+			setTimeout(
+				()=>{					
+					showLog();
+				},t*1000
+			);
+		}		
+		
+	</script>
 	<script>
 		const cv=document.getElementById("cv");
 		const width=cv.clientWidth, height=cv.clientHeight;
