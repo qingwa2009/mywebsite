@@ -24,91 +24,104 @@
 			border: 10px solid;
 			padding: 10px;
 			background-color: yellow;
-			position:relative;
+			position: relative;
 			display: flex;
 			justify-content: stretch;
 			align-items: stretch;
 		}
-		.content{
+
+		.content {
 			flex: 1;
 			background-color: purple;
 		}
-		
 
 		.box:nth-child(1) {
-			box-sizing: border-box;/*width,height包含border+padding+content*/
+			box-sizing: border-box;
+			/*width,height包含border+padding+content*/
 		}
-		
+
 		.box:nth-child(2) {
-			box-sizing: border-box;/*width,height包含border+padding+content*/
+			box-sizing: border-box;
+			/*width,height包含border+padding+content*/
 			padding: 0px;
 		}
 
 		.box:nth-child(3) {
-			box-sizing: content-box;/*width,height仅包含content*/
+			box-sizing: content-box;
+			/*width,height仅包含content*/
 		}
 
 		.box:nth-child(4) {
-			box-sizing: content-box;/*width,height仅包含content*/
+			box-sizing: content-box;
+			/*width,height仅包含content*/
 			padding: 0;
 		}
-		
-		.box:nth-child(5){
-			display:block;
-			/* overflow: hidden; *//*截断在border里面*/
+
+		.box:nth-child(5) {
+			display: block;
+			/* overflow: hidden; */
+			/*截断在border里面*/
 		}
+
 		.box:nth-child(5)::after {
-			content:"";
-			background-color:blue;
+			content: "";
+			background-color: blue;
 			position: absolute;
-			width:100%;/*子元素百分比尺寸按父元素content+padding计算*/
-			height:100%;/*子元素百分比尺寸按父元素content+padding计算*/
+			width: 100%;
+			/*子元素百分比尺寸按父元素content+padding计算*/
+			height: 100%;
+			/*子元素百分比尺寸按父元素content+padding计算*/
 		}
 
 		.box:nth-child(6) {
-			display:flex;
+			display: flex;
 			justify-content: stretch;
-			align-items: stretch;			
+			align-items: stretch;
 		}
 
-		.box:nth-child(6)::after{
+		.box:nth-child(6)::after {
 			content: "";
-			background-color:blue;
+			background-color: blue;
 			flex: 1;
 		}
 
-		.pdBox{
+		.pdBox {
 			width: 150px;
 			height: 200px;
 			margin: 10px;
 			border: 10px solid;
 			/* box-sizing: content-box; */
-			padding: 0;/*margin, padding的百分比取值按其parent的width来计算*/
+			padding: 0;
+			/*margin, padding的百分比取值按其parent的width来计算*/
 			background-color: yellow;
-			position:relative;
+			position: relative;
 			display: flex;
 			justify-content: center;
 			align-items: center;
 		}
-		.pdBox::after{
+
+		.pdBox::after {
 			content: "";
-			background-color:blue;
-			width:100%;			
-			height:50px;			
-			margin:0 33%;/*margin, padding的百分比取值按其parent的width来计算*/
+			background-color: blue;
+			width: 100%;
+			height: 50px;
+			margin: 0 33%;
+			/*margin, padding的百分比取值按其parent的width来计算*/
 		}
-		.sbox{
+
+		.sbox {
 			margin: 10px;
 			border: 10px solid;
 			padding: 10px;
 			background-color: yellow;
-			position:relative;
+			position: relative;
 			display: flex;
 			flex-flow: row wrap;
 			justify-content: space-evenly;
 			align-content: center;
 		}
-		.sbox>div{
+
+		.sbox>div {
 			width: 21px;
 			height: 21px;
 			box-sizing: border-box;
@@ -117,77 +130,87 @@
 			margin: 5px;
 			flex: 0 1 25.1%;
 		}
-		.btn1,.btn2,.btn3,.btn4{
+
+		.btn1,.btn2,.btn3,.btn4 {
 			margin: 10px;
 			border: 10px solid;
 			padding: 10px;
 			background-color: yellow;
-			width:200px;
-			height:100px;
-			box-sizing:border-box;
+			width: 200px;
+			height: 100px;
+			box-sizing: border-box;
 			display: flex;
 			justify-content: stretch;
 			align-items: stretch;
 		}
-		.btn1::after,.btn2::after,.btn3::after,.btn4::after{
-			content: "";			
-			background-color:purple;			
-			flex:1;
+
+		.btn1::after,.btn2::after,.btn3::after,.btn4::after {
+			content: "";
+			background-color: purple;
+			flex: 1;
 		}
-		.btn1:hover,.btn2:hover,.btn3:hover,.btn4:hover{
+
+		.btn1:hover,.btn2:hover,.btn3:hover,.btn4:hover {
 			background-color: lightyellow;
 		}
-		.btn1:active, .btn3:active{
-			padding:20px;
-			transition:none;
+
+		.btn1:active, .btn3:active {
+			padding: 20px;
+			transition: none;
 		}
-		.btn2:active, .btn4:active{
-			padding:20px;
+
+		.btn2:active, .btn4:active {
+			padding: 20px;
 			transition: padding 1s cubic-bezier(0.55, 0.11, 0.66, 1.4);
 		}
-		.btn3, .btn4{
-			transition:padding 1s;
+
+		.btn3, .btn4 {
+			transition: padding 1s;
 		}
-		.rbtn{
-			width:100px;
-			height:100px;
-			margin:10px;
-			border:10px solid;
-			border-radius:50%;
+
+		.rbtn {
+			width: 100px;
+			height: 100px;
+			margin: 10px;
+			border: 10px solid;
+			border-radius: 50%;
 			display: flex;
 			justify-content: center;
 			transition: transform 1s cubic-bezier(0.63, 0.02, 0.84, 1.3);
 			background-image: linear-gradient(45deg, black 25%, transparent 25%), linear-gradient(-45deg, gray 25%, transparent 25%), linear-gradient(135deg, darkgray 25%, transparent 25%), linear-gradient(-135deg, lightgray 25%, transparent 25%);
 			background-size: 10px 10px;
-			clip-path:polygon(100% 50%, 97.5893533459429% 56.265257226562476%, 98.29629131445341% 62.940952255126035%, 94.34621756054176% 68.3688047535243%, 93.30127018922194% 75%, 88.08096033397929% 79.2205485924186%, 85.35533905932738% 85.35533905932738%, 79.2205485924186% 88.08096033397929%, 75% 93.30127018922192%, 68.36880475352432% 94.34621756054176%, 62.940952255126035% 98.29629131445341%, 56.26525722656247% 97.5893533459429%, 50% 100%, 43.734742773437524% 97.5893533459429%, 37.059047744873965% 98.29629131445341%, 31.63119524647569% 94.34621756054176%, 25.00000000000001% 93.30127018922194%, 20.779451407581426% 88.0809603339793%, 14.64466094067263% 85.35533905932738%, 11.919039666020716% 79.2205485924186%, 6.698729810778062% 75%, 5.65378243945824% 68.36880475352432%, 1.7037086855465873% 62.94095225512605%, 2.4106466540571034% 56.2652572265625%, 0% 50.00000000000001%, 2.4106466540570963% 43.73474277343754%, 1.7037086855465873% 37.05904774487396%, 5.653782439458233% 31.631195246475695%, 6.698729810778062% 25.000000000000014%, 11.919039666020701% 20.779451407581426%, 14.644660940672608% 14.644660940672644%, 20.779451407581398% 11.919039666020723%, 24.99999999999998% 6.698729810778076%, 31.631195246475663% 5.653782439458247%, 37.059047744873965% 1.7037086855465873%, 43.734742773437524% 2.4106466540571034%, 49.99999999999999% 0%, 56.26525722656246% 2.4106466540570963%, 62.940952255126014% 1.7037086855465802%, 68.36880475352427% 5.653782439458226%, 75% 6.698729810778069%, 79.2205485924186% 11.919039666020709%, 85.35533905932738% 14.644660940672615%, 88.08096033397928% 20.779451407581398%, 93.30127018922192% 24.99999999999998%, 94.34621756054176% 31.631195246475663%, 98.29629131445341% 37.05904774487392%, 97.5893533459429% 43.734742773437475%);
+			clip-path: polygon(100% 50%, 97.5893533459429% 56.265257226562476%, 98.29629131445341% 62.940952255126035%, 94.34621756054176% 68.3688047535243%, 93.30127018922194% 75%, 88.08096033397929% 79.2205485924186%, 85.35533905932738% 85.35533905932738%, 79.2205485924186% 88.08096033397929%, 75% 93.30127018922192%, 68.36880475352432% 94.34621756054176%, 62.940952255126035% 98.29629131445341%, 56.26525722656247% 97.5893533459429%, 50% 100%, 43.734742773437524% 97.5893533459429%, 37.059047744873965% 98.29629131445341%, 31.63119524647569% 94.34621756054176%, 25.00000000000001% 93.30127018922194%, 20.779451407581426% 88.0809603339793%, 14.64466094067263% 85.35533905932738%, 11.919039666020716% 79.2205485924186%, 6.698729810778062% 75%, 5.65378243945824% 68.36880475352432%, 1.7037086855465873% 62.94095225512605%, 2.4106466540571034% 56.2652572265625%, 0% 50.00000000000001%, 2.4106466540570963% 43.73474277343754%, 1.7037086855465873% 37.05904774487396%, 5.653782439458233% 31.631195246475695%, 6.698729810778062% 25.000000000000014%, 11.919039666020701% 20.779451407581426%, 14.644660940672608% 14.644660940672644%, 20.779451407581398% 11.919039666020723%, 24.99999999999998% 6.698729810778076%, 31.631195246475663% 5.653782439458247%, 37.059047744873965% 1.7037086855465873%, 43.734742773437524% 2.4106466540571034%, 49.99999999999999% 0%, 56.26525722656246% 2.4106466540570963%, 62.940952255126014% 1.7037086855465802%, 68.36880475352427% 5.653782439458226%, 75% 6.698729810778069%, 79.2205485924186% 11.919039666020709%, 85.35533905932738% 14.644660940672615%, 88.08096033397928% 20.779451407581398%, 93.30127018922192% 24.99999999999998%, 94.34621756054176% 31.631195246475663%, 98.29629131445341% 37.05904774487392%, 97.5893533459429% 43.734742773437475%);
 		}
-		
-		.rbtn::after{
-			content:"";
-			width:10px;
-			height:10px;
-			background-color:red;
-			position:absolute;
+
+		.rbtn::after {
+			content: "";
+			width: 10px;
+			height: 10px;
+			background-color: red;
+			position: absolute;
 			border-radius: 50%;
 		}
-		.rbtn:active{
-			transform:rotateZ(120deg);
+
+		.rbtn:active {
+			transform: rotateZ(120deg);
 			transition: transform 1s cubic-bezier(0.93, 0.01, 1, 1);
 		}
 
 		/*标签*/
-		.mark{
-			width:100px;
-			height:1.5em;
+		.mark {
+			width: 100px;
+			height: 1.5em;
 			filter: drop-shadow(2px 2px 2px gray);
 		}
-		.mark_bk{
-			width:100%;
-			height:100%;
+
+		.mark_bk {
+			width: 100%;
+			height: 100%;
 			background-color: red;
 			clip-path: polygon(0% 80%, 15% 0%, 100% 0%, 80% 50%, 100% 100%, 0% 100%);
 		}
-		.mark_tx{
+
+		.mark_tx {
 			color: white;
 			text-shadow: grey 0px 0px 5px;
 			width: 100%;
@@ -200,99 +223,271 @@
 		}
 
 		/*气泡*/
-		.log{
-			position:fixed;
-			max-width:20em;
-			border-radius:.5em;
-			padding:.5em;
-			background-color:white;
-			color:black;
-			bottom:100px;
-			right:10px;
+		.log {
+			position: fixed;
+			max-width: 20em;
+			border-radius: .5em;
+			padding: .5em;
+			background-color: white;
+			color: black;
+			bottom: 100px;
+			right: 10px;
 			transition: transform .5s;
 			filter: drop-shadow(1px 1px 5px gray);
 		}
-		.log::after{
-			position:absolute;
-			content:"";
-			width:1em;
-			height:1em;
-			right:0;
-			top:.6em;
-			background-color:transparent;
-			border-left:solid white 1em;
-			border-right:solid transparent .5em;
-			border-top:solid transparent .5em;
-			border-bottom:solid transparent .5em;
-			box-sizing:border-box;
-			transform:translateX(100%);
+
+		.log::after {
+			position: absolute;
+			content: "";
+			width: 1em;
+			height: 1em;
+			right: 0;
+			top: .6em;
+			background-color: transparent;
+			border-left: solid white 1em;
+			border-right: solid transparent .5em;
+			border-top: solid transparent .5em;
+			border-bottom: solid transparent .5em;
+			box-sizing: border-box;
+			transform: translateX(100%);
 		}
-		.log_hide{
+
+		.log_hide {
 			transform: translateX(110%);
 		}
 
 		/*立方*/
-		.cube{
+		.cube {
 			height: 100px;
 			width: 100px;
-			position:relative;
+			position: relative;
 			transform: rotateX(-29deg) rotateY(-62deg) scale3d(0.5, 0.5, 0.5);
 			transform-style: preserve-3d;
-			--bkcolor: #6b869580;
-			--fkcolor: #45464d;
-			transition: transform 2s;
+			--bkcolor: #6b869580; --fkcolor: #45464d; transition: transform 2s;
 		}
-		.cube:active{
+
+		.cube:active {
 			transform: rotateX(-29deg) rotateY(298deg) scale3d(0.5, 0.5, 0.5);
 			transition: transform 1s;
 		}
-		.cube_side{
-			position:absolute;
-			left:0;
-			top:0;
+
+		.cube_side {
+			position: absolute;
+			left: 0;
+			top: 0;
 			background-color: var(--bkcolor);
 			display: flex;
 			justify-content: center;
 			align-items: center;
 			color: var(--fkcolor);
 			font-size: 40px;
-			height:100%;
-			width:100%;
+			height: 100%;
+			width: 100%;
 			transform-style: preserve-3d;
 			box-shadow: inset 0 0 10px white;
-		}		
-		.cube_side:nth-of-type(1){
-			transform:translate3d(0,0,50px);
 		}
-		.cube_side:nth-of-type(2){
+
+		.cube_side:nth-of-type(1) {
+			transform: translate3d(0,0,50px);
+		}
+
+		.cube_side:nth-of-type(2) {
 			transform: rotateX(90deg) translate3d(0,0,50px);
 		}
-		.cube_side:nth-of-type(3){
+
+		.cube_side:nth-of-type(3) {
 			transform: rotateY(180deg) translate3d(0,0,50px);
 		}
-		.cube_side:nth-of-type(4){
-			transform:rotateX(270deg) translate3d(0,0,50px);
+
+		.cube_side:nth-of-type(4) {
+			transform: rotateX(270deg) translate3d(0,0,50px);
 		}
-		.cube_side:nth-of-type(5){
-			transform:rotateY(90deg) translate3d(0,0,50px);
+
+		.cube_side:nth-of-type(5) {
+			transform: rotateY(90deg) translate3d(0,0,50px);
 		}
-		.cube_side:nth-of-type(6){
+
+		.cube_side:nth-of-type(6) {
 			transform: rotateY(270deg) translate3d(0,0,50px);
 		}
+
+		/*table*/
+		.table_view{
+			margin-left: 50px;
+			margin-top: 50px;
+			transform-style: preserve-3d;
+			transform: rotateX(69deg) rotateZ(335deg) rotateY(0deg);
+			/* perspective: 1000px; */
+			perspective-origin: center;
+		}
+		.table {
+			--tw: 150px;
+			--th: 50px;
+			--tt: 50px;
+			--ttt: 10px;
+			--ttl: calc(var(--tt) - var(--ttt));
+			--wwl: 10px;
+			--hhl: 10px;
+			--inset: 1px;
+			--c0: darkorange;
+			--c1: chocolate;
+			--c2: brown;
+			--c3: maroon;
+			position: relative;
+			transform-style: preserve-3d;
+			transform: rotateX(0deg);
+			transition: 3s cubic-bezier(0.69, 0.06, 1, 0.75) 1s;
+		}
+		.table:active{
+			/* --c3: chocolate; */
+			/* --c1: darkorange; */
+			transform: rotateX(88deg);
+			transition: .1s cubic-bezier(0.45, 1.75, 0.71, 0.84);
+		}
+
+		.table_top {
+			position: absolute;
+			top: 0;
+			left: 0;
+			--w: var(--tw);
+			--h: var(--th);
+			--t: var(--ttt);
+			width: var(--w);
+			height: var(--h);
+			background-color: transparent;
+			transform: translateZ(var(--ttl));
+			transform-style: preserve-3d;
+			transform-origin: center;
+		}
+
+		.table_top div {
+			position: absolute;
+			left: 0;
+			top: 0;
+		}
+
+		.table_top div:nth-of-type(1) {
+			width: 100%;
+			height: 100%;
+			background-color: var(--c0);
+			transform: translateZ(var(--t));
+		}
+
+		.table_top div:nth-of-type(2) {
+			width: 100%;
+			height: 100%;
+			background-color: var(--c3);
+			transform: rotateX(180deg);
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			color: burlywood;
+		}
+
+		.table_top div:nth-of-type(3) {
+			width: var(--t);
+			height: 100%;
+			transform-origin: left;
+			transform: rotateY(270deg) translate3d(0px, 0px, 0px);
+			background-color: var(--c2);
+		}
+
+		.table_top div:nth-of-type(4) {
+			width: 100%;
+			height: var(--t);
+			background-color: var(--c1);
+			transform: rotateX(270deg) translate3d(0px, calc(var(--t) * -1), var(--h));
+			transform-origin: top;
+		}
+
+		.table_leg {
+			position: absolute;
+			top: 0;
+			left: 0;
+			--w: var(--wwl);
+			--h: var(--hhl);
+			--t: var(--ttl);
+			--z: 0;
+			width: var(--w);
+			height: var(--h);
+			background-color: transparent;
+			transform-style: preserve-3d;
+			transform-origin: center;
+		}
+
+		.table_leg:nth-of-type(2) {
+			transform: translate3d(var(--inset), var(--inset), var(--z));
+		}
+
+		.table_leg:nth-of-type(3) {
+			transform: translate3d(var(--inset),calc(var(--th) - var(--inset) - var(--h)), var(--z));
+		}
+
+		.table_leg:nth-of-type(4) {
+			transform: translate3d(calc(var(--tw) - var(--inset) - var(--w)), calc(var(--th) - var(--inset) - var(--h)), var(--z));
+		}
+
+		.table_leg:nth-of-type(5) {
+			transform: translate3d(calc(var(--tw) - var(--inset) - var(--w)), var(--inset), var(--z));
+		}
+
+		.table_leg div {
+			position: absolute;
+			left: 0;
+			top: 0;
+		}
+
+		.table_leg div:nth-of-type(1) {
+			width: var(--w);
+			height: var(--h);
+			background-color: var(--c3);
+		}
+
+		.table_leg div:nth-of-type(2) {
+			width: var(--t);
+			height: var(--h);
+			background-color: var(--c2);
+			transform-origin: left;
+			transform: rotateY(270deg);
+		}
+
+		.table_leg div:nth-of-type(3) {
+			width: var(--w);
+			height: var(--t);
+			background-color: var(--c1);
+			transform-origin: top;
+			transform: rotateX(270deg) translate3d(0px, calc(-1 * var(--t)), var(--h));
+		}
+
+		
 	</style>
 	<body>
-		<div class="box"><div class="content"></div></div>
-		<div class="box"><div class="content"></div></div>
-		<div class="box"><div class="content"></div></div>
-		<div class="box"><div class="content"></div></div>
-		<div class="box"></div></div>
-		<div class="box"></div></div>
+		<div class="box">
+			<div class="content"></div>
+		</div>
+		<div class="box">
+			<div class="content"></div>
+		</div>
+		<div class="box">
+			<div class="content"></div>
+		</div>
+		<div class="box">
+			<div class="content"></div>
+		</div>
+		<div class="box"></div>
+		<div class="box"></div>
 		<div class="pdBox"></div>
 		<div class="sbox">
-			<div></div><div></div><div></div>
-			<div></div><div></div><div></div>
-			<div></div><div></div><div></div>
-					   <div></div>
+			<div></div>
+			<div></div>
+			<div></div>
+			<div></div>
+			<div></div>
+			<div></div>
+			<div></div>
+			<div></div>
+			<div></div>
+			<div></div>
 		</div>
 		<div class="btn1"></div>
 		<div class="btn2"></div>
@@ -305,12 +500,7 @@
 			</div>
 		</div>
 		<canvas id="cv" width=100></canvas>
-
-		<div id="log" class="log">
-			啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊
-			啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊
-		</div>
-
+		<div id="log" class="log">啊</div>
 		<div class="cube">
 			<div class="cube_side">1</div>
 			<div class="cube_side">2</div>
@@ -319,150 +509,180 @@
 			<div class="cube_side">5</div>
 			<div class="cube_side">6</div>
 		</div>
+		<div class="table_view">
+			<div class="table">
+				<div class="table_top">
+					<div></div>
+					<div>(ノಠ益ಠ)ノ彡┻━┻</div>
+					<div></div>
+					<div></div>
+				</div>
+				<div class="table_leg">
+					<div></div>
+					<div></div>
+					<div></div>
+				</div>
+				<div class="table_leg">
+					<div></div>
+					<div></div>
+					<div></div>
+				</div>
+				<div class="table_leg">
+					<div></div>
+					<div></div>
+					<div></div>
+				</div>
+				<div class="table_leg">
+					<div></div>
+					<div></div>
+					<div></div>
+				</div>
+			</div>
+		</div>
 	</body>
 	<script>
-		function rand_range(a, b){
-			return Math.random()*(b-a)+a;
+		function rand_range(a, b) {
+			return Math.random() * (b - a) + a;
 		}
-		const cHide="log_hide";
-		const log=document.getElementById("log");
+		const cHide = "log_hide";
+		const log = document.getElementById("log");
 		log.classList.add(cHide);
 		showLog();
-		function showLog(){
-			var s="啊".repeat(rand_range(1, 100));
-			var t=Math.max(Math.min(5, s.length/10+0.5), 2);
-			log.textContent=s;
+		function showLog() {
+			var s = "啊".repeat(rand_range(1, 100));
+			var t = Math.max(Math.min(5, s.length / 10 + 0.5), 2);
+			log.textContent = s;
 			log.classList.remove(cHide);
-			setTimeout(
-				()=>{					
-					hideLog();
-				},t*1000
-			);	
+			setTimeout(()=>{
+				hideLog();
+			}
+			, t * 1000);
 		}
-		function hideLog(){
-			var t=rand_range(0,3);
+		function hideLog() {
+			var t = rand_range(0, 3);
 			log.classList.add(cHide);
-			setTimeout(
-				()=>{					
-					showLog();
-				},t*1000
-			);
-		}		
-		
+			setTimeout(()=>{
+				showLog();
+			}
+			, t * 1000);
+		}
 	</script>
 	<script>
-		const cv=document.getElementById("cv");
-		const width=cv.clientWidth, height=cv.clientHeight;
-		cv.width=width;
-		cv.height=height;
-		
-		const ctx=cv.getContext("2d");
-		
-		const sc=.5;
-		var x=10, y=10;
-		
+		const cv = document.getElementById("cv");
+		const width = cv.clientWidth
+		  , height = cv.clientHeight;
+		cv.width = width;
+		cv.height = height;
+
+		const ctx = cv.getContext("2d");
+
+		const sc = .5;
+		var x = 10
+		  , y = 10;
+
 		AAA(0);
-		function AAA(i){
-			ctx.fillStyle="white";
+		function AAA(i) {
+			ctx.fillStyle = "white";
 			ctx.fillRect(0, 0, width, height);
-			ctx.strokeStyle="red";	
-			ctx.beginPath();				
+			ctx.strokeStyle = "red";
+			ctx.beginPath();
 			drawNum(ctx, x, y, sc, i);
 
 			ctx.stroke();
-			if(i<100)
+			if (i < 100)
 				setTimeout(()=>{
-					AAA(i+1);
-				}, 100);
+					AAA(i + 1);
+				}
+				, 100);
 		}
 
-		function drawNum(ctx, x, y, sc, num){
-			const dx=50*sc;
-			const s=String(num);
-			var xx=x;
-			for(let i=0; i<s.length; i++){
+		function drawNum(ctx, x, y, sc, num) {
+			const dx = 50 * sc;
+			const s = String(num);
+			var xx = x;
+			for (let i = 0; i < s.length; i++) {
 				eval(`draw${s[i]}(ctx, xx, y, sc)`)
-				xx+=dx;
+				xx += dx;
 			}
-			const w=dx*s.length;
-			y+=100*sc;
-			ctx.moveTo(x+w*0.3333, y);
-			ctx.lineTo(x+w*0.6667, y-2);
-			y+=5;
+			const w = dx * s.length;
+			y += 100 * sc;
+			ctx.moveTo(x + w * 0.3333, y);
+			ctx.lineTo(x + w * 0.6667, y - 2);
+			y += 5;
 			ctx.moveTo(x, y);
-			ctx.lineTo(x+w, y-2);
+			ctx.lineTo(x + w, y - 2);
 
 		}
 		//0
-		function draw0(ctx, x, y, sc){
-			ctx.moveTo(18.42*sc+x, 25.80*sc+y);		
-			ctx.bezierCurveTo(6.87*sc+x, 34.87*sc+y, 6.00*sc+x, 79.66*sc+y, 28.88*sc+x, 75.22*sc+y);
-			ctx.bezierCurveTo(46.70*sc+x, 71.76*sc+y, 46.15*sc+x, 7.23*sc+y, 19.44*sc+x, 22.74*sc+y);
-// 			ctx.stroke();
+		function draw0(ctx, x, y, sc) {
+			ctx.moveTo(18.42 * sc + x, 25.80 * sc + y);
+			ctx.bezierCurveTo(6.87 * sc + x, 34.87 * sc + y, 6.00 * sc + x, 79.66 * sc + y, 28.88 * sc + x, 75.22 * sc + y);
+			ctx.bezierCurveTo(46.70 * sc + x, 71.76 * sc + y, 46.15 * sc + x, 7.23 * sc + y, 19.44 * sc + x, 22.74 * sc + y);
+			// 			ctx.stroke();
 		}
 		//1
-		function draw1(ctx, x, y, sc){
-			ctx.moveTo(20.3*sc+x, 31.68*sc+y);
-			ctx.bezierCurveTo(35.87*sc+x, 0*sc+y, 25*sc+x, 0*sc+y, 23.35*sc+x, 91.05*sc+y);
-// 			ctx.stroke();
+		function draw1(ctx, x, y, sc) {
+			ctx.moveTo(20.3 * sc + x, 31.68 * sc + y);
+			ctx.bezierCurveTo(35.87 * sc + x, 0 * sc + y, 25 * sc + x, 0 * sc + y, 23.35 * sc + x, 91.05 * sc + y);
+			// 			ctx.stroke();
 		}
 		//2
-		function draw2(ctx, x, y, sc){
-			ctx.moveTo(11.19*sc+x, 29.98*sc+y);
-			ctx.bezierCurveTo(21.48*sc+x, -4.11*sc+y, 71.63*sc+x, 19.83*sc+y, 4.84*sc+x, 88.91*sc+y);
-			ctx.bezierCurveTo(13.66*sc+x, 88.82*sc+y, 35.72*sc+x, 84.21*sc+y, 43.24*sc+x, 87.11*sc+y);	
-// 			ctx.stroke();
+		function draw2(ctx, x, y, sc) {
+			ctx.moveTo(11.19 * sc + x, 29.98 * sc + y);
+			ctx.bezierCurveTo(21.48 * sc + x, -4.11 * sc + y, 71.63 * sc + x, 19.83 * sc + y, 4.84 * sc + x, 88.91 * sc + y);
+			ctx.bezierCurveTo(13.66 * sc + x, 88.82 * sc + y, 35.72 * sc + x, 84.21 * sc + y, 43.24 * sc + x, 87.11 * sc + y);
+			// 			ctx.stroke();
 		}
 		//3
-		function draw3(ctx, x, y, sc){
-			ctx.moveTo(13.40*sc+x, 23.36*sc+y);
-			ctx.bezierCurveTo(22.53*sc+x, 14.23*sc+y, 68.35*sc+x, 6.04*sc+y, 27.24*sc+x, 49.52*sc+y);
-			ctx.bezierCurveTo(58.66*sc+x, 44.72*sc+y, 42.60*sc+x, 106.37*sc+y, 7.86*sc+x, 83.63*sc+y);
-// 			ctx.stroke();
+		function draw3(ctx, x, y, sc) {
+			ctx.moveTo(13.40 * sc + x, 23.36 * sc + y);
+			ctx.bezierCurveTo(22.53 * sc + x, 14.23 * sc + y, 68.35 * sc + x, 6.04 * sc + y, 27.24 * sc + x, 49.52 * sc + y);
+			ctx.bezierCurveTo(58.66 * sc + x, 44.72 * sc + y, 42.60 * sc + x, 106.37 * sc + y, 7.86 * sc + x, 83.63 * sc + y);
+			// 			ctx.stroke();
 		}
 		//4
-		function draw4(ctx, x, y, sc){
-			ctx.moveTo(34.14*sc+x, 10.14*sc+y);
-			ctx.bezierCurveTo(3.66*sc+x, 73.83*sc+y, -20.29*sc+x, 72.74*sc+y, 47.21*sc+x, 54.78*sc+y);
-			ctx.moveTo(34.14*sc+x, 18.98*sc+y);
-			ctx.bezierCurveTo(34.64*sc+x, 23.96*sc+y, 29.10*sc+x, 72.67*sc+y,28.54*sc+x, 95.00*sc+y);
-// 			ctx.stroke();
+		function draw4(ctx, x, y, sc) {
+			ctx.moveTo(34.14 * sc + x, 10.14 * sc + y);
+			ctx.bezierCurveTo(3.66 * sc + x, 73.83 * sc + y, -20.29 * sc + x, 72.74 * sc + y, 47.21 * sc + x, 54.78 * sc + y);
+			ctx.moveTo(34.14 * sc + x, 18.98 * sc + y);
+			ctx.bezierCurveTo(34.64 * sc + x, 23.96 * sc + y, 29.10 * sc + x, 72.67 * sc + y, 28.54 * sc + x, 95.00 * sc + y);
+			// 			ctx.stroke();
 		}
 		//5
-		function draw5(ctx, x, y, sc){
-			ctx.moveTo(24.84*sc+x, 9.03*sc+y);
-			ctx.bezierCurveTo(-8.92*sc+x, 48.36*sc+y, 86.63*sc+x, 47.08*sc+y, 8.30*sc+x, 88.85*sc+y);
-			ctx.moveTo(13.99*sc+x, 23.44*sc+y);
-			ctx.bezierCurveTo(16.51*sc+x, 19.66*sc+y, 33.52*sc+x, 13.99*sc+y, 45.18*sc+x, 13.99*sc+y);
-// 			ctx.stroke();
+		function draw5(ctx, x, y, sc) {
+			ctx.moveTo(24.84 * sc + x, 9.03 * sc + y);
+			ctx.bezierCurveTo(-8.92 * sc + x, 48.36 * sc + y, 86.63 * sc + x, 47.08 * sc + y, 8.30 * sc + x, 88.85 * sc + y);
+			ctx.moveTo(13.99 * sc + x, 23.44 * sc + y);
+			ctx.bezierCurveTo(16.51 * sc + x, 19.66 * sc + y, 33.52 * sc + x, 13.99 * sc + y, 45.18 * sc + x, 13.99 * sc + y);
+			// 			ctx.stroke();
 		}
 		//6
-		function draw6(ctx, x, y, sc){
-			ctx.moveTo(31.95*sc+x, 7.32*sc+y);
-			ctx.bezierCurveTo(-11.02*sc+x, 60.94*sc+y, 17.71*sc+x, 113.42*sc+y, 37.21*sc+x, 72.20*sc+y);
-			ctx.bezierCurveTo(50.02*sc+x, 45.12*sc+y, 24.88*sc+x, 27.62*sc+y, 4.33*sc+x, 58.73*sc+y);
-// 			ctx.stroke();
+		function draw6(ctx, x, y, sc) {
+			ctx.moveTo(31.95 * sc + x, 7.32 * sc + y);
+			ctx.bezierCurveTo(-11.02 * sc + x, 60.94 * sc + y, 17.71 * sc + x, 113.42 * sc + y, 37.21 * sc + x, 72.20 * sc + y);
+			ctx.bezierCurveTo(50.02 * sc + x, 45.12 * sc + y, 24.88 * sc + x, 27.62 * sc + y, 4.33 * sc + x, 58.73 * sc + y);
+			// 			ctx.stroke();
 		}
 
 		//7		
-		function draw7(ctx, x, y, sc){
-			ctx.moveTo(5.25*sc+x, 20.80*sc+y);
-			ctx.bezierCurveTo(62.46*sc+x, 16.66*sc+y, 53.66*sc+x, -5.59*sc+y, 11.46*sc+x, 93.02*sc+y);
-// 			ctx.stroke();
+		function draw7(ctx, x, y, sc) {
+			ctx.moveTo(5.25 * sc + x, 20.80 * sc + y);
+			ctx.bezierCurveTo(62.46 * sc + x, 16.66 * sc + y, 53.66 * sc + x, -5.59 * sc + y, 11.46 * sc + x, 93.02 * sc + y);
+			// 			ctx.stroke();
 		}
 		//8
-		function draw8(ctx, x, y, sc){
-			ctx.moveTo(11.52*sc+x, 57.50*sc+y);
-			ctx.bezierCurveTo(87.32*sc+x, 0.66*sc+y, -5.30*sc+x, 1.20*sc+y, 22.04*sc+x, 41.10*sc+y);
-			ctx.bezierCurveTo(63.74*sc+x, 105.63*sc+y, -28.43*sc+x, 101.86*sc+y, 35.06*sc+x, 40.91*sc+y);
-// 			ctx.stroke();
+		function draw8(ctx, x, y, sc) {
+			ctx.moveTo(11.52 * sc + x, 57.50 * sc + y);
+			ctx.bezierCurveTo(87.32 * sc + x, 0.66 * sc + y, -5.30 * sc + x, 1.20 * sc + y, 22.04 * sc + x, 41.10 * sc + y);
+			ctx.bezierCurveTo(63.74 * sc + x, 105.63 * sc + y, -28.43 * sc + x, 101.86 * sc + y, 35.06 * sc + x, 40.91 * sc + y);
+			// 			ctx.stroke();
 		}
 		//9				
-		function draw9(ctx, x, y, sc){
-			ctx.moveTo(17.89*sc+x, 49.85*sc+y);
-			ctx.bezierCurveTo(79.51*sc+x, 3.26*sc+y, -8.15*sc+x, -6.63*sc+y, 23.39*sc+x, 41.78*sc+y);
-			ctx.bezierCurveTo(26.82*sc+x, 47.04*sc+y, 27.43*sc+x, 53.88*sc+y, 17.89*sc+x, 94.23*sc+y);
-// 			ctx.stroke();
+		function draw9(ctx, x, y, sc) {
+			ctx.moveTo(17.89 * sc + x, 49.85 * sc + y);
+			ctx.bezierCurveTo(79.51 * sc + x, 3.26 * sc + y, -8.15 * sc + x, -6.63 * sc + y, 23.39 * sc + x, 41.78 * sc + y);
+			ctx.bezierCurveTo(26.82 * sc + x, 47.04 * sc + y, 27.43 * sc + x, 53.88 * sc + y, 17.89 * sc + x, 94.23 * sc + y);
+			// 			ctx.stroke();
 		}
 	</script>
 </html>
