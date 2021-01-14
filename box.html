@@ -10,6 +10,7 @@
 			width: 100%;
 			height: 100%;
 			margin: 0;
+			background-color: #ecf0f3;
 		}
 
 		body {
@@ -168,6 +169,28 @@
 			transition: padding 1s;
 		}
 
+		.btn5 {
+			width: 100px;
+			height: 2em;
+			background-color: #ecf0f3;
+			border-radius: 1em;
+			box-shadow: inset 6px 6px 6px #cbced1, inset -6px -6px 6px white;
+		}
+
+		.btn6 {
+			width: 100px;
+			height: 2em;
+			background-color: #139aff;
+			border-radius: 1em;
+			box-shadow: inset 6px 6px 6px white, inset -6px -6px 6px #cbced1;
+			transition: box-shadow 1s cubic-bezier(0.97, 0.08, 1, 0.04);
+		}
+
+		.btn6:active {
+			box-shadow: inset 6px 6px 6px #cbced1, inset -6px -6px 6px white;
+			transition: 0.3s;
+		}
+
 		.rbtn {
 			width: 100px;
 			height: 100px;
@@ -194,6 +217,159 @@
 		.rbtn:active {
 			transform: rotateZ(120deg);
 			transition: transform 1s cubic-bezier(0.93, 0.01, 1, 1);
+		}
+
+		.anim_dir {
+			width: 100px;
+		}
+
+		.anim_dir>div {
+			height: 5px;
+			width: 100%;
+			background-color: blue;
+			margin: 2px;
+		}
+
+		.anim_dir>div:nth-of-type(1) {
+			animation: anim_dir 2s infinite normal;
+		}
+
+		.anim_dir>div:nth-of-type(2) {
+			animation: anim_dir 2s infinite reverse;
+		}
+
+		.anim_dir>div:nth-of-type(3) {
+			animation: anim_dir 2s infinite alternate;
+		}
+
+		.anim_dir>div:nth-of-type(4) {
+			animation: anim_dir 2s infinite alternate-reverse;
+		}
+
+		.anim_dir>div:nth-of-type(5) {
+			animation: anim_dir 5s infinite steps(5);
+		}
+
+		.anim_dir>div:nth-of-type(6) {
+			animation: anim_dir 5s infinite steps(5, start);
+		}
+
+		.anim_dir>div:nth-of-type(7) {
+			animation: anim_dir 5s infinite steps(5, end);
+		}
+
+		.anim_dir>div:nth-of-type(8) {
+			animation: anim_dir 5s infinite step-start;
+		}
+
+		@keyframes anim_dir {
+			0% {
+				width: 0;
+			}
+
+			100% {
+				width: 100%;
+			}
+		}
+
+		.anim_steps {
+			--a:"1"; --b:"2"; /* 			height:5px; */
+			background-color: red;
+			/*steps会对每个属性每个keyframe区间进行切分*/
+			animation: anim_steps 10s steps(5) infinite;
+		}
+
+		.anim_steps::before {
+			content: var(--a);
+		}
+
+		.anim_steps::after {
+			content: var(--b);
+		}
+
+		@keyframes anim_steps {
+			0% {
+				--a:"1"; --b:"2"; width: 0;
+				height: 5px;
+			}
+
+			10% {
+				--a:"2"; --b:"3"; width: 10px;
+				/* 				height:10px; */
+			}
+
+			20% {
+				--a:"3"; --b:"4"; /* 				width:20px; */
+				/* 				height:15px; */
+			}
+
+			30% {
+				--a:"4"; --b:"5"; /* 				width:30px; */
+				/* 				height:20px; */
+			}
+
+			40% {
+				--a:"5"; --b:"6"; /* 				width:40px; */
+				/* 				height:25px; */
+			}
+
+			50% {
+				--a:"6"; --b:"7"; /* 				width:50px; */
+				/* 				height:30px; */
+			}
+
+			60% {
+				--a:"7"; --b:"8"; /* 				width:60px; */
+				/* 				height:35px; */
+			}
+
+			70% {
+				--a:"8"; --b:"9"; /* 				width:70px; */
+				/* 				height:40px; */
+			}
+
+			80% {
+				--a:"9"; --b:"0"; /* 				width:80px; */
+				/* 				height:45px; */
+			}
+
+			90% {
+				--a:"0"; --b:"1"; /* 				width:90px; */
+				height: 50px;
+			}
+
+			100% {
+				--a:"1"; --b:"2"; width: 100px;
+				height: 55px;
+			}
+		}
+
+		.anim_steps2 {
+			--a:"0"; position: fixed;
+			right: 10px;
+			bottom: 20px;
+			height: 10px;
+			background-color: blue;
+			/*对于不适用动画的属性会在keyframe区间中间进行跳变*/
+			animation: anim_steps2 10s steps(60, end) infinite;
+		}
+
+		.anim_steps2::before {
+			content: var(--a);
+		}
+
+		@keyframes anim_steps2 {
+			0% {
+				--a:"0"; width: 0px;
+			}
+
+			50% {
+				--a:"1"; width: 100px;
+			}
+
+			100%{
+				--a:"2";
+			}
 		}
 
 		/*标签*/
@@ -257,88 +433,127 @@
 		}
 
 		/*立方*/
-		.cube {
-			height: 100px;
-			width: 100px;
-			position: relative;
-			transform: rotateX(-29deg) rotateY(-62deg) scale3d(0.5, 0.5, 0.5);
+		.cube_view {
 			transform-style: preserve-3d;
-			--bkcolor: #6b869580; --fkcolor: #45464d; transition: transform 2s;
-		}
-
-		.cube:active {
-			transform: rotateX(-29deg) rotateY(298deg) scale3d(0.5, 0.5, 0.5);
-			transition: transform 1s;
-		}
-
-		.cube_side {
-			position: absolute;
-			left: 0;
-			top: 0;
-			background-color: var(--bkcolor);
+			transform: rotateX(47deg) rotateZ(24deg);
+			position: relative;
+			width: 200px;
+			height: 200px;
 			display: flex;
 			justify-content: center;
 			align-items: center;
-			color: var(--fkcolor);
-			font-size: 40px;
-			height: 100%;
-			width: 100%;
+		}
+
+		.cube {
+			--sx: 101px; --sy: 88px; --sz: 59px; --bkcolor: #6b869580; --fkcolor: #45464d; height: var(--sy);
+			width: var(--sx);
+			font-size: 30px;
+			/* position: absolute; */
+			/* left: 0; */
+			/* top: 0; */
+			transform: rotateZ(0deg);
 			transform-style: preserve-3d;
+			transform-origin: top left;
+			transition: transform 2s;
+		}
+
+		.cube:active {
+			transform: rotateX(-19deg) rotateY(236deg) rotateZ(112deg) scale3d(0.5, 0.5, 0.5);
+			transition: transform 1s;
+		}
+
+		.cube>div {
+			position: absolute;
+			background-color: var(--bkcolor);
+			color: var(--fkcolor);
+			display: flex;
+			justify-content: center;
+			align-items: center;
 			box-shadow: inset 0 0 10px white;
 		}
 
-		.cube_side:nth-of-type(1) {
-			transform: translate3d(0,0,50px);
+		.cube>div:nth-of-type(1) {
+			width: var(--sx);
+			height: var(--sy);
+			left: 0;
+			top: 0;
+			transform: translate3d(0,0,var(--sz));
 		}
 
-		.cube_side:nth-of-type(2) {
-			transform: rotateX(90deg) translate3d(0,0,50px);
+		.cube>div:nth-of-type(2) {
+			width: var(--sz);
+			height: var(--sy);
+			right: 0;
+			top: 0;
+			transform-origin: right;
+			transform: rotateY(90deg);
 		}
 
-		.cube_side:nth-of-type(3) {
-			transform: rotateY(180deg) translate3d(0,0,50px);
+		.cube>div:nth-of-type(3) {
+			width: var(--sx);
+			height: var(--sy);
+			left: 0;
+			top: 0;
+			transform-origin: center;
+			transform: rotateY(180deg);
 		}
 
-		.cube_side:nth-of-type(4) {
-			transform: rotateX(270deg) translate3d(0,0,50px);
+		.cube>div:nth-of-type(4) {
+			width: var(--sz);
+			height: var(--sy);
+			left: 0;
+			top: 0;
+			transform-origin: left;
+			transform: rotateY(270deg);
 		}
 
-		.cube_side:nth-of-type(5) {
-			transform: rotateY(90deg) translate3d(0,0,50px);
+		.cube>div:nth-of-type(5) {
+			width: var(--sx);
+			height: var(--sz);
+			left: 0;
+			bottom: 0;
+			transform-origin: bottom;
+			transform: rotateX(270deg);
 		}
 
-		.cube_side:nth-of-type(6) {
-			transform: rotateY(270deg) translate3d(0,0,50px);
+		.cube>div:nth-of-type(6) {
+			width: var(--sx);
+			height: var(--sz);
+			left: 0;
+			top: 0;
+			transform-origin: top;
+			transform: rotateX(90deg);
+		}
+
+		.cube:nth-of-type(2) {
+			--sx: 32px; --sy: 32px; --sz: 32px; font-size: 12px;
 		}
 
 		/*table*/
-		.table_view{
-			margin-left: 50px;
-			margin-top: 50px;
+		.table_view {
 			transform-style: preserve-3d;
 			transform: rotateX(69deg) rotateZ(335deg) rotateY(0deg);
 			/* perspective: 1000px; */
 			perspective-origin: center;
+			width: 180px;
+			height: 80px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			background-color: #dcdcdc87;
 		}
+
 		.table {
-			--tw: 150px;
-			--th: 50px;
-			--tt: 50px;
-			--ttt: 10px;
-			--ttl: calc(var(--tt) - var(--ttt));
-			--wwl: 10px;
-			--hhl: 10px;
-			--inset: 1px;
-			--c0: darkorange;
-			--c1: chocolate;
-			--c2: brown;
-			--c3: maroon;
-			position: relative;
+			--tw: 150px; --th: 50px; --tt: 50px; --ttt: 10px; --ttl: calc(var(--tt) - var(--ttt)); --wwl: 10px; --hhl: 10px; --inset: 1px; --c0: darkorange; --c1: chocolate; --c2: brown; --c3: maroon; position: relative;
+			width: var(--tw);
+			height: var(--th);
 			transform-style: preserve-3d;
 			transform: rotateX(0deg);
+			transform-origin: top;
 			transition: 3s cubic-bezier(0.69, 0.06, 1, 0.75) 1s;
 		}
-		.table:active{
+
+		.table:active {
 			/* --c3: chocolate; */
 			/* --c1: darkorange; */
 			transform: rotateX(88deg);
@@ -349,10 +564,7 @@
 			position: absolute;
 			top: 0;
 			left: 0;
-			--w: var(--tw);
-			--h: var(--th);
-			--t: var(--ttt);
-			width: var(--w);
+			--w: var(--tw); --h: var(--th); --t: var(--ttt); width: var(--w);
 			height: var(--h);
 			background-color: transparent;
 			transform: translateZ(var(--ttl));
@@ -360,20 +572,20 @@
 			transform-origin: center;
 		}
 
-		.table_top div {
+		.table_top>div {
 			position: absolute;
 			left: 0;
 			top: 0;
 		}
 
-		.table_top div:nth-of-type(1) {
+		.table_top>div:nth-of-type(1) {
 			width: 100%;
 			height: 100%;
 			background-color: var(--c0);
 			transform: translateZ(var(--t));
 		}
 
-		.table_top div:nth-of-type(2) {
+		.table_top>div:nth-of-type(2) {
 			width: 100%;
 			height: 100%;
 			background-color: var(--c3);
@@ -384,7 +596,7 @@
 			color: burlywood;
 		}
 
-		.table_top div:nth-of-type(3) {
+		.table_top>div:nth-of-type(3) {
 			width: var(--t);
 			height: 100%;
 			transform-origin: left;
@@ -392,7 +604,7 @@
 			background-color: var(--c2);
 		}
 
-		.table_top div:nth-of-type(4) {
+		.table_top>div:nth-of-type(4) {
 			width: 100%;
 			height: var(--t);
 			background-color: var(--c1);
@@ -404,11 +616,7 @@
 			position: absolute;
 			top: 0;
 			left: 0;
-			--w: var(--wwl);
-			--h: var(--hhl);
-			--t: var(--ttl);
-			--z: 0;
-			width: var(--w);
+			--w: var(--wwl); --h: var(--hhl); --t: var(--ttl); --z: 0; width: var(--w);
 			height: var(--h);
 			background-color: transparent;
 			transform-style: preserve-3d;
@@ -431,19 +639,19 @@
 			transform: translate3d(calc(var(--tw) - var(--inset) - var(--w)), var(--inset), var(--z));
 		}
 
-		.table_leg div {
+		.table_leg>div {
 			position: absolute;
 			left: 0;
 			top: 0;
 		}
 
-		.table_leg div:nth-of-type(1) {
+		.table_leg>div:nth-of-type(1) {
 			width: var(--w);
 			height: var(--h);
 			background-color: var(--c3);
 		}
 
-		.table_leg div:nth-of-type(2) {
+		.table_leg>div:nth-of-type(2) {
 			width: var(--t);
 			height: var(--h);
 			background-color: var(--c2);
@@ -451,7 +659,7 @@
 			transform: rotateY(270deg);
 		}
 
-		.table_leg div:nth-of-type(3) {
+		.table_leg>div:nth-of-type(3) {
 			width: var(--w);
 			height: var(--t);
 			background-color: var(--c1);
@@ -459,7 +667,614 @@
 			transform: rotateX(270deg) translate3d(0px, calc(-1 * var(--t)), var(--h));
 		}
 
+		.ground {
+			--path: 'M 49.95 33.71 C 0 0, 0 135, 121.51 52.97 C 200 0, 200 135, 49.95  33.71'; width: 200px;
+			height: 100px;
+			background-color: gray;
+			position: relative;
+			transform: rotateX(69deg) rotateZ(335deg) rotateY(0deg);
+			transform-style: preserve-3d;
+		}
+
+		/*car*/
+		.car_head {
+			position: absolute;
+			top: 0;
+			left: 0;
+			transform-style: preserve-3d;
+			offset-path: path(var(--path));
+			/* offset-distance: 51%; */
+			transform-origin: center center;
+			animation: car_anim 10s -.5s infinite linear;
+			animation-fill-mode: backwards;
+		}
+
+		.car_head>.cube:nth-of-type(1) {
+			--sx: 13px;--sy: 12px;--sz: 10px;font-size: 0;
+		}
+
+		.car_body {
+			position: absolute;
+			top: 0;
+			left: 0;
+			transform-style: preserve-3d;
+			offset-path: path(var(--path));
+			/* offset-distance: 46%; */
+			transform-origin: 80% center;
+			animation: car_anim 10s .0s infinite linear;
+		}
+
+		.car_body>.cube:nth-of-type(1) {
+			--sx: 40px;--sy: 15px;--sz: 13px;font-size: 0;
+		}
+
+		@keyframes car_anim {
+			0% {
+				offset-distance: 0%;
+			}
+
+			100% {
+				offset-distance: 100%;
+			}
+		}
+
+		.glass {
+			width: 100px;
+			height: 100px;
+			position: fixed;
+			left: 486px;
+			top: 112px;
+			backdrop-filter: blur(1px);
+			background-color: #daeeff14;
+			border: 2px solid #fcfeff6b;
+			border-radius: 50%;
+		}
+
+		/*clock*/
+		.clock {
+			--sc: 1;
+			--dl: -86399s;
+			--bk: brown;
+			display: flex;
+			font-size: 24px;
+			height:1.4em;
+			padding: .1em;
+			background-color: var(--bk);
+			transform-style: preserve-3d;
+			transform: rotateY(-30deg);
+		}
+
 		
+
+		/*时10*/
+		.clock>.tick:nth-of-type(1)>.tick_front {
+			animation-name: tick_flip_86400;
+			animation-iteration-count: infinite;
+			animation-timing-function: linear;
+			animation-duration: calc(var(--sc) * 86400s);			
+			animation-delay: calc(var(--dl) * var(--sc));
+		}
+
+		.clock>.tick:nth-of-type(1)>.tick_back::before, .clock>.tick:nth-of-type(1)>.tick_front::after {
+			animation-name: tick_before_3;
+			animation-timing-function: steps(24, end) ;
+			animation-iteration-count: infinite;
+			animation-duration: calc(var(--sc) * 86400s);
+			animation-delay: calc((1800s + var(--dl)) * var(--sc));
+		}
+
+		.clock>.tick:nth-of-type(1)>.tick_back::after, .clock>.tick:nth-of-type(1)>.tick_front::before {
+			animation-name: tick_back_3;
+			animation-timing-function: steps(24, end) ;
+			animation-iteration-count: infinite;
+			animation-duration: calc(var(--sc) * 86400s);
+			animation-delay: calc((1800s + var(--dl)) * var(--sc));
+		}
+
+		/*时1*/
+		.clock>.tick:nth-of-type(2)>.tick_front {
+			animation-name: tick_flip_3600;
+			animation-iteration-count: infinite;
+			animation-timing-function: linear;
+			animation-duration: calc(var(--sc) * 3600s);
+			animation-delay: calc(var(--dl) * var(--sc));
+		}
+
+		.clock>.tick:nth-of-type(2)>.tick_back::before, .clock>.tick:nth-of-type(2)>.tick_front::after {
+			animation-name: tick_before_24;
+			animation-timing-function: steps(24, end) ;
+			animation-iteration-count: infinite;
+			animation-duration: calc(var(--sc) * 86400s);
+			animation-delay: calc((1800s + var(--dl)) * var(--sc));
+		}
+
+		.clock>.tick:nth-of-type(2)>.tick_back::after, .clock>.tick:nth-of-type(2)>.tick_front::before {
+			animation-name: tick_back_24;
+			animation-timing-function: steps(24, end) ;
+			animation-iteration-count: infinite;
+			animation-duration: calc(var(--sc) * 86400s);
+			animation-delay: calc((1800s + var(--dl)) * var(--sc));
+		}
+
+		/*分10*/
+		.clock>.tick:nth-of-type(3)>.tick_front {
+			animation-name: tick_flip_600;
+			animation-iteration-count: infinite;
+			animation-timing-function: linear;
+			animation-duration: calc(var(--sc) * 600s);
+			animation-delay: calc(var(--dl) * var(--sc));
+		}
+
+		.clock>.tick:nth-of-type(3)>.tick_back::before, .clock>.tick:nth-of-type(3)>.tick_front::after {
+			animation-name: tick_before_6;
+			animation-timing-function: steps(6, end) ;
+			animation-iteration-count: infinite;
+			animation-duration: calc(var(--sc) * 3600s);			
+			animation-delay: calc((300s + var(--dl)) * var(--sc));
+		}
+
+		.clock>.tick:nth-of-type(3)>.tick_back::after, .clock>.tick:nth-of-type(3)>.tick_front::before {
+			animation-name: tick_back_6;
+			animation-timing-function: steps(6, end) ;
+			animation-iteration-count: infinite;
+			animation-duration: calc(var(--sc) * 3600s);			
+			animation-delay: calc((300s + var(--dl)) * var(--sc));
+		}
+
+		/*分1*/
+		.clock>.tick:nth-of-type(4)>.tick_front {
+			animation-name: tick_flip_60;
+			animation-iteration-count: infinite;
+			animation-timing-function: linear;
+			animation-duration: calc(var(--sc) * 60s);
+			animation-delay: calc(var(--dl) * var(--sc));
+		}
+
+		.clock>.tick:nth-of-type(4)>.tick_back::before, .clock>.tick:nth-of-type(4)>.tick_front::after {
+			animation-name: tick_before_10;
+			animation-timing-function: steps(10, end) ;
+			animation-iteration-count: infinite;
+			animation-duration: calc(var(--sc) * 600s);			
+			animation-delay: calc((30s + var(--dl)) * var(--sc));
+		}
+
+		.clock>.tick:nth-of-type(4)>.tick_back::after, .clock>.tick:nth-of-type(4)>.tick_front::before {
+			animation-name: tick_back_10;
+			animation-timing-function: steps(10, end) ;
+			animation-iteration-count: infinite;
+			animation-duration: calc(var(--sc) * 600s);			
+			animation-delay: calc((30s + var(--dl)) * var(--sc));
+		}
+
+		/*秒10*/
+		.clock>.tick:nth-of-type(5)>.tick_front {
+			animation-name: tick_flip_10;
+			animation-iteration-count: infinite;
+			animation-timing-function: linear;
+			animation-duration: calc(var(--sc) * 10s);
+			animation-delay: calc(var(--dl) * var(--sc));
+		}
+
+		.clock>.tick:nth-of-type(5)>.tick_back::before, .clock>.tick:nth-of-type(5)>.tick_front::after {
+			animation-name: tick_before_6;
+			animation-timing-function: steps(6, end) ;
+			animation-iteration-count: infinite;
+			animation-duration: calc(var(--sc) * 60s);
+			animation-delay: calc((5s + var(--dl)) * var(--sc));
+		}
+
+		.clock>.tick:nth-of-type(5)>.tick_back::after, .clock>.tick:nth-of-type(5)>.tick_front::before {
+			animation-name: tick_back_6;
+			animation-timing-function: steps(6, end) ;
+			animation-iteration-count: infinite;
+			animation-duration: calc(var(--sc) * 60s);
+			animation-delay: calc((5s + var(--dl)) * var(--sc));
+		}
+
+		/*秒1*/
+		.clock>.tick:nth-of-type(6)>.tick_front {
+			animation-name: tick_flip_1;
+			animation-iteration-count: infinite;
+			animation-timing-function: linear;
+			animation-duration: calc(var(--sc) * 1s);
+			animation-delay: calc(var(--dl) * var(--sc));
+		}
+
+		.clock>.tick:nth-of-type(6)>.tick_back::before, .clock>.tick:nth-of-type(6)>.tick_front::after {
+			animation-name: tick_before_10;
+			animation-timing-function: steps(10, end) ;
+			animation-iteration-count: infinite;
+			animation-duration: calc(var(--sc) * 10s);
+			animation-delay: calc((.5s + var(--dl)) * var(--sc));
+		}
+
+		.clock>.tick:nth-of-type(6)>.tick_back::after, .clock>.tick:nth-of-type(6)>.tick_front::before {
+			animation-name: tick_back_10;
+			animation-timing-function: steps(10, end) ;
+			animation-iteration-count: infinite;
+			animation-duration: calc(var(--sc) * 10s);
+			animation-delay: calc((.5s + var(--dl)) * var(--sc));
+		}
+
+		.tick {
+			--bk_color:black;
+			--ft_color:white;
+			--bd_radius:.2em;			
+			--path_u:polygon(0 0, 100% 0, 100% 50%, 0 50%);
+			--path_d:polygon(0 50%, 100% 50%, 100% 100%, 0 100%);
+			
+			position: relative;
+			height: 100%;
+			width: .9em;
+			margin: 1px;
+			transform-style: preserve-3d;
+			transform-origin: center;
+			/* 			transform: rotateY(-30deg); */
+		}
+
+		.clock>p{
+			height: 100%;
+			margin: 0;
+			background-color: var(--bk);
+			color: white;
+		}
+
+		.tick_back,.tick_front {
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			left: 0;
+			top: 0;
+		}
+
+		.tick_back::before,.tick_back::after,.tick_front::before,.tick_front::after {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			width: 100%;
+			height: 100%;
+			border-radius: 0.2em;
+			position: absolute;
+			background-color: black;
+			color: white;
+		}
+
+		.tick_back::before {
+			content: "1";
+			clip-path: var(--path_u);
+		}
+
+		.tick_back::after {
+			content: "0";
+			clip-path: var(--path_d);
+		}
+
+		.tick_front {
+			transform-style: preserve-3d;
+			transform-origin: center;
+			/* transform: rotateX(-71deg); */
+		}
+
+		.tick_front::before {/* background-color:red; */content: "0";clip-path: var(--path_u);transform-origin: center;transform: translateZ(.01px);}
+
+		.tick_front::after {/* background-color:blue; */content: "1";clip-path: var(--path_d);transform-origin: center;transform: rotateX(180deg) translateZ(.01px);}
+
+		@keyframes tick_before_10 {
+			0% {content: "1";}
+			10% {content: "2";}
+			20% {content: "3";}
+			30% {content: "4";}
+			40% {content: "5";}
+			50% {content: "6";}
+			60% {content: "7";}
+			70% {content: "8";}
+			80% {content: "9";}
+			90% {content: "0";}
+			100% {content: "1";}
+		}
+
+		@keyframes tick_back_10 {
+			0% {content: "0";}
+			10% {content: "1";}
+			20% {content: "2";}
+			30% {content: "3";}
+			40% {content: "4";}
+			50% {content: "5";}
+			60% {content: "6";}
+			70% {content: "7";}
+			80% {content: "8";}
+			90% {content: "9";}
+			100% {content: "0";}
+		}
+
+		@keyframes tick_flip_1 {
+			0%,80% {
+				transform: rotateX(0deg);
+			}
+			100% {
+				transform: rotateX(-180deg);
+			}
+		}
+
+		@keyframes tick_flip_10 {
+			0%,98% {
+				transform: rotateX(0deg);
+			}
+			100% {
+				transform: rotateX(-180deg);
+			}
+		}
+
+		@keyframes tick_flip_60 {
+			0%,99.666666667% {
+				transform: rotateX(0deg);
+			}
+			100% {
+				transform: rotateX(-180deg);
+			}
+		}
+
+		@keyframes tick_flip_600 {
+			0%,99.966666667% {
+				transform: rotateX(0deg);
+			}
+			100% {
+				transform: rotateX(-180deg);
+			}
+		}
+
+		@keyframes tick_flip_3600 {
+			0%,99.994444444% {
+				transform: rotateX(0deg);
+			}
+			100% {
+				transform: rotateX(-180deg);
+			}
+		}
+
+		@keyframes tick_flip_86400 {
+			0%,41.666438%{
+				transform: rotateX(0deg);
+			}41.666666666%{
+				transform: rotateX(-180deg);
+			}41.666666667%,83.333105%{
+				transform: rotateX(0deg);
+			}83.333333333%{
+				transform: rotateX(-180deg);
+			}83.333333334%,99.9997685%{
+				transform: rotateX(0deg);
+			}100%{
+				transform: rotateX(-180deg);
+			}			
+		}
+
+		@keyframes tick_before_6 {
+			0% {content: "1";}
+			16.666666667% {content: "2";}
+			33.333333333% {content: "3";}
+			50% {content: "4";}
+			66.666666667% {content: "5";}
+			83.333333333% {content: "0";}
+			100% {content: "1";}
+		}
+
+		@keyframes tick_back_6 {
+			0% {content: "0";}
+			16.666666667% {content: "1";}
+			33.333333333% {content: "2";}
+			50% {content: "3";}
+			66.666666667% {content: "4";}
+			83.333333333% {content: "5";}
+			100% {content: "0";}
+		}
+
+		@keyframes tick_before_3 {
+			0% {content: "1";}
+			4.166666667% {content: "1";}
+			8.333333333% {content: "1";}
+			12.5% {content: "1";}
+			16.666666667% {content: "1";}
+			20.833333333% {content: "1";}
+			25% {content: "1";}
+			29.166666667% {content: "1";}
+			33.333333333% {content: "1";}
+			37.5% {content: "1";}
+			41.666666667% {content: "2";}
+			45.833333333% {content: "2";}
+			50% {content: "2";}
+			54.166666667% {content: "2";}
+			58.333333333% {content: "2";}
+			62.5% {content: "2";}
+			66.666666667% {content: "2";}
+			70.833333333% {content: "2";}
+			75% {content: "2";}
+			79.166666667% {content: "2";}
+			83.333333333% {content: "0";}
+			87.5% {content: "0";}
+			91.666666667% {content: "0";}
+			95.833333333% {content: "0";}
+			100% {content: "1";}
+		}
+
+		@keyframes tick_back_3 {
+			0% {content: "0";}
+			4.166666667% {content: "0";}
+			8.333333333% {content: "0";}
+			12.5% {content: "0";}
+			16.666666667% {content: "0";}
+			20.833333333% {content: "0";}
+			25% {content: "0";}
+			29.166666667% {content: "0";}
+			33.333333333% {content: "0";}
+			37.5% {content: "0";}
+			41.666666667% {content: "1";}
+			45.833333333% {content: "1";}
+			50% {content: "1";}
+			54.166666667% {content: "1";}
+			58.333333333% {content: "1";}
+			62.5% {content: "1";}
+			66.666666667% {content: "1";}
+			70.833333333% {content: "1";}
+			75% {content: "1";}
+			79.166666667% {content: "1";}
+			83.333333333% {content: "2";}
+			87.5% {content: "2";}
+			91.666666667% {content: "2";}
+			95.833333333% {content: "2";}
+			100% {content: "0";}
+		}
+
+		@keyframes tick_before_24 {
+			0% {content: "1";}
+			4.166666667% {content: "2";}
+			8.333333333% {content: "3";}
+			12.5% {content: "4";}
+			16.666666667% {content: "5";}
+			20.833333333% {content: "6";}
+			25% {content: "7";}
+			29.166666667% {content: "8";}
+			33.333333333% {content: "9";}
+			37.5% {content: "0";}
+			41.666666667% {content: "1";}
+			45.833333333% {content: "2";}
+			50% {content: "3";}
+			54.166666667% {content: "4";}
+			58.333333333% {content: "5";}
+			62.5% {content: "6";}
+			66.666666667% {content: "7";}
+			70.833333333% {content: "8";}
+			75% {content: "9";}
+			79.166666667% {content: "0";}
+			83.333333333% {content: "1";}
+			87.5% {content: "2";}
+			91.666666667% {content: "3";}
+			95.833333333% {content: "0";}
+			100% {content: "1";}
+		}
+
+		@keyframes tick_back_24 {
+			0% {content: "0";}
+			4.166666667% {content: "1";}
+			8.333333333% {content: "2";}
+			12.5% {content: "3";}
+			16.666666667% {content: "4";}
+			20.833333333% {content: "5";}
+			25% {content: "6";}
+			29.166666667% {content: "7";}
+			33.333333333% {content: "8";}
+			37.5% {content: "9";}
+			41.666666667% {content: "0";}
+			45.833333333% {content: "1";}
+			50% {content: "2";}
+			54.166666667% {content: "3";}
+			58.333333333% {content: "4";}
+			62.5% {content: "5";}
+			66.666666667% {content: "6";}
+			70.833333333% {content: "7";}
+			75% {content: "8";}
+			79.166666667% {content: "9";}
+			83.333333333% {content: "0";}
+			87.5% {content: "1";}
+			91.666666667% {content: "2";}
+			95.833333333% {content: "3";}
+			100% {content: "0";}
+		}
+
+
+		.tick2 {
+			--bk_color:black; --ft_color:white; --bd_radius:.2em; --path_u:polygon(0 0, 100% 0, 100% 50%, 0 50%); --path_d:polygon(0 50%, 100% 50%, 100% 100%, 0 100%); font-size: 24px;
+			--vn:"1"; --vc:"0"; position: relative;
+			height: 1.4em;
+			width: 1em;
+			transform-style: preserve-3d;
+			transform-origin: center;
+			transform: rotateY(-30deg);
+			animation:tick2 10s steps(10, end) infinite;
+		}
+
+		.tick2_back,.tick2_front {
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			left: 0;
+			top: 0;
+		}
+
+		.tick2_back::before,.tick2_back::after,.tick2_front::before,.tick2_front::after {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			width: 100%;
+			height: 100%;
+			border-radius: 0.2em;
+			position: absolute;
+			background-color: black;
+			color: white;
+		}
+
+		.tick2_back::before {
+			content: var(--vn);
+			clip-path: var(--path_u);
+		}
+
+		.tick2_back::after {
+			content: var(--vc);
+			clip-path: var(--path_d);
+		}
+
+		.tick2_front {
+			transform-style: preserve-3d;
+			transform-origin: center;
+			transform: rotateX(0deg);
+			animation: tick2_front 1s infinite;
+		}
+
+		.tick2_front::before {
+			background-color: red;
+			content: var(--vc);
+			clip-path: var(--path_u);
+			transform-origin: center;
+			transform: translateZ(1px);			
+		}
+
+		.tick2_front::after {
+/* 			background-color: blue; */
+			content: var(--vn);
+			clip-path: var(--path_d);
+			transform-origin: center;
+			transform: rotateX(180deg) translateZ(1px);
+		}
+		@keyframes tick2_front{
+			0%,80%{
+				transform:rotateX(0deg);
+			}
+			100%{
+				transform:rotateX(180deg);
+			}
+		}
+		@keyframes tick2 {
+			5%{
+				--vn:"1"; --vc:"0";				
+			}15%{
+				--vn:"2"; --vc:"1";				
+			}25%{
+				--vn:"3"; --vc:"2";				
+			}35%{
+				--vn:"4"; --vc:"3";				
+			}45%{
+				--vn:"5"; --vc:"4";				
+			}55%{
+				--vn:"6"; --vc:"5";				
+			}65%{
+				--vn:"7"; --vc:"6";				
+			}75%{
+				--vn:"8"; --vc:"7";				
+			}85%{
+				--vn:"9"; --vc:"8";				
+			}95%{
+				--vn:"0"; --vc:"9";				
+			}
+		}
 	</style>
 	<body>
 		<div class="box">
@@ -494,6 +1309,8 @@
 		<div class="btn3"></div>
 		<div class="btn4"></div>
 		<div class="rbtn"></div>
+		<div class="btn5"></div>
+		<div class="btn6"></div>
 		<div class="mark">
 			<div class="mark_bk">
 				<div class="mark_tx">标签</div>
@@ -501,13 +1318,23 @@
 		</div>
 		<canvas id="cv" width=100></canvas>
 		<div id="log" class="log">啊</div>
-		<div class="cube">
-			<div class="cube_side">1</div>
-			<div class="cube_side">2</div>
-			<div class="cube_side">3</div>
-			<div class="cube_side">4</div>
-			<div class="cube_side">5</div>
-			<div class="cube_side">6</div>
+		<div class="cube_view">
+			<div class="cube">
+				<div>1</div>
+				<div>2</div>
+				<div>3</div>
+				<div>4</div>
+				<div>5</div>
+				<div>6</div>
+			</div>
+			<div class="cube">
+				<div>1</div>
+				<div>2</div>
+				<div>3</div>
+				<div>4</div>
+				<div>5</div>
+				<div>6</div>
+			</div>
 		</div>
 		<div class="table_view">
 			<div class="table">
@@ -539,6 +1366,76 @@
 				</div>
 			</div>
 		</div>
+		<div class="ground">
+			<svg width=200 height=100 style="position:absolute;left:0;top:0;">
+				<path d='M 49.95 33.71 C 0 0, 0 135, 121.51 52.97 C 200 0, 200 135, 49.95  33.71' stroke="#fff" stroke-width="2" stroke-dasharray="10, 5" fill="none"/>
+			</svg>
+			<div class="car_head">
+				<div class="cube">
+					<div>1</div>
+					<div>2</div>
+					<div>3</div>
+					<div>4</div>
+					<div>5</div>
+					<div>6</div>
+				</div>
+			</div>
+			<div class="car_body">
+				<div class="cube">
+					<div>1</div>
+					<div>2</div>
+					<div>3</div>
+					<div>4</div>
+					<div>5</div>
+					<div>6</div>
+				</div>
+			</div>
+		</div>
+		<div class="glass"></div>
+		<div class="anim_dir">
+			<div></div>
+			<div></div>
+			<div></div>
+			<div></div>
+			<div></div>
+			<div></div>
+			<div></div>
+			<div></div>
+		</div>
+		<div id="clock" class="clock">
+			<div class="tick">
+				<div class="tick_back"></div>
+				<div class="tick_front"></div>
+			</div>
+			<div class="tick">
+				<div class="tick_back"></div>
+				<div class="tick_front"></div>
+			</div>
+			<p>:</p>
+			<div class="tick">
+				<div class="tick_back"></div>
+				<div class="tick_front"></div>
+			</div>
+			<div class="tick">
+				<div class="tick_back"></div>
+				<div class="tick_front"></div>
+			</div>
+			<p>:</p>
+			<div class="tick">
+				<div class="tick_back"></div>
+				<div class="tick_front"></div>
+			</div>
+			<div class="tick">
+				<div class="tick_back"></div>
+				<div class="tick_front"></div>
+			</div>			
+		</div>
+		<div class="tick2">
+			<div class="tick2_back"></div>
+			<div class="tick2_front"></div>
+		</div>
+		<div class="anim_steps"></div>
+		<div class="anim_steps2"></div>
 	</body>
 	<script>
 		function rand_range(a, b) {
@@ -684,5 +1581,12 @@
 			ctx.bezierCurveTo(26.82 * sc + x, 47.04 * sc + y, 27.43 * sc + x, 53.88 * sc + y, 17.89 * sc + x, 94.23 * sc + y);
 			// 			ctx.stroke();
 		}
+	</script>
+
+	<script>
+		const clock=document.getElementById("clock");
+		const t=new Date();
+		const delay = t.getHours()*3600+t.getMinutes()*60+t.getSeconds();
+		clock.style.setProperty("--dl", `${-delay}s`);
 	</script>
 </html>
