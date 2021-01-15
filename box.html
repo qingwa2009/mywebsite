@@ -1584,9 +1584,11 @@
 	</script>
 
 	<script>
-		const clock=document.getElementById("clock");
-		const t=new Date();
-		const delay = t.getHours()*3600+t.getMinutes()*60+t.getSeconds();
-		clock.style.setProperty("--dl", `${-delay}s`);
+		window.addEventListener('DOMContentLoaded', ()=>{
+			const clock=document.getElementById("clock");
+			const t=new Date();
+			const delay = t.getHours()*3600+t.getMinutes()*60+t.getSeconds();
+			clock.style.setProperty("--dl", `${-delay}s`);
+		})
 	</script>
 </html>
