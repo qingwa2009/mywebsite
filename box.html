@@ -348,9 +348,11 @@
 	<script>
 		window.addEventListener('DOMContentLoaded', ()=>{
 			const clock=document.getElementById("clock");
+			const clock2=document.getElementById("clock2");
 			const t=new Date();
 			const delay = t.getHours()*3600+t.getMinutes()*60+t.getSeconds();
 			clock.style.setProperty("--dl", `${-delay}s`);
+			clock2.style.setProperty("--dl", `${-delay}s`);
 		})
 	</script>
 </html>
