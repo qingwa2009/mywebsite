@@ -1207,6 +1207,7 @@ body {
 	width: 1em;
 	transform-style: preserve-3d;
 	transform-origin: center;
+	margin:3px;
 }
 
 .tick_a,.tick_b,.tick_c {
@@ -1229,7 +1230,7 @@ body {
 	position: absolute;
 	background-color: black;
 	color: white;
-
+	border: 2px solid black;
 	transform-origin: center;
 	transform-style: preserve-3d;
 	backface-visibility: hidden;	
