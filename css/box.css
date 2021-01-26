@@ -1231,22 +1231,20 @@ body {
 	color: white;
 
 	transform-origin: center;
-}
-
-.before{
-	background-color: red;
-	clip-path: var(--path_u);
-	transform: translateZ(0px);
 	transform-style: preserve-3d;
 	backface-visibility: hidden;	
 }
 
+.before{
+	background-color: green;
+	clip-path: var(--path_u);
+	transform: translateZ(0px);
+}
+
 .after{
-	background-color: blue;	
+	background-color: blueviolet;	
 	clip-path: var(--path_d);	
 	transform: rotateX(180deg) translateZ(10px);
-	transform-style: preserve-3d;
-	backface-visibility: hidden;
 }
 .tick_a>.before::before{
 	content: var(--vaf);
