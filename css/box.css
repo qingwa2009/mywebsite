@@ -1186,6 +1186,7 @@ body {
 	padding: .2em;
 	background-color: var(--bk);
 	transform-style: preserve-3d;
+	
 	transform: rotateY(var(--rotY)) rotateX(var(--rotX));
 }
 
@@ -1686,11 +1687,16 @@ body {
 	display: flex;
 	justify-content: center;
 	align-items: center;
+
+	perspective: 500px;
+	perspective-origin:bottom;
 }
 .cube2 {
 	--bkcolor: #6b869580;
 	--fkcolor: #45464d;
 	transform-style: preserve-3d;
+
+	
 }
 
 .cube2>div {	
