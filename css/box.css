@@ -1172,7 +1172,7 @@ body {
 .clock2 {
 	--sc: 2;
 	--dl: -50399s;
-	--bk: brown;
+	--bk: transparent;
 	--bk_color:black;
 	--ft_color:white;
 	--bd_radius:.2em;
