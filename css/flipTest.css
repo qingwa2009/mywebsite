@@ -176,3 +176,119 @@ body {
 	100.000000000%{--vaf:"0";--vab:"1";--vbf:"9";--vbb:"0";--vcf:"8";--vcb:"9";}
 }
 
+.clock1 {
+	--sc: 2;
+	--dl: -50399s;
+	--bk: transparent;
+	--bk_color:black;
+	--ft_color:white;
+	--bd_radius:.2em;
+	--path_u:polygon(0 0, 100% 0, 100% 50%, 0 50%);
+	--path_d:polygon(0 50%, 100% 50%, 100% 100%, 0 100%);
+	--rotX: 0deg;
+	--rotY: -43deg;
+	display: flex;
+	font-size: 30px;
+	background-color: var(--bk);
+	transform-style: preserve-3d;
+	transform-origin: center;
+	transform: rotateY(var(--rotY)) rotateX(var(--rotX));
+}
+
+.tick_s1{
+	--vaf:"0";
+	--vab:"1";
+	--vbf:"9";
+	--vbb:"0";
+	--vcf:"8";
+	--vcb:"9";
+	/* position: absolute; */
+	left: 10px;
+	top: 10px;
+	height: 1.4em;
+	width: 1em;
+	transform-style: preserve-3d;
+	transform-origin: center;
+	transform: rotateY(0deg);
+}
+
+.tick_a1,.tick_b1,.tick_c1 {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	left: 0;
+	top: 0;
+	transform-style: preserve-3d;
+	transform-origin: center;
+}
+
+.tick_a1::before,.tick_a1::after,.tick_b1::before,.tick_b1::after,.tick_c1::before,.tick_c1::after  {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	height: 100%;
+	border-radius: 0.2em;
+	position: absolute;
+	background-color: black;
+	color: white;
+
+	transform-origin: center;
+}
+
+.tick_a1::before,.tick_b1::before,.tick_c1::before {
+	background-color: var(--fc);
+	clip-path: var(
+	--path_u);
+	transform: translateZ(0px);
+	transform-style: preserve-3d;
+	backface-visibility: hidden;
+}
+.tick_a1::after,.tick_b1::after,.tick_c1::after {
+	background-color: var(--bc);
+	clip-path: var(
+	--path_d);
+	transform: rotateX(180deg) translateZ(1px);
+	transform-style: preserve-3d;
+	backface-visibility: hidden;
+}
+.tick_a1::before{
+	content: var(--vaf);
+}
+.tick_b1::before{
+	content: var(--vbf);
+}
+.tick_c1::before{
+	content: var(--vcf);
+}
+.tick_a1::after{
+	content: var(--vab);
+}
+.tick_b1::after{
+	content: var(--vbb);
+}
+.tick_c1::after{
+	content: var(--vcb);
+}
+/*秒*/
+.tick_s1 {
+	animation: tick_10 calc(30s * var(--sc)) calc((var(--dl) - 0.75s) * var(--sc)) steps(1) infinite both;
+}
+.tick_s1>.tick_a1 {
+	--fc: #f00;
+	--bc: #a00;
+	transform: rotateX(0deg);
+	animation: tick_s_flip calc(3s * var(--sc)) calc((-0s + var(--dl)) * var(--sc)) linear infinite both;
+}
+.tick_s1>.tick_b1 {
+	--fc: #0f0;
+	--bc: #0a0;
+	transform: rotateX(0deg);
+	animation: tick_s_flip calc(3s * var(--sc)) calc((-1s + var(--dl))  * var(--sc)) linear infinite both;
+}
+.tick_s1>.tick_c1 {
+	--fc: #00f;
+	--bc: #00a;
+	transform: rotateX(0deg);
+	animation: tick_s_flip calc(3s * var(--sc)) calc((-2s + var(--dl))  * var(--sc)) linear infinite both;
+}
