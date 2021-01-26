@@ -194,8 +194,8 @@
 				<div class="tick_c"></div>
 			</div>			
 		</div>
-
-		
+		<input id="rag1" type="range" min="0" max="360" step=".1" value="0">
+		<input id="rag2" type="range" min="0" max="360" step=".1" value="0">
 		<div class="anim_steps"></div>
 		<div class="anim_steps2"></div>
 	</body>
@@ -355,4 +355,19 @@
 			clock2.style.setProperty("--dl", `${-delay}s`);
 		})
 	</script>
+	
+	<script>
+		window.addEventListener('DOMContentLoaded', ()=>{
+			const clock2=document.getElementById("clock2");
+			const rag1=document.getElementById("rag1");
+			const rag2=document.getElementById("rag2");
+			function f(e,p){
+				const v=e.target.value;
+				clock2.style.setProperty(p,v+"deg");
+			}
+			rag1.oninput=e=>f(e,"--rotX");			
+			rag2.oninput=e=>f(e,"--rotY");		
+		})
+	</script>
+
 </html>
