@@ -19,7 +19,7 @@ body {
 	--vbb:"0";
 	--vcf:"8";
 	--vcb:"9";
-	--sc: 1;
+	--sc: 2;
 	--dl: -50399s;
 	--bk: brown;
 	--bk_color:black;
@@ -66,7 +66,7 @@ body {
 	background-color: var(--fc);
 	clip-path: var(
 	--path_u);
-	transform: translateZ(0.01px);
+	transform: translateZ(0px);
 	transform-style: preserve-3d;
 	backface-visibility: hidden;
 }
@@ -74,7 +74,7 @@ body {
 	background-color: var(--bc);
 	clip-path: var(
 	--path_d);
-	transform: rotateX(180deg) translateZ(0.01px);
+	transform: rotateX(180deg) translateZ(10px);
 	transform-style: preserve-3d;
 	backface-visibility: hidden;
 }
