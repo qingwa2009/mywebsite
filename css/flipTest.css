@@ -33,7 +33,7 @@ body {
 }
 
 .cube2>div {	
- 	background-color: var(--bkcolor);
+/*  	background-color: var(--bkcolor); */
 	color: var(--fkcolor);
 /* 	display: flex; */
 /* 	justify-content: center; */
