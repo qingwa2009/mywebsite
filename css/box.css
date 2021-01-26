@@ -1219,7 +1219,7 @@ body {
 	transform-origin: center;
 }
 
-.tick_a::before,.tick_a::after,.tick_b::before,.tick_b::after,.tick_c::before,.tick_c::after  {
+.before,.after{
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -1233,36 +1233,37 @@ body {
 	transform-origin: center;
 }
 
-.tick_a::before,.tick_b::before,.tick_c::before {
+.before{
 	background-color: red;
 	clip-path: var(--path_u);
 	transform: translateZ(0px);
 	transform-style: preserve-3d;
 	backface-visibility: hidden;	
 }
-.tick_a::after,.tick_b::after,.tick_c::after {
+
+.after{
 	background-color: blue;	
 	clip-path: var(--path_d);	
 	transform: rotateX(180deg) translateZ(10px);
 	transform-style: preserve-3d;
 	backface-visibility: hidden;
 }
-.tick_a::before{
+.tick_a>.before::before{
 	content: var(--vaf);
 }
-.tick_b::before{
+.tick_b>.before::before{
 	content: var(--vbf);
 }
-.tick_c::before{
+.tick_c>.before::before{
 	content: var(--vcf);
 }
-.tick_a::after{
+.tick_a>.after::before{
 	content: var(--vab);
 }
-.tick_b::after{
+.tick_b>.after::before{
 	content: var(--vbb);
 }
-.tick_c::after{
+.tick_c>.after::before{
 	content: var(--vcb);
 }
 /*秒*/
