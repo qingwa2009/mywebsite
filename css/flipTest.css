@@ -35,7 +35,7 @@ body {
 	width: 1em;
 	transform-style: preserve-3d;
 	transform-origin: center;
-	transform: rotateY(-43deg);
+	/* transform: rotateY(-43deg); */
 }
 
 .tick_a2,.tick_b2,.tick_c2 {
