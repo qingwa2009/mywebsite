@@ -1170,7 +1170,7 @@ body {
 
 
 .clock2 {
-	--sc: 1;
+	--sc: 2;
 	--dl: -50399s;
 	--bk: brown;
 	--bk_color:black;
@@ -1243,7 +1243,7 @@ body {
 .tick_a::after,.tick_b::after,.tick_c::after {
 	background-color: blue;	
 	clip-path: var(--path_d);	
-	transform: rotateX(180deg) translateZ(1px);
+	transform: rotateX(180deg) translateZ(10px);
 	transform-style: preserve-3d;
 	backface-visibility: hidden;
 }
