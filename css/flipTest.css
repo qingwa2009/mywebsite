@@ -66,15 +66,17 @@ body {
 	background-color: var(--fc);
 	clip-path: var(
 	--path_u);
-	transform: translateZ(10px);
+	transform: translateZ(0.01px);
 	transform-style: preserve-3d;
+	backface-visibility: hidden;
 }
 .tick_a::after,.tick_b::after,.tick_c::after {
 	background-color: var(--bc);
 	clip-path: var(
 	--path_d);
-	transform: rotateX(180deg) translateZ(10px);
+	transform: rotateX(180deg) translateZ(0.01px);
 	transform-style: preserve-3d;
+	backface-visibility: hidden;
 }
 .tick_a::before{
 	content: var(--vaf);
