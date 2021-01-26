@@ -95,6 +95,34 @@ body {
 	transform: rotateX(90deg);
 }
 
+
+.clock2 {
+	--sc: 2;
+	--dl: -50399s;
+	--bk: transparent;
+	--bk_color:black;
+	--ft_color:white;
+	--bd_radius:.2em;
+	--path_u:polygon(0 0, 100% 0, 100% 50%, 0 50%);
+	--path_d:polygon(0 50%, 100% 50%, 100% 100%, 0 100%);
+	--rotX: 0deg;
+	--rotY: -40deg;
+	display: flex;
+	font-size: 24px;
+	height:1.4em;
+	padding: .2em;
+	background-color: var(--bk);
+	transform-style: preserve-3d;
+	transform: rotateY(var(--rotY)) rotateX(var(--rotX));
+}
+
+.clock2>p{
+	height: 100%;
+	margin: 0;
+/* 	background-color: var(--bk); */
+	color: white;
+}
+
 .tick_s2{
 	--vaf:"0";
 	--vab:"1";
@@ -387,33 +415,6 @@ body {
 
 
 
-
-.clock2 {
-	--sc: 2;
-	--dl: -50399s;
-	--bk: transparent;
-	--bk_color:black;
-	--ft_color:white;
-	--bd_radius:.2em;
-	--path_u:polygon(0 0, 100% 0, 100% 50%, 0 50%);
-	--path_d:polygon(0 50%, 100% 50%, 100% 100%, 0 100%);
-	--rotX: 0deg;
-	--rotY: -40deg;
-	display: flex;
-	font-size: 24px;
-	height:1.4em;
-	padding: .2em;
-	background-color: var(--bk);
-	transform-style: preserve-3d;
-	transform: rotateY(var(--rotY)) rotateX(var(--rotX));
-}
-
-.clock2>p{
-	height: 100%;
-	margin: 0;
-	background-color: var(--bk);
-	color: white;
-}
 .tick_10h,.tick_h,.tick_10m,.tick_m,.tick_10s,.tick_s{
 	--vaf:"0";
 	--vab:"1";
