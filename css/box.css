@@ -1215,7 +1215,6 @@ body {
 	height: 100%;
 	left: 0;
 	top: 0;
-
 	transform-style: preserve-3d;
 	transform-origin: center;
 }
@@ -1384,7 +1383,7 @@ body {
 		z-index:1;
 		transform:rotateX(-180deg);
 	}66.666666667%{
-		z-index:-1;
+		z-index: -1;
 		transform:rotateX(-180deg);
 	}83.333333333%{
 		z-index:0;
