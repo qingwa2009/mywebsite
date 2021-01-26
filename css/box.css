@@ -1182,7 +1182,7 @@ body {
 	padding: .2em;
 	background-color: var(--bk);
 	transform-style: preserve-3d;
-	transform: rotateY(-40deg) rotateX(0deg);
+	transform: rotateY(65deg) rotateX(0deg);
 }
 
 .clock2>p{
