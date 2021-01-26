@@ -74,7 +74,7 @@ body {
 	background-color: var(--bc);
 	clip-path: var(
 	--path_d);
-	transform: rotateX(180deg) translateZ(10px);
+	transform: rotateX(180deg) translateZ(1px);
 	transform-style: preserve-3d;
 	backface-visibility: hidden;
 }
