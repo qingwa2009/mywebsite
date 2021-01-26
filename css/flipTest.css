@@ -27,7 +27,7 @@ body {
 	--bd_radius:.2em;
 	--path_u:polygon(0 0, 100% 0, 100% 50%, 0 50%);
 	--path_d:polygon(0 50%, 100% 50%, 100% 100%, 0 100%);
-	font-size: 48px;
+	font-size: 30px;
 	position: absolute;
 	left: 10px;
 	top: 10px;
@@ -35,7 +35,7 @@ body {
 	width: 1em;
 	transform-style: preserve-3d;
 	transform-origin: center;
-	transform: rotateY(43deg);
+	transform: rotateY(-43deg);
 }
 
 .tick_a,.tick_b,.tick_c {
@@ -66,13 +66,15 @@ body {
 	background-color: var(--fc);
 	clip-path: var(
 	--path_u);
-	transform: translateZ(.01px);
+	transform: translateZ(10px);
+	transform-style: preserve-3d;
 }
 .tick_a::after,.tick_b::after,.tick_c::after {
 	background-color: var(--bc);
 	clip-path: var(
 	--path_d);
-	transform: rotateX(180deg) translateZ(.01px);
+	transform: rotateX(180deg) translateZ(10px);
+	transform-style: preserve-3d;
 }
 .tick_a::before{
 	content: var(--vaf);
