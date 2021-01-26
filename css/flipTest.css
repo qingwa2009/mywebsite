@@ -12,7 +12,7 @@ body {
 	flex-wrap: wrap;
 }
 
-.tick_s{
+.tick_s2{
 	--vaf:"0";
 	--vab:"1";
 	--vbf:"9";
@@ -38,7 +38,7 @@ body {
 	transform: rotateY(-43deg);
 }
 
-.tick_a,.tick_b,.tick_c {
+.tick_a2,.tick_b2,.tick_c2 {
 	position: absolute;
 	width: 100%;
 	height: 100%;
@@ -48,7 +48,7 @@ body {
 	transform-origin: center;
 }
 
-.tick_a::before,.tick_a::after,.tick_b::before,.tick_b::after,.tick_c::before,.tick_c::after  {
+.tick_a2::before,.tick_a2::after,.tick_b2::before,.tick_b2::after,.tick_c2::before,.tick_c2::after  {
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -62,7 +62,7 @@ body {
 	transform-origin: center;
 }
 
-.tick_a::before,.tick_b::before,.tick_c::before {
+.tick_a2::before,.tick_b2::before,.tick_c2::before {
 	background-color: var(--fc);
 	clip-path: var(
 	--path_u);
@@ -70,7 +70,7 @@ body {
 	transform-style: preserve-3d;
 	backface-visibility: hidden;
 }
-.tick_a::after,.tick_b::after,.tick_c::after {
+.tick_a2::after,.tick_b2::after,.tick_c2::after {
 	background-color: var(--bc);
 	clip-path: var(
 	--path_d);
@@ -78,41 +78,41 @@ body {
 	transform-style: preserve-3d;
 	backface-visibility: hidden;
 }
-.tick_a::before{
+.tick_a2::before{
 	content: var(--vaf);
 }
-.tick_b::before{
+.tick_b2::before{
 	content: var(--vbf);
 }
-.tick_c::before{
+.tick_c2::before{
 	content: var(--vcf);
 }
-.tick_a::after{
+.tick_a2::after{
 	content: var(--vab);
 }
-.tick_b::after{
+.tick_b2::after{
 	content: var(--vbb);
 }
-.tick_c::after{
+.tick_c2::after{
 	content: var(--vcb);
 }
 /*秒*/
-.tick_s {
+.tick_s2 {
 	animation: tick_10 calc(30s * var(--sc)) calc((var(--dl) - 0.75s) * var(--sc)) steps(1) infinite both;
 }
-.tick_s>.tick_a {
+.tick_s2>.tick_a2 {
 	--fc: #f00;
 	--bc: #a00;
 	transform: rotateX(0deg);
 	animation: tick_s_flip calc(3s * var(--sc)) calc((-0s + var(--dl)) * var(--sc)) linear infinite both;
 }
-.tick_s>.tick_b {
+.tick_s2>.tick_b2 {
 	--fc: #0f0;
 	--bc: #0a0;
 	transform: rotateX(0deg);
 	animation: tick_s_flip calc(3s * var(--sc)) calc((-1s + var(--dl))  * var(--sc)) linear infinite both;
 }
-.tick_s>.tick_c {
+.tick_s2>.tick_c2 {
 	--fc: #00f;
 	--bc: #00a;
 	transform: rotateX(0deg);
@@ -291,4 +291,576 @@ body {
 	--bc: #00a;
 	transform: rotateX(0deg);
 	animation: tick_s_flip calc(3s * var(--sc)) calc((-2s + var(--dl))  * var(--sc)) linear infinite both;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+.clock2 {
+	--sc: 2;
+	--dl: -50399s;
+	--bk: transparent;
+	--bk_color:black;
+	--ft_color:white;
+	--bd_radius:.2em;
+	--path_u:polygon(0 0, 100% 0, 100% 50%, 0 50%);
+	--path_d:polygon(0 50%, 100% 50%, 100% 100%, 0 100%);
+	--rotX: 0deg;
+	--rotY: -40deg;
+	display: flex;
+	font-size: 24px;
+	height:1.4em;
+	padding: .2em;
+	background-color: var(--bk);
+	transform-style: preserve-3d;
+	transform: rotateY(var(--rotY)) rotateX(var(--rotX));
+}
+
+.clock2>p{
+	height: 100%;
+	margin: 0;
+	background-color: var(--bk);
+	color: white;
+}
+.tick_10h,.tick_h,.tick_10m,.tick_m,.tick_10s,.tick_s{
+	--vaf:"0";
+	--vab:"1";
+	--vbf:"9";
+	--vbb:"0";
+	--vcf:"8";
+	--vcb:"9";
+	position: relative;
+	height: 1.4em;
+	width: 1em;
+	transform-style: preserve-3d;
+	transform-origin: center;
+	margin:3px;
+}
+
+.tick_a,.tick_b,.tick_c {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	left: 0;
+	top: 0;
+	transform-style: preserve-3d;
+	transform-origin: center;
+}
+
+.before,.after{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	height: 100%;
+	border-radius: 0.2em;
+	position: absolute;
+	background-color: black;
+	color: white;
+	transform-origin: center;
+	transform-style: preserve-3d;
+	backface-visibility: hidden;
+}
+
+.before{
+	background-color: green;
+	clip-path: var(--path_u);
+	transform: translateZ(0px);
+}
+
+.after{
+	background-color: blueviolet;
+	clip-path: var(--path_d);
+	transform: rotateX(180deg) translateZ(.01px);
+}
+.tick_a>.before::before{
+	content: var(--vaf);
+}
+.tick_b>.before::before{
+	content: var(--vbf);
+}
+.tick_c>.before::before{
+	content: var(--vcf);
+}
+.tick_a>.after::before{
+	content: var(--vab);
+}
+.tick_b>.after::before{
+	content: var(--vbb);
+}
+.tick_c>.after::before{
+	content: var(--vcb);
+}
+/*秒*/
+.tick_s {
+	animation: tick_10 calc(30s * var(--sc)) calc((var(--dl) - 0.75s) * var(--sc)) steps(1) infinite both;
+}
+.tick_s>.tick_a {
+	transform: rotateX(0deg);
+	animation: tick_s_flip calc(3s * var(--sc)) calc((-0s + var(--dl)) * var(--sc)) linear infinite both;
+}
+.tick_s>.tick_b {
+	transform: rotateX(0deg);
+	animation: tick_s_flip calc(3s * var(--sc)) calc((-1s + var(--dl))  * var(--sc)) linear infinite both;
+}
+.tick_s>.tick_c {
+	transform: rotateX(0deg);
+	animation: tick_s_flip calc(3s * var(--sc)) calc((-2s + var(--dl))  * var(--sc)) linear infinite both;
+}
+/*10秒*/
+.tick_10s {animation: tick_6 calc(60s * var(--sc)) calc((var(--dl) - 0.75s) * var(--sc)) steps(1) infinite both;}
+.tick_10s>.tick_a {
+	transform: rotateX(0deg);
+	animation: tick_10s_flip calc(30s * var(--sc)) calc((-0s + var(--dl)) * var(--sc)) linear infinite both;
+}
+.tick_10s>.tick_b {
+	transform: rotateX(0deg);
+	animation: tick_10s_flip calc(30s * var(--sc)) calc((-10s + var(--dl))  * var(--sc)) linear infinite both;
+}
+.tick_10s>.tick_c {
+	transform: rotateX(0deg);
+	animation: tick_10s_flip calc(30s * var(--sc)) calc((-20s + var(--dl))  * var(--sc)) linear infinite both;
+}
+
+/*分*/
+.tick_m {animation: tick_10 calc(1800s * var(--sc)) calc((var(--dl) - 0.75s) * var(--sc)) steps(1) infinite both;}
+.tick_m>.tick_a {
+	transform: rotateX(0deg);
+	animation: tick_m_flip calc(180s * var(--sc)) calc((-0s + var(--dl)) * var(--sc)) linear infinite both;
+}
+.tick_m>.tick_b {
+	transform: rotateX(0deg);
+	animation: tick_m_flip calc(180s * var(--sc)) calc((-60s + var(--dl))  * var(--sc)) linear infinite both;
+}
+.tick_m>.tick_c {
+	transform: rotateX(0deg);
+	animation: tick_m_flip calc(180s * var(--sc)) calc((-120s + var(--dl))  * var(--sc)) linear infinite both;
+}
+/*10分*/
+.tick_10m {animation: tick_6 calc(3600s * var(--sc)) calc((var(--dl) - 0.75s) * var(--sc)) steps(1) infinite both;}
+.tick_10m>.tick_a {
+	transform: rotateX(0deg);
+	animation: tick_10m_flip calc(1800s * var(--sc)) calc((-0s + var(--dl)) * var(--sc)) linear infinite both;
+}
+.tick_10m>.tick_b {
+	transform: rotateX(0deg);
+	animation: tick_10m_flip calc(1800s * var(--sc)) calc((-600s + var(--dl))  * var(--sc)) linear infinite both;
+}
+.tick_10m>.tick_c {
+	transform: rotateX(0deg);
+	animation: tick_10m_flip calc(1800s * var(--sc)) calc((-1200s + var(--dl))  * var(--sc)) linear infinite both;
+}
+
+/*时*/
+.tick_h {animation: tick_24 calc(259200s * var(--sc)) calc((var(--dl) - 0.75s) * var(--sc)) steps(1) infinite both;}
+.tick_h>.tick_a {
+	transform: rotateX(0deg);
+	animation: tick_h_flip calc(10800s * var(--sc)) calc((-0s + var(--dl)) * var(--sc)) linear infinite both;
+}
+.tick_h>.tick_b {
+	transform: rotateX(0deg);
+	animation: tick_h_flip calc(10800s * var(--sc)) calc((-3600s + var(--dl))  * var(--sc)) linear infinite both;
+}
+.tick_h>.tick_c {
+	transform: rotateX(0deg);
+	animation: tick_h_flip calc(10800s * var(--sc)) calc((-7200s + var(--dl))  * var(--sc)) linear infinite both;
+}
+/*10时*/
+.tick_10h {--vaf:"0";--vab:"1";--vbf:"2";--vbb:"0";--vcf:"1";--vcb:"2";}
+.tick_10h>.tick_a {
+	transform: rotateX(0deg);
+	animation: tick_10ah_flip calc(86400s * var(--sc)) calc((-0s + var(--dl)) * var(--sc)) linear infinite both;
+}
+.tick_10h>.tick_b {transform: rotateX(0deg);animation: tick_10bh_flip calc(86400s * var(--sc)) calc((-14400s + var(--dl))  * var(--sc)) linear infinite both;}
+.tick_10h>.tick_c {
+	transform: rotateX(0deg);
+	animation: tick_10ch_flip calc(86400s * var(--sc)) calc((-50400s + var(--dl))  * var(--sc)) linear infinite both;
+}
+
+@keyframes tick_s_flip{
+	0%{
+		z-index:1;
+		transform:rotateX(0deg);
+	}16.666666667%{
+		z-index:1;
+		transform:rotateX(0deg);
+	}33.333333333%{
+		z-index:1;
+		transform:rotateX(-180deg);
+	}66.666666667%{
+		z-index: -1;
+		transform:rotateX(-180deg);
+	}83.333333333%{
+		z-index:0;
+		transform:rotateX(-360deg);
+	}100%{
+		z-index:1;
+		transform:rotateX(-360deg);
+	}
+}
+
+@keyframes tick_10s_flip{
+	0%{
+		z-index:1;
+		transform:rotateX(0deg);
+	}31.666666667%{
+		z-index:1;
+		transform:rotateX(0deg);
+	}33.333333333%{
+		z-index:1;
+		transform:rotateX(-180deg);
+	}66.666666667%{
+		z-index:-1;
+		transform:rotateX(-180deg);
+	}98.333333333%{
+		z-index:0;
+		transform:rotateX(-360deg);
+	}100%{
+		z-index:1;
+		transform:rotateX(-360deg);
+	}
+}
+
+@keyframes tick_m_flip{
+	0%{
+		z-index:1;
+		transform:rotateX(0deg);
+	}33.055555556%{
+		z-index:1;
+		transform:rotateX(0deg);
+	}33.333333333%{
+		z-index:1;
+		transform:rotateX(-180deg);		
+	}66.666666667%{
+		z-index:-1;
+		transform:rotateX(-180deg);
+	}99.722222222%{
+		z-index:0;
+		transform:rotateX(-360deg);
+	}100%{
+		z-index:1;
+		transform:rotateX(-360deg);
+	}
+}
+
+@keyframes tick_10m_flip{
+	0%{
+		z-index:1;
+		transform:rotateX(0deg);
+	}33.305555556%{
+		z-index:1;
+		transform:rotateX(0deg);
+	}33.333333333%{
+		z-index:1;
+		transform:rotateX(-180deg);		
+	}66.666666667%{
+		z-index:-1;
+		transform:rotateX(-180deg);
+	}99.972222222%{
+		z-index:0;
+		transform:rotateX(-360deg);
+	}100%{
+		z-index:1;
+		transform:rotateX(-360deg);
+	}
+}
+
+@keyframes tick_h_flip{
+	0%{
+		z-index:1;
+		transform:rotateX(0deg);
+	}33.328703704%{
+		z-index:1;
+		transform:rotateX(0deg);
+	}33.333333333%{
+		z-index:1;
+		transform:rotateX(-180deg);		
+	}66.666666667%{
+		z-index:-1;
+		transform:rotateX(-180deg);
+	}99.995370370%{
+		z-index:0;
+		transform:rotateX(-359.8deg);
+	}100%{
+		z-index:1;
+		transform:rotateX(-360deg);
+	}
+}
+
+@keyframes tick_10ah_flip{
+	0%{
+		z-index:1;
+		transform:rotateX(0deg);
+	}41.666087963%{
+		z-index:1;
+		transform:rotateX(0deg);
+	}41.666666667%{
+		z-index:1;
+		transform:rotateX(-180deg);		
+	}83.333333333%{
+		z-index:-1;
+		transform:rotateX(-180deg);
+	}99.999421296%{
+		z-index:0;
+		transform:rotateX(-360deg);
+	}100%{
+		z-index:1;
+		transform:rotateX(-360deg);
+	}
+}
+
+@keyframes tick_10bh_flip{
+	0%{
+		z-index:1;
+		transform:rotateX(0deg);
+	}16.666087963%{
+		z-index:1;
+		transform:rotateX(0deg);
+	}16.666666667%{
+		z-index:1;
+		transform:rotateX(-180deg);		
+	}58.333333333%{
+		z-index:-1;
+		transform:rotateX(-180deg);
+	}99.999421296%{
+		z-index:0;
+		transform:rotateX(-360deg);
+	}100%{
+		z-index:1;
+		transform:rotateX(-360deg);
+	}
+}
+
+@keyframes tick_10ch_flip{
+	0%{
+		z-index:1;
+		transform:rotateX(0deg);
+	}41.666087963%{
+		z-index:1;
+		transform:rotateX(0deg);
+	}41.666666667%{
+		z-index:1;
+		transform:rotateX(-180deg);		
+	}58.333333333%{
+		z-index:-1;
+		transform:rotateX(-180deg);
+	}99.999421296%{
+		z-index:0;
+		transform:rotateX(-360deg);
+	}100%{
+		z-index:1;
+		transform:rotateX(-360deg);
+	}
+}
+
+@keyframes tick_10{
+	0.000000000%{--vaf:"0";--vab:"1";--vbf:"9";--vbb:"0";--vcf:"8";--vcb:"9";}
+	3.333333333%{--vcf:"1";--vcb:"2";}
+	6.666666667%{--vbf:"2";--vbb:"3";}
+	10.000000000%{--vaf:"3";--vab:"4";}
+	13.333333333%{--vcf:"4";--vcb:"5";}
+	16.666666667%{--vbf:"5";--vbb:"6";}
+	20.000000000%{--vaf:"6";--vab:"7";}
+	23.333333333%{--vcf:"7";--vcb:"8";}
+	26.666666667%{--vbf:"8";--vbb:"9";}
+	30.000000000%{--vaf:"9";--vab:"0";}
+	33.333333333%{--vcf:"0";--vcb:"1";}
+	36.666666667%{--vbf:"1";--vbb:"2";}
+	40.000000000%{--vaf:"2";--vab:"3";}
+	43.333333333%{--vcf:"3";--vcb:"4";}
+	46.666666667%{--vbf:"4";--vbb:"5";}
+	50.000000000%{--vaf:"5";--vab:"6";}
+	53.333333333%{--vcf:"6";--vcb:"7";}
+	56.666666667%{--vbf:"7";--vbb:"8";}
+	60.000000000%{--vaf:"8";--vab:"9";}
+	63.333333333%{--vcf:"9";--vcb:"0";}
+	66.666666667%{--vbf:"0";--vbb:"1";}
+	70.000000000%{--vaf:"1";--vab:"2";}
+	73.333333333%{--vcf:"2";--vcb:"3";}
+	76.666666667%{--vbf:"3";--vbb:"4";}
+	80.000000000%{--vaf:"4";--vab:"5";}
+	83.333333333%{--vcf:"5";--vcb:"6";}
+	86.666666667%{--vbf:"6";--vbb:"7";}
+	90.000000000%{--vaf:"7";--vab:"8";}
+	93.333333333%{--vcf:"8";--vcb:"9";}
+	96.666666667%{--vbf:"9";--vbb:"0";}
+	100.000000000%{--vaf:"0";--vab:"1";--vbf:"9";--vbb:"0";--vcf:"8";--vcb:"9";}
+}
+
+
+@keyframes tick_6{
+	0.000000000%{--vaf:"0";--vab:"1";--vbf:"5";--vbb:"0";--vcf:"4";--vcb:"5";}
+	16.666666667%{--vcf:"1";--vcb:"2";}
+	33.333333333%{--vbf:"2";--vbb:"3";}
+	50.000000000%{--vaf:"3";--vab:"4";}
+	66.666666667%{--vcf:"4";--vcb:"5";}
+	83.333333333%{--vbf:"5";--vbb:"0";}
+	100.00000000%{--vaf:"0";--vab:"1";--vbf:"5";--vbb:"0";--vcf:"4";--vcb:"5";}
+}
+
+@keyframes tick_24{
+	0.000000000%{--vaf:"0";--vab:"1";--vbf:"3";--vbb:"0";--vcf:"2";--vcb:"3";}
+	1.388889%{--vcf:"1";--vcb:"2";}
+	2.777778%{--vbf:"2";--vbb:"3";}
+	4.166667%{--vaf:"3";--vab:"4";}
+	5.555556%{--vcf:"4";--vcb:"5";}
+	6.944444%{--vbf:"5";--vbb:"6";}
+	8.333333%{--vaf:"6";--vab:"7";}
+	9.722222%{--vcf:"7";--vcb:"8";}
+	11.111111%{--vbf:"8";--vbb:"9";}
+	12.500000%{--vaf:"9";--vab:"0";}
+	13.888889%{--vcf:"0";--vcb:"1";}
+	15.277778%{--vbf:"1";--vbb:"2";}
+	16.666667%{--vaf:"2";--vab:"3";}
+	18.055556%{--vcf:"3";--vcb:"4";}
+	19.444444%{--vbf:"4";--vbb:"5";}
+	20.833333%{--vaf:"5";--vab:"6";}
+	22.222222%{--vcf:"6";--vcb:"7";}
+	23.611111%{--vbf:"7";--vbb:"8";}
+	25.000000%{--vaf:"8";--vab:"9";}
+	26.388889%{--vcf:"9";--vcb:"0";}
+	27.777778%{--vbf:"0";--vbb:"1";}
+	29.166667%{--vaf:"1";--vab:"2";}
+	30.555556%{--vcf:"2";--vcb:"3";}
+	31.944444%{--vbf:"3";--vbb:"0";}
+	33.333333%{--vaf:"0";--vab:"1";}
+	34.722222%{--vcf:"1";--vcb:"2";}
+	36.111111%{--vbf:"2";--vbb:"3";}
+	37.500000%{--vaf:"3";--vab:"4";}
+	38.888889%{--vcf:"4";--vcb:"5";}
+	40.277778%{--vbf:"5";--vbb:"6";}
+	41.666667%{--vaf:"6";--vab:"7";}
+	43.055556%{--vcf:"7";--vcb:"8";}
+	44.444444%{--vbf:"8";--vbb:"9";}
+	45.833333%{--vaf:"9";--vab:"0";}
+	47.222222%{--vcf:"0";--vcb:"1";}
+	48.611111%{--vbf:"1";--vbb:"2";}
+	50.000000%{--vaf:"2";--vab:"3";}
+	51.388889%{--vcf:"3";--vcb:"4";}
+	52.777778%{--vbf:"4";--vbb:"5";}
+	54.166667%{--vaf:"5";--vab:"6";}
+	55.555556%{--vcf:"6";--vcb:"7";}
+	56.944444%{--vbf:"7";--vbb:"8";}
+	58.333333%{--vaf:"8";--vab:"9";}
+	59.722222%{--vcf:"9";--vcb:"0";}
+	61.111111%{--vbf:"0";--vbb:"1";}
+	62.500000%{--vaf:"1";--vab:"2";}
+	63.888889%{--vcf:"2";--vcb:"3";}
+	65.277778%{--vbf:"3";--vbb:"0";}
+	66.666667%{--vaf:"0";--vab:"1";}
+	68.055556%{--vcf:"1";--vcb:"2";}
+	69.444444%{--vbf:"2";--vbb:"3";}
+	70.833333%{--vaf:"3";--vab:"4";}
+	72.222222%{--vcf:"4";--vcb:"5";}
+	73.611111%{--vbf:"5";--vbb:"6";}
+	75.000000%{--vaf:"6";--vab:"7";}
+	76.388889%{--vcf:"7";--vcb:"8";}
+	77.777778%{--vbf:"8";--vbb:"9";}
+	79.166667%{--vaf:"9";--vab:"0";}
+	80.555556%{--vcf:"0";--vcb:"1";}
+	81.944444%{--vbf:"1";--vbb:"2";}
+	83.333333%{--vaf:"2";--vab:"3";}
+	84.722222%{--vcf:"3";--vcb:"4";}
+	86.111111%{--vbf:"4";--vbb:"5";}
+	87.500000%{--vaf:"5";--vab:"6";}
+	88.888889%{--vcf:"6";--vcb:"7";}
+	90.277778%{--vbf:"7";--vbb:"8";}
+	91.666667%{--vaf:"8";--vab:"9";}
+	93.055556%{--vcf:"9";--vcb:"0";}
+	94.444444%{--vbf:"0";--vbb:"1";}
+	95.833333%{--vaf:"1";--vab:"2";}
+	97.222222%{--vcf:"2";--vcb:"3";}
+	98.611111%{--vbf:"3";--vbb:"0";}
+	100.000000000%{--vaf:"0";--vab:"1";--vbf:"3";--vbb:"0";--vcf:"2";--vcb:"3";}
+}
+
+.cube_view2 {
+	--rotX: -27deg;
+	--rotY: -30deg;
+	--rotZ: 0deg;
+	--sz: 59px;
+	transform-style: preserve-3d;
+	transform-origin: center center calc(var(--sz) * 0.5);
+	transform: rotateZ(var(--rotZ)) rotateX(var(--rotX)) rotateY(var(--rotY));
+	position: relative;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.cube2 {
+	--bkcolor: #6b869580;
+	--fkcolor: #45464d;
+	transform-style: preserve-3d;
+}
+
+.cube2>div {	
+	background-color: var(--bkcolor);
+	color: var(--fkcolor);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	box-shadow: inset 0 0 10px white;
+}
+
+.cube2>div:nth-of-type(1) {
+	transform: translate3d(0,0,var(--sz));
+}
+
+.cube2>div:nth-of-type(2) {
+	position: absolute;
+	width: var(--sz);
+	height: 100%;
+	right: 0;
+	top: 0;
+	transform-origin: right;
+	transform: rotateY(90deg);
+}
+
+.cube2>div:nth-of-type(3) {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	left: 0;
+	top: 0;
+	transform-origin: center;
+	transform: rotateY(180deg);
+}
+
+.cube2>div:nth-of-type(4) {
+	position: absolute;
+	width: var(--sz);
+	height: 100%;
+	left: 0;
+	top: 0;
+	transform-origin: left;
+	transform: rotateY(270deg);
+}
+
+.cube2>div:nth-of-type(5) {
+	position: absolute;
+	width: 100%;
+	height: var(--sz);
+	left: 0;
+	bottom: 0;
+	transform-origin: bottom;
+	transform: rotateX(270deg);
+}
+
+.cube2>div:nth-of-type(6) {
+	position: absolute;
+	width: 100%;
+	height: var(--sz);
+	left: 0;
+	top: 0;
+	transform-origin: top;
+	transform: rotateX(90deg);
 }
