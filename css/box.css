@@ -1178,15 +1178,14 @@ body {
 	--bd_radius:.2em;
 	--path_u:polygon(0 0, 100% 0, 100% 50%, 0 50%);
 	--path_d:polygon(0 50%, 100% 50%, 100% 100%, 0 100%);
-	--rotX:0deg;
-	--rotY:0deg;
+	--rotX: 36deg;
+	--rotY: -57deg;
 	display: flex;
 	font-size: 24px;
 	height:1.4em;
 	padding: .2em;
 	background-color: var(--bk);
 	transform-style: preserve-3d;
-	
 	transform: rotateY(var(--rotY)) rotateX(var(--rotX));
 }
 
@@ -1234,7 +1233,7 @@ body {
 	border: 2px solid black;
 	transform-origin: center;
 	transform-style: preserve-3d;
-	backface-visibility: hidden;	
+	backface-visibility: hidden;
 }
 
 .before{
@@ -1244,9 +1243,9 @@ body {
 }
 
 .after{
-	background-color: blueviolet;	
-	clip-path: var(--path_d);	
-	transform: rotateX(180deg) translateZ(10px);
+	background-color: blueviolet;
+	clip-path: var(--path_d);
+	transform: rotateX(180deg) translateZ(1px);
 }
 .tick_a>.before::before{
 	content: var(--vaf);
@@ -1283,11 +1282,7 @@ body {
 	animation: tick_s_flip calc(3s * var(--sc)) calc((-2s + var(--dl))  * var(--sc)) linear infinite both;
 }
 /*10秒*/
-.tick_10s {
-/* 	position:fixed; */
-/* 	top:-40px; */
-	animation: tick_6 calc(60s * var(--sc)) calc((var(--dl) - 0.75s) * var(--sc)) steps(1) infinite both;	
-}
+.tick_10s {animation: tick_6 calc(60s * var(--sc)) calc((var(--dl) - 0.75s) * var(--sc)) steps(1) infinite both;}
 .tick_10s>.tick_a {
 	transform: rotateX(0deg);
 	animation: tick_10s_flip calc(30s * var(--sc)) calc((-0s + var(--dl)) * var(--sc)) linear infinite both;
@@ -1302,11 +1297,7 @@ body {
 }
 
 /*分*/
-.tick_m {
-/* 	position:fixed; */
-/* 	top:-40px; */
-	animation: tick_10 calc(1800s * var(--sc)) calc((var(--dl) - 0.75s) * var(--sc)) steps(1) infinite both;
-}
+.tick_m {animation: tick_10 calc(1800s * var(--sc)) calc((var(--dl) - 0.75s) * var(--sc)) steps(1) infinite both;}
 .tick_m>.tick_a {
 	transform: rotateX(0deg);
 	animation: tick_m_flip calc(180s * var(--sc)) calc((-0s + var(--dl)) * var(--sc)) linear infinite both;
@@ -1320,11 +1311,7 @@ body {
 	animation: tick_m_flip calc(180s * var(--sc)) calc((-120s + var(--dl))  * var(--sc)) linear infinite both;
 }
 /*10分*/
-.tick_10m {
-/* 	position:fixed; */
-/* 	top:-40px; */
-	animation: tick_6 calc(3600s * var(--sc)) calc((var(--dl) - 0.75s) * var(--sc)) steps(1) infinite both;	
-}
+.tick_10m {animation: tick_6 calc(3600s * var(--sc)) calc((var(--dl) - 0.75s) * var(--sc)) steps(1) infinite both;}
 .tick_10m>.tick_a {
 	transform: rotateX(0deg);
 	animation: tick_10m_flip calc(1800s * var(--sc)) calc((-0s + var(--dl)) * var(--sc)) linear infinite both;
@@ -1339,11 +1326,7 @@ body {
 }
 
 /*时*/
-.tick_h {
-/* 	position:fixed; */
-/* 	top:-40px; */
-	animation: tick_24 calc(259200s * var(--sc)) calc((var(--dl) - 0.75s) * var(--sc)) steps(1) infinite both;
-}
+.tick_h {animation: tick_24 calc(259200s * var(--sc)) calc((var(--dl) - 0.75s) * var(--sc)) steps(1) infinite both;}
 .tick_h>.tick_a {
 	transform: rotateX(0deg);
 	animation: tick_h_flip calc(10800s * var(--sc)) calc((-0s + var(--dl)) * var(--sc)) linear infinite both;
@@ -1357,21 +1340,12 @@ body {
 	animation: tick_h_flip calc(10800s * var(--sc)) calc((-7200s + var(--dl))  * var(--sc)) linear infinite both;
 }
 /*10时*/
-.tick_10h {
-/* 	position:fixed; */
-/* 	top:-40px; */
-/* 	animation: tick_3 calc(259200s * var(--sc)) calc((var(--dl) - 0.75s) * var(--sc)) steps(1) infinite both;	 */
-	--vaf:"0";--vab:"1";--vbf:"2";--vbb:"0";--vcf:"1";--vcb:"2";
-}
+.tick_10h {--vaf:"0";--vab:"1";--vbf:"2";--vbb:"0";--vcf:"1";--vcb:"2";}
 .tick_10h>.tick_a {
 	transform: rotateX(0deg);
 	animation: tick_10ah_flip calc(86400s * var(--sc)) calc((-0s + var(--dl)) * var(--sc)) linear infinite both;
 }
-.tick_10h>.tick_b {
-/* 	display:none; */
-	transform: rotateX(0deg);
-	animation: tick_10bh_flip calc(86400s * var(--sc)) calc((-14400s + var(--dl))  * var(--sc)) linear infinite both;
-}
+.tick_10h>.tick_b {transform: rotateX(0deg);animation: tick_10bh_flip calc(86400s * var(--sc)) calc((-14400s + var(--dl))  * var(--sc)) linear infinite both;}
 .tick_10h>.tick_c {
 	transform: rotateX(0deg);
 	animation: tick_10ch_flip calc(86400s * var(--sc)) calc((-50400s + var(--dl))  * var(--sc)) linear infinite both;
@@ -1682,21 +1656,15 @@ body {
 	transform-style: preserve-3d;
 	transform-origin: center center calc(var(--sz) * 0.5);
 	transform: rotateZ(var(--rotZ)) rotateX(var(--rotX)) rotateY(var(--rotY));
-
 	position: relative;
 	display: flex;
 	justify-content: center;
 	align-items: center;
-
-	perspective: 500px;
-	perspective-origin:bottom;
 }
 .cube2 {
 	--bkcolor: #6b869580;
 	--fkcolor: #45464d;
 	transform-style: preserve-3d;
-
-	
 }
 
 .cube2>div {	
