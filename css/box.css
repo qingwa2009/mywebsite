@@ -1178,8 +1178,8 @@ body {
 	--bd_radius:.2em;
 	--path_u:polygon(0 0, 100% 0, 100% 50%, 0 50%);
 	--path_d:polygon(0 50%, 100% 50%, 100% 100%, 0 100%);
-	--rotX: 36deg;
-	--rotY: -57deg;
+	--rotX: 0deg;
+	--rotY: -40deg;
 	display: flex;
 	font-size: 24px;
 	height:1.4em;
@@ -1230,7 +1230,6 @@ body {
 	position: absolute;
 	background-color: black;
 	color: white;
-	border: 2px solid black;
 	transform-origin: center;
 	transform-style: preserve-3d;
 	backface-visibility: hidden;
@@ -1245,7 +1244,7 @@ body {
 .after{
 	background-color: blueviolet;
 	clip-path: var(--path_d);
-	transform: rotateX(180deg) translateZ(1px);
+	transform: rotateX(180deg) translateZ(.01px);
 }
 .tick_a>.before::before{
 	content: var(--vaf);
