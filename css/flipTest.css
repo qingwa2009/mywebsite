@@ -430,6 +430,31 @@ body {
 	margin:3px;
 }
 
+.tick_s{
+	--vaf:"0";
+	--vab:"1";
+	--vbf:"9";
+	--vbb:"0";
+	--vcf:"8";
+	--vcb:"9";
+	--sc: 2;
+	--dl: -50399s;
+	--bk: brown;
+	--bk_color:black;
+	--ft_color:white;
+	--bd_radius:.2em;
+	--path_u:polygon(0 0, 100% 0, 100% 50%, 0 50%);
+	--path_d:polygon(0 50%, 100% 50%, 100% 100%, 0 100%);
+	font-size: 30px;
+	left: 10px;
+	top: 10px;
+	height: 1.4em;
+	width: 1em;
+	transform-style: preserve-3d;
+	transform-origin: center;
+}
+
+
 .tick_a,.tick_b,.tick_c {
 	position: absolute;
 	width: 100%;
