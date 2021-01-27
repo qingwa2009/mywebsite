@@ -12,6 +12,21 @@ body {
 	flex-wrap: wrap;
 }
 
+.content::before{
+	content:"a";
+	animation: content 3s infinite;
+}
+@keyframes content{
+	0%{
+		content:"a";
+	}
+	30%{
+		content:"b";
+	}
+	60%{
+		content:"c";
+	}
+}
 
 .cube_view2 {
 	--rotX: -27deg;
