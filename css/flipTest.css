@@ -90,8 +90,8 @@ body {
 
 
 .clock2 {
-	--sc: .2;
-	--dl: 0s;/*-50399s;*/
+	--sc: 1;
+	--dl: -50399s;
 	--bk: transparent;
 	--bk_color:black;
 	--ft_color:white;
@@ -275,7 +275,26 @@ body {
 }
 
 /*分*/
-.tick_m {animation: tick_10 calc(1800s * var(--sc)) calc((var(--dl) - 0.75s) * var(--sc)) steps(1) infinite both;}
+/* .tick_m {animation: tick_10 calc(1800s * var(--sc)) calc((var(--dl) - 0.75s) * var(--sc)) steps(1) infinite both;} */
+.tick_m>.tick_a>.before::before {
+	animation: tick_10_af calc(1800s * var(--sc)) calc((var(--dl) - 0.75s) * var(--sc)) steps(1) infinite both;
+}
+.tick_m>.tick_a>.after::after {
+	animation: tick_10_af calc(1800s * var(--sc)) calc((var(--dl) - 1260.75s) * var(--sc)) steps(1) infinite both;
+}
+.tick_m>.tick_b>.before::before {
+	animation: tick_10_af calc(1800s * var(--sc)) calc((var(--dl) - 600.75s) * var(--sc)) steps(1) infinite both;
+}
+.tick_m>.tick_b>.after::after {
+	animation: tick_10_af calc(1800s * var(--sc)) calc((var(--dl) - 60.75s) * var(--sc)) steps(1) infinite both;
+}
+.tick_m>.tick_c>.before::before {
+	animation: tick_10_af calc(1800s * var(--sc)) calc((var(--dl) - 1200.75s) * var(--sc)) steps(1) infinite both;
+}
+.tick_m>.tick_c>.after::after {
+	animation: tick_10_af calc(1800s * var(--sc)) calc((var(--dl) - 660.75s) * var(--sc)) steps(1) infinite both;
+}
+
 .tick_m>.tick_a {
 	transform: rotateX(0deg);
 	animation: tick_m_flip calc(180s * var(--sc)) calc((-0s + var(--dl)) * var(--sc)) linear infinite both;
@@ -289,7 +308,26 @@ body {
 	animation: tick_m_flip calc(180s * var(--sc)) calc((-120s + var(--dl))  * var(--sc)) linear infinite both;
 }
 /*10分*/
-.tick_10m {animation: tick_6 calc(3600s * var(--sc)) calc((var(--dl) - 0.75s) * var(--sc)) steps(1) infinite both;}
+/* .tick_10m {animation: tick_6 calc(3600s * var(--sc)) calc((var(--dl) - 0.75s) * var(--sc)) steps(1) infinite both;} */
+.tick_10m>.tick_a>.before::before {
+	animation: tick_6_af calc(3600s * var(--sc)) calc((var(--dl) - 0.75s) * var(--sc)) steps(1) infinite both;
+}
+.tick_10m>.tick_a>.after::after {
+	animation: tick_6_ab calc(3600s * var(--sc)) calc((var(--dl) - 0.75s) * var(--sc)) steps(1) infinite both;
+}
+.tick_10m>.tick_b>.before::before {
+	animation: tick_6_bf calc(3600s * var(--sc)) calc((var(--dl) - 0.75s) * var(--sc)) steps(1) infinite both;
+}
+.tick_10m>.tick_b>.after::after {
+	animation: tick_6_af calc(3600s * var(--sc)) calc((var(--dl) - 600.75s) * var(--sc)) steps(1) infinite both;
+}
+.tick_10m>.tick_c>.before::before {
+	animation: tick_6_ab calc(3600s * var(--sc)) calc((var(--dl) - 3000.75s) * var(--sc)) steps(1) infinite both;
+}
+.tick_10m>.tick_c>.after::after {
+	animation: tick_6_bf calc(3600s * var(--sc)) calc((var(--dl) - 600.75s) * var(--sc)) steps(1) infinite both;
+}
+
 .tick_10m>.tick_a {
 	transform: rotateX(0deg);
 	animation: tick_10m_flip calc(1800s * var(--sc)) calc((-0s + var(--dl)) * var(--sc)) linear infinite both;
@@ -304,7 +342,26 @@ body {
 }
 
 /*时*/
-.tick_h {animation: tick_24 calc(259200s * var(--sc)) calc((var(--dl) - 0.75s) * var(--sc)) steps(1) infinite both;}
+/* .tick_h {animation: tick_24 calc(259200s * var(--sc)) calc((var(--dl) - 0.75s) * var(--sc)) steps(1) infinite both;} */
+.tick_h>.tick_a>.before::before {
+	animation: tick_24_af calc(259200s * var(--sc)) calc((var(--dl) - 0.75s) * var(--sc)) steps(1) infinite both;
+}
+.tick_h>.tick_a>.after::after {
+	animation: tick_24_ab calc(259200s * var(--sc)) calc((var(--dl) - 0.75s) * var(--sc)) steps(1) infinite both;
+}
+.tick_h>.tick_b>.before::before {
+	animation: tick_24_bf calc(259200s * var(--sc)) calc((var(--dl) - 0.75s) * var(--sc)) steps(1) infinite both;
+}
+.tick_h>.tick_b>.after::after {
+	animation: tick_24_af calc(259200s * var(--sc)) calc((var(--dl) - 7200.75s) * var(--sc)) steps(1) infinite both;
+}
+.tick_h>.tick_c>.before::before {
+	animation: tick_24_ab calc(259200s * var(--sc)) calc((var(--dl) - 255600.75s) * var(--sc)) steps(1) infinite both;
+}
+.tick_h>.tick_c>.after::after {
+	animation: tick_24_bf calc(259200s * var(--sc)) calc((var(--dl) - 3600.75s) * var(--sc)) steps(1) infinite both;
+}
+
 .tick_h>.tick_a {
 	transform: rotateX(0deg);
 	animation: tick_h_flip calc(10800s * var(--sc)) calc((-0s + var(--dl)) * var(--sc)) linear infinite both;
@@ -658,6 +715,7 @@ body {
 	33.333333333%{content:"2";}
 	83.333333333%{content:"5";}
 }
+/*
 @keyframes tick_6_bb{
 	0.000000000%{content:"0";}
 	33.333333333%{content:"3";}
@@ -673,7 +731,7 @@ body {
 	16.666666667%{content:"2";}
 	66.666666667%{content:"5";}
 }
-
+*/
 @keyframes tick_24_af{
 	0.000000000%{content:"0";}
 	4.166667%{content:"3";}
@@ -702,3 +760,147 @@ body {
 	100.000000000%{content:"0";}
 }
 
+@keyframes tick_24_ab{
+	0.000000000%{content:"1";}
+	4.166667%{content:"4";}
+	8.333333%{content:"7";}
+	12.500000%{content:"0";}
+	16.666667%{content:"3";}
+	20.833333%{content:"6";}
+	25.000000%{content:"9";}
+	29.166667%{content:"2";}
+	33.333333%{content:"1";}
+	37.500000%{content:"4";}
+	41.666667%{content:"7";}
+	45.833333%{content:"0";}
+	50.000000%{content:"3";}
+	54.166667%{content:"6";}
+	58.333333%{content:"9";}
+	62.500000%{content:"2";}
+	66.666667%{content:"1";}
+	70.833333%{content:"4";}
+	75.000000%{content:"7";}
+	79.166667%{content:"0";}
+	83.333333%{content:"3";}
+	87.500000%{content:"6";}
+	91.666667%{content:"9";}
+	95.833333%{content:"2";}
+	100.000000000%{content:"1";}
+}
+
+@keyframes tick_24_bf{
+	0.000000000%{content:"3";}
+	2.777778%{content:"2";}
+	6.944444%{content:"5";}
+	11.111111%{content:"8";}
+	15.277778%{content:"1";}
+	19.444444%{content:"4";}
+	23.611111%{content:"7";}
+	27.777778%{content:"0";}
+	31.944444%{content:"3";}
+	36.111111%{content:"2";}
+	40.277778%{content:"5";}
+	44.444444%{content:"8";}
+	48.611111%{content:"1";}
+	52.777778%{content:"4";}
+	56.944444%{content:"7";}
+	61.111111%{content:"0";}
+	65.277778%{content:"3";}
+	69.444444%{content:"2";}
+	73.611111%{content:"5";}
+	77.777778%{content:"8";}
+	81.944444%{content:"1";}
+	86.111111%{content:"4";}
+	90.277778%{content:"7";}
+	94.444444%{content:"0";}
+	98.611111%{content:"3";}
+	100.000000000%{content:"3";}
+}
+/*
+@keyframes tick_24_bb{
+	0.000000000%{content:"0";}
+	2.777778%{content:"3";}
+	6.944444%{content:"6";}
+	11.111111%{content:"9";}
+	15.277778%{content:"2";}
+	19.444444%{content:"5";}
+	23.611111%{content:"8";}
+	27.777778%{content:"1";}
+	31.944444%{content:"0";}
+	36.111111%{content:"3";}
+	40.277778%{content:"6";}
+	44.444444%{content:"9";}
+	48.611111%{content:"2";}
+	52.777778%{content:"5";}
+	56.944444%{content:"8";}
+	61.111111%{content:"1";}
+	65.277778%{content:"0";}
+	69.444444%{content:"3";}
+	73.611111%{content:"6";}
+	77.777778%{content:"9";}
+	81.944444%{content:"2";}
+	86.111111%{content:"5";}
+	90.277778%{content:"8";}
+	94.444444%{content:"1";}
+	98.611111%{content:"0";}
+	100.000000000%{content:"0";}
+}
+
+@keyframes tick_24_cf{
+	0.000000000%{content:"2";}
+	1.388889%{content:"1";}
+	5.555556%{content:"4";}
+	9.722222%{content:"7";}
+	13.888889%{content:"0";}
+	18.055556%{content:"3";}
+	22.222222%{content:"6";}
+	26.388889%{content:"9";}
+	30.555556%{content:"2";}
+	34.722222%{content:"1";}
+	38.888889%{content:"4";}
+	43.055556%{content:"7";}
+	47.222222%{content:"0";}
+	51.388889%{content:"3";}
+	55.555556%{content:"6";}
+	59.722222%{content:"9";}
+	63.888889%{content:"2";}
+	68.055556%{content:"1";}
+	72.222222%{content:"4";}
+	76.388889%{content:"7";}
+	80.555556%{content:"0";}
+	84.722222%{content:"3";}
+	88.888889%{content:"6";}
+	93.055556%{content:"9";}
+	97.222222%{content:"2";}
+	100.000000000%{content:"2";}
+}
+
+@keyframes tick_24_cb{
+	0.000000000%{content:"3";}
+	1.388889%{content:"2";}
+	5.555556%{content:"5";}
+	9.722222%{content:"8";}
+	13.888889%{content:"1";}
+	18.055556%{content:"4";}
+	22.222222%{content:"7";}
+	26.388889%{content:"0";}
+	30.555556%{content:"3";}
+	34.722222%{content:"2";}
+	38.888889%{content:"5";}
+	43.055556%{content:"8";}
+	47.222222%{content:"1";}
+	51.388889%{content:"4";}
+	55.555556%{content:"7";}
+	59.722222%{content:"0";}
+	63.888889%{content:"3";}
+	68.055556%{content:"2";}
+	72.222222%{content:"5";}
+	76.388889%{content:"8";}
+	80.555556%{content:"1";}
+	84.722222%{content:"4";}
+	88.888889%{content:"7";}
+	93.055556%{content:"0";}
+	97.222222%{content:"3";}
+	100.000000000%{content:"3";}
+}
+*/
