@@ -179,7 +179,7 @@ body {
 	--path_u);
 	transform: translateZ(0px);
 	transform-style: preserve-3d;
-	backface-visibility: hidden;
+/* 	backface-visibility: hidden; */
 }
 .tick_a2::after,.tick_b2::after,.tick_c2::after {
 	background-color: var(--bc);
@@ -187,7 +187,7 @@ body {
 	--path_d);
 	transform: rotateX(180deg) translateZ(1px);
 	transform-style: preserve-3d;
-	backface-visibility: hidden;
+/* 	backface-visibility: hidden; */
 }
 .tick_a2::before{
 	content: var(--vaf);
@@ -430,70 +430,59 @@ body {
 	margin:3px;
 }
 
-.tick_s{
-	--vaf:"0";
-	--vab:"1";
-	--vbf:"9";
-	--vbb:"0";
-	--vcf:"8";
-	--vcb:"9";
-	--sc: 2;
-	--dl: -50399s;
-	--bk: brown;
-	--bk_color:black;
-	--ft_color:white;
-	--bd_radius:.2em;
-	--path_u:polygon(0 0, 100% 0, 100% 50%, 0 50%);
-	--path_d:polygon(0 50%, 100% 50%, 100% 100%, 0 100%);
-	font-size: 30px;
-	left: 10px;
-	top: 10px;
-	height: 1.4em;
-	width: 1em;
-	transform-style: preserve-3d;
-	transform-origin: center;
-}
-
 
 .tick_a,.tick_b,.tick_c {
-	position: absolute;
 	width: 100%;
-	height: 100%;
+	height: 50%;
+	position: absolute;
 	left: 0;
 	top: 0;
+
 	transform-style: preserve-3d;
-	transform-origin: center;
-	clip-path: var(--path_u);
+	transform-origin: bottom;
 }
-
-
 
 .before,.after{
-	display: flex;
-	justify-content: center;
-	align-items: center;
 	width: 100%;
 	height: 100%;
-	border-radius: 0.2em;
+	overflow: hidden;
 	position: absolute;
-	background-color: black;
-	color: white;
-	transform-origin: center;
+	top: 0;
+	left:0;
+	border-radius: 0.2em 0.2em 0 0;
+	color:white;
+	background-color:black;
 	transform-style: preserve-3d;
-	backface-visibility: hidden;
-}
-
-.before{
-	background-color: green;
-/* 	clip-path: var(--path_u); */
-	transform: translateZ(0px);
 }
 
 .after{
-	background-color: blueviolet;
-/* 	clip-path: var(--path_d); */
-	transform: rotateX(180deg) translateZ(.01px);
+	transform-origin: center;
+	transform: translateZ(-.1px);
 }
+
+.before::before{
+	width: 100%;
+	height: 200%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color:red;
+/* 	backface-visibility: hidden; */
+}
+
+.after::after{
+	width: 100%;
+	height: 200%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color:blue;
+/* 	backface-visibility: hidden; */
+	transform-origin: center;
+	transform: rotateX(180deg);
+
+}
+
 .tick_a>.before::before{
 	content: var(--vaf);
 }
@@ -503,13 +492,13 @@ body {
 .tick_c>.before::before{
 	content: var(--vcf);
 }
-.tick_a>.after::before{
+.tick_a>.after::after{
 	content: var(--vab);
 }
-.tick_b>.after::before{
+.tick_b>.after::after{
 	content: var(--vbb);
 }
-.tick_c>.after::before{
+.tick_c>.after::after{
 	content: var(--vcb);
 }
 /*秒*/
