@@ -90,8 +90,8 @@ body {
 
 
 .clock2 {
-	--sc: 2;
-	--dl: -50399s;
+	--sc: .2;
+	--dl: 0s;/*-50399s;*/
 	--bk: transparent;
 	--bk_color:black;
 	--ft_color:white;
@@ -115,297 +115,6 @@ body {
 /* 	background-color: var(--bk); */
 	color: white;
 }
-
-.tick_s2{
-	--vaf:"0";
-	--vab:"1";
-	--vbf:"9";
-	--vbb:"0";
-	--vcf:"8";
-	--vcb:"9";
-	--sc: 2;
-	--dl: -50399s;
-	--bk: brown;
-	--bk_color:black;
-	--ft_color:white;
-	--bd_radius:.2em;
-	--path_u:polygon(0 0, 100% 0, 100% 50%, 0 50%);
-	--path_d:polygon(0 50%, 100% 50%, 100% 100%, 0 100%);
-	font-size: 30px;
-	/* position: absolute; */
-	left: 10px;
-	top: 10px;
-	height: 1.4em;
-	width: 1em;
-	transform-style: preserve-3d;
-	transform-origin: center;
-	/* transform: rotateY(-43deg); */
-}
-
-.tick_a2,.tick_b2,.tick_c2 {
-	position: absolute;
-	width: 100%;
-	height: 100%;
-	left: 0;
-	top: 0;
-	transform-style: preserve-3d;
-	transform-origin: center;
-}
-
-.tick_a2::before,.tick_a2::after,.tick_b2::before,.tick_b2::after,.tick_c2::before,.tick_c2::after  {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	width: 100%;
-	height: 100%;
-	border-radius: 0.2em;
-	position: absolute;
-	background-color: black;
-	color: white;
-
-	transform-origin: center;
-}
-
-.tick_a2::before,.tick_b2::before,.tick_c2::before {
-	background-color: var(--fc);
-	clip-path: var(
-	--path_u);
-	transform: translateZ(0px);
-	transform-style: preserve-3d;
-/* 	backface-visibility: hidden; */
-}
-.tick_a2::after,.tick_b2::after,.tick_c2::after {
-	background-color: var(--bc);
-	clip-path: var(
-	--path_d);
-	transform: rotateX(180deg) translateZ(1px);
-	transform-style: preserve-3d;
-/* 	backface-visibility: hidden; */
-}
-.tick_a2::before{
-	content: var(--vaf);
-}
-.tick_b2::before{
-	content: var(--vbf);
-}
-.tick_c2::before{
-	content: var(--vcf);
-}
-.tick_a2::after{
-	content: var(--vab);
-}
-.tick_b2::after{
-	content: var(--vbb);
-}
-.tick_c2::after{
-	content: var(--vcb);
-}
-/*秒*/
-.tick_s2 {
-	animation: tick_10 calc(30s * var(--sc)) calc((var(--dl) - 0.75s) * var(--sc)) steps(1) infinite both;
-}
-.tick_s2>.tick_a2 {
-	--fc: #f00;
-	--bc: #a00;
-	transform: rotateX(0deg);
-	animation: tick_s_flip calc(3s * var(--sc)) calc((-0s + var(--dl)) * var(--sc)) linear infinite both;
-}
-.tick_s2>.tick_b2 {
-	--fc: #0f0;
-	--bc: #0a0;
-	transform: rotateX(0deg);
-	animation: tick_s_flip calc(3s * var(--sc)) calc((-1s + var(--dl))  * var(--sc)) linear infinite both;
-}
-.tick_s2>.tick_c2 {
-	--fc: #00f;
-	--bc: #00a;
-	transform: rotateX(0deg);
-	animation: tick_s_flip calc(3s * var(--sc)) calc((-2s + var(--dl))  * var(--sc)) linear infinite both;
-}
-
-
-@keyframes tick_s_flip{
-	0%{
-		z-index:1;
-		transform:rotateX(0deg);
-	}16.666666667%{
-		z-index:1;
-		transform:rotateX(0deg);
-	}33.333333333%{
-		z-index:1;
-		transform:rotateX(-180deg);
-	}66.666666667%{
-		z-index: -1;
-		transform:rotateX(-180deg);
-	}83.333333333%{
-		z-index:0;
-		transform:rotateX(-360deg);
-	}100%{
-		z-index:1;
-		transform:rotateX(-360deg);
-	}
-}
-
-@keyframes tick_10{
-	0.000000000%{--vaf:"0";--vab:"1";--vbf:"9";--vbb:"0";--vcf:"8";--vcb:"9";}
-	3.333333333%{--vcf:"1";--vcb:"2";}
-	6.666666667%{--vbf:"2";--vbb:"3";}
-	10.000000000%{--vaf:"3";--vab:"4";}
-	13.333333333%{--vcf:"4";--vcb:"5";}
-	16.666666667%{--vbf:"5";--vbb:"6";}
-	20.000000000%{--vaf:"6";--vab:"7";}
-	23.333333333%{--vcf:"7";--vcb:"8";}
-	26.666666667%{--vbf:"8";--vbb:"9";}
-	30.000000000%{--vaf:"9";--vab:"0";}
-	33.333333333%{--vcf:"0";--vcb:"1";}
-	36.666666667%{--vbf:"1";--vbb:"2";}
-	40.000000000%{--vaf:"2";--vab:"3";}
-	43.333333333%{--vcf:"3";--vcb:"4";}
-	46.666666667%{--vbf:"4";--vbb:"5";}
-	50.000000000%{--vaf:"5";--vab:"6";}
-	53.333333333%{--vcf:"6";--vcb:"7";}
-	56.666666667%{--vbf:"7";--vbb:"8";}
-	60.000000000%{--vaf:"8";--vab:"9";}
-	63.333333333%{--vcf:"9";--vcb:"0";}
-	66.666666667%{--vbf:"0";--vbb:"1";}
-	70.000000000%{--vaf:"1";--vab:"2";}
-	73.333333333%{--vcf:"2";--vcb:"3";}
-	76.666666667%{--vbf:"3";--vbb:"4";}
-	80.000000000%{--vaf:"4";--vab:"5";}
-	83.333333333%{--vcf:"5";--vcb:"6";}
-	86.666666667%{--vbf:"6";--vbb:"7";}
-	90.000000000%{--vaf:"7";--vab:"8";}
-	93.333333333%{--vcf:"8";--vcb:"9";}
-	96.666666667%{--vbf:"9";--vbb:"0";}
-	100.000000000%{--vaf:"0";--vab:"1";--vbf:"9";--vbb:"0";--vcf:"8";--vcb:"9";}
-}
-
-.clock1 {
-	--sc: 2;
-	--dl: -50399s;
-	--bk: transparent;
-	--bk_color:black;
-	--ft_color:white;
-	--bd_radius:.2em;
-	--path_u:polygon(0 0, 100% 0, 100% 50%, 0 50%);
-	--path_d:polygon(0 50%, 100% 50%, 100% 100%, 0 100%);
-	--rotX: 0deg;
-	--rotY: -43deg;
-	display: flex;
-	font-size: 30px;
-	background-color: var(--bk);
-	transform-style: preserve-3d;
-	transform-origin: center;
-	transform: rotateY(var(--rotY)) rotateX(var(--rotX));
-}
-
-.tick_s1{
-	--vaf:"0";
-	--vab:"1";
-	--vbf:"9";
-	--vbb:"0";
-	--vcf:"8";
-	--vcb:"9";
-	/* position: absolute; */
-	left: 10px;
-	top: 10px;
-	height: 1.4em;
-	width: 1em;
-	transform-style: preserve-3d;
-	transform-origin: center;
-	transform: rotateY(0deg);
-}
-
-.tick_a1,.tick_b1,.tick_c1 {
-	position: absolute;
-	width: 100%;
-	height: 100%;
-	left: 0;
-	top: 0;
-	transform-style: preserve-3d;
-	transform-origin: center;
-}
-
-.tick_a1::before,.tick_a1::after,.tick_b1::before,.tick_b1::after,.tick_c1::before,.tick_c1::after  {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	width: 100%;
-	height: 100%;
-	border-radius: 0.2em;
-	position: absolute;
-	background-color: black;
-	color: white;
-
-	transform-origin: center;
-}
-
-.tick_a1::before,.tick_b1::before,.tick_c1::before {
-	background-color: var(--fc);
-	clip-path: var(
-	--path_u);
-	transform: translateZ(0px);
-	transform-style: preserve-3d;
-	backface-visibility: hidden;
-}
-.tick_a1::after,.tick_b1::after,.tick_c1::after {
-	background-color: var(--bc);
-	clip-path: var(
-	--path_d);
-	transform: rotateX(180deg) translateZ(1px);
-	transform-style: preserve-3d;
-	backface-visibility: hidden;
-}
-.tick_a1::before{
-	content: var(--vaf);
-}
-.tick_b1::before{
-	content: var(--vbf);
-}
-.tick_c1::before{
-	content: var(--vcf);
-}
-.tick_a1::after{
-	content: var(--vab);
-}
-.tick_b1::after{
-	content: var(--vbb);
-}
-.tick_c1::after{
-	content: var(--vcb);
-}
-/*秒*/
-.tick_s1 {
-	animation: tick_10 calc(30s * var(--sc)) calc((var(--dl) - 0.75s) * var(--sc)) steps(1) infinite both;
-}
-.tick_s1>.tick_a1 {
-	--fc: #f00;
-	--bc: #a00;
-	transform: rotateX(0deg);
-	animation: tick_s_flip calc(3s * var(--sc)) calc((-0s + var(--dl)) * var(--sc)) linear infinite both;
-}
-.tick_s1>.tick_b1 {
-	--fc: #0f0;
-	--bc: #0a0;
-	transform: rotateX(0deg);
-	animation: tick_s_flip calc(3s * var(--sc)) calc((-1s + var(--dl))  * var(--sc)) linear infinite both;
-}
-.tick_s1>.tick_c1 {
-	--fc: #00f;
-	--bc: #00a;
-	transform: rotateX(0deg);
-	animation: tick_s_flip calc(3s * var(--sc)) calc((-2s + var(--dl))  * var(--sc)) linear infinite both;
-}
-
-
-
-
-
-
-
-
-
-
 
 
 .tick_10h,.tick_h,.tick_10m,.tick_m,.tick_10s,.tick_s{
@@ -498,9 +207,27 @@ body {
 	content: var(--vcb);
 }
 /*秒*/
-.tick_s {
-	animation: tick_10 calc(30s * var(--sc)) calc((var(--dl) - 0.75s) * var(--sc)) steps(1) infinite both;
+/*ios不支持*/
+/* .tick_s{animation: tick_10 calc(30s * var(--sc)) calc((var(--dl) - 0.75s) * var(--sc)) steps(1) infinite both;} */
+.tick_s>.tick_a>.before::before {
+	animation: tick_10_af calc(30s * var(--sc)) calc((var(--dl) - 0.75s) * var(--sc)) steps(1) infinite both;
 }
+.tick_s>.tick_a>.after::after {
+	animation: tick_10_af calc(30s * var(--sc)) calc((var(--dl) - 21.75s) * var(--sc)) steps(1) infinite both;
+}
+.tick_s>.tick_b>.before::before {
+	animation: tick_10_af calc(30s * var(--sc)) calc((var(--dl) - 10.75s) * var(--sc)) steps(1) infinite both;
+}
+.tick_s>.tick_b>.after::after {
+	animation: tick_10_af calc(30s * var(--sc)) calc((var(--dl) - 1.75s) * var(--sc)) steps(1) infinite both;
+}
+.tick_s>.tick_c>.before::before {
+	animation: tick_10_af calc(30s * var(--sc)) calc((var(--dl) - 20.75s) * var(--sc)) steps(1) infinite both;
+}
+.tick_s>.tick_c>.after::after {
+	animation: tick_10_af calc(30s * var(--sc)) calc((var(--dl) - 11.75s) * var(--sc)) steps(1) infinite both;
+}
+
 .tick_s>.tick_a {
 	transform: rotateX(0deg);
 	animation: tick_s_flip calc(3s * var(--sc)) calc((-0s + var(--dl)) * var(--sc)) linear infinite both;
@@ -514,7 +241,26 @@ body {
 	animation: tick_s_flip calc(3s * var(--sc)) calc((-2s + var(--dl))  * var(--sc)) linear infinite both;
 }
 /*10秒*/
-.tick_10s {animation: tick_6 calc(60s * var(--sc)) calc((var(--dl) - 0.75s) * var(--sc)) steps(1) infinite both;}
+/* .tick_10s {animation: tick_6 calc(60s * var(--sc)) calc((var(--dl) - 0.75s) * var(--sc)) steps(1) infinite both;} */
+.tick_10s>.tick_a>.before::before {
+	animation: tick_6_af calc(60s * var(--sc)) calc((var(--dl) - 0.75s) * var(--sc)) steps(1) infinite both;
+}
+.tick_10s>.tick_a>.after::after {
+	animation: tick_6_ab calc(60s * var(--sc)) calc((var(--dl) - 0.75s) * var(--sc)) steps(1) infinite both;
+}
+.tick_10s>.tick_b>.before::before {
+	animation: tick_6_bf calc(60s * var(--sc)) calc((var(--dl) - 0.75s) * var(--sc)) steps(1) infinite both;
+}
+.tick_10s>.tick_b>.after::after {
+	animation: tick_6_af calc(60s * var(--sc)) calc((var(--dl) - 10.75s) * var(--sc)) steps(1) infinite both;
+}
+.tick_10s>.tick_c>.before::before {
+	animation: tick_6_ab calc(60s * var(--sc)) calc((var(--dl) - 50.75s) * var(--sc)) steps(1) infinite both;
+}
+.tick_10s>.tick_c>.after::after {
+	animation: tick_6_bf calc(60s * var(--sc)) calc((var(--dl) - 10.75s) * var(--sc)) steps(1) infinite both;
+}
+
 .tick_10s>.tick_a {
 	transform: rotateX(0deg);
 	animation: tick_10s_flip calc(30s * var(--sc)) calc((-0s + var(--dl)) * var(--sc)) linear infinite both;
@@ -878,5 +624,81 @@ body {
 	97.222222%{--vcf:"2";--vcb:"3";}
 	98.611111%{--vbf:"3";--vbb:"0";}
 	100.000000000%{--vaf:"0";--vab:"1";--vbf:"3";--vbb:"0";--vcf:"2";--vcb:"3";}
+}
+
+
+
+
+@keyframes tick_10_af{
+	0.000000000%{content:"0";}
+	10.000000000%{content:"3";}
+	20.000000000%{content:"6";}
+	30.000000000%{content:"9";}
+	40.000000000%{content:"2";}
+	50.000000000%{content:"5";}
+	60.000000000%{content:"8";}
+	70.000000000%{content:"1";}
+	80.000000000%{content:"4";}
+	90.000000000%{content:"7";}
+	100.000000000%{content:"0";}
+}
+
+@keyframes tick_6_af{
+	0.000000000%{content:"0";}
+	50.000000000%{content:"3";}
+	100.00000000%{content:"0";}
+}
+@keyframes tick_6_ab{
+	0.000000000%{content:"1";}
+	50.000000000%{content:"4";}
+	100.00000000%{content:"1";}
+}
+@keyframes tick_6_bf{
+	0.000000000%{content:"5";}
+	33.333333333%{content:"2";}
+	83.333333333%{content:"5";}
+}
+@keyframes tick_6_bb{
+	0.000000000%{content:"0";}
+	33.333333333%{content:"3";}
+	83.333333333%{content:"0";}
+}
+@keyframes tick_6_cf{
+	0.000000000%{content:"4";}
+	16.666666667%{content:"1";}
+	66.666666667%{content:"4";}
+}
+@keyframes tick_6_cb{
+	0.000000000%{content:"5";}
+	16.666666667%{content:"2";}
+	66.666666667%{content:"5";}
+}
+
+@keyframes tick_24_af{
+	0.000000000%{content:"0";}
+	4.166667%{content:"3";}
+	8.333333%{content:"6";}
+	12.500000%{content:"9";}
+	16.666667%{content:"2";}
+	20.833333%{content:"5";}
+	25.000000%{content:"8";}
+	29.166667%{content:"1";}
+	33.333333%{content:"0";}
+	37.500000%{content:"3";}
+	41.666667%{content:"6";}
+	45.833333%{content:"9";}
+	50.000000%{content:"2";}
+	54.166667%{content:"5";}
+	58.333333%{content:"8";}
+	62.500000%{content:"1";}
+	66.666667%{content:"0";}
+	70.833333%{content:"3";}
+	75.000000%{content:"6";}
+	79.166667%{content:"9";}
+	83.333333%{content:"2";}
+	87.500000%{content:"5";}
+	91.666667%{content:"8";}
+	95.833333%{content:"1";}
+	100.000000000%{content:"0";}
 }
 
