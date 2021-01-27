@@ -463,7 +463,10 @@ body {
 	top: 0;
 	transform-style: preserve-3d;
 	transform-origin: center;
+	clip-path: var(--path_u);
 }
+
+
 
 .before,.after{
 	display: flex;
@@ -482,13 +485,13 @@ body {
 
 .before{
 	background-color: green;
-	clip-path: var(--path_u);
+/* 	clip-path: var(--path_u); */
 	transform: translateZ(0px);
 }
 
 .after{
 	background-color: blueviolet;
-	clip-path: var(--path_d);
+/* 	clip-path: var(--path_d); */
 	transform: rotateX(180deg) translateZ(.01px);
 }
 .tick_a>.before::before{
