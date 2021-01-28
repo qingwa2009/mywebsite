@@ -12,21 +12,7 @@ body {
 	flex-wrap: wrap;
 }
 
-.content::before{
-	content:"a";
-	animation: content 3s infinite;
-}
-@keyframes content{
-	0%{
-		content:"a";
-	}
-	30%{
-		content:"b";
-	}
-	60%{
-		content:"c";
-	}
-}
+
 
 .cube_view2 {
 	--rotX: -27deg;
@@ -139,12 +125,14 @@ body {
 	--vbb:"0";
 	--vcf:"8";
 	--vcb:"9";
-/* 	position: relative; */
-	height: 1.4em;
+	--h:1.4em;
+	height: var(--h);
 	width: 1em;
+	position: relative;
 	transform-style: preserve-3d;
 	transform-origin: center;
-	margin:3px;
+	margin: 3px;
+	padding: 0;
 }
 
 
@@ -163,84 +151,54 @@ body {
 	height: 100%;
 	overflow: hidden;
 	position: relative;
-/* 	top: 0; */
-/* 	left:0; */
-	border-radius: 0.2em 0.2em 0 0;
 	color:white;
 	background-color:black;
-	transform-style: preserve-3d;
 	backface-visibility:hidden;
-}
-.before{
+	transform-style: preserve-3d;
+	border-radius: 0.2em 0.2em 0 0;
 	transform:translateZ(.5px);
 }
+
 .after{
+	background-color:red;
 	border-radius: 0 0 0.2em 0.2em;
 	transform-origin: top;
 	transform: rotateX(180deg) translateZ(.5px);
 }
+.before>div, .after>div{
+	width:100%;	
+	top: 0%;
+	position: absolute;
+}
 
-.before::before{
-	width: 100%;
-	height: 200%;
+.before>div>div,.after>div>div{
+	width:100%;
+	height: var(--h);
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	background-color:red;
-	position:absolute;
-	top:0;
-
 }
 
-.after::after{
-	width: 100%;
-	height: 200%;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	background-color:blue;
-	position:absolute;
-	bottom:0;
-}
-
-.tick_a>.before::before{
-	content: var(--vaf);
-}
-.tick_b>.before::before{
-	content: var(--vbf);
-}
-.tick_c>.before::before{
-	content: var(--vcf);
-}
-.tick_a>.after::after{
-	content: var(--vab);
-}
-.tick_b>.after::after{
-	content: var(--vbb);
-}
-.tick_c>.after::after{
-	content: var(--vcb);
-}
 /*秒*/
 /*ios不支持*/
 /* .tick_s{animation: tick_10 calc(30s * var(--sc)) calc((var(--dl) - 0.75s) * var(--sc)) steps(1) infinite both;} */
-.tick_s>.tick_a>.before::before {
+.tick_s>.tick_a>.before>div{
 	animation: tick_10_af calc(30s * var(--sc)) calc((var(--dl) - 0.75s) * var(--sc)) steps(1) infinite both;
 }
-.tick_s>.tick_a>.after::after {
-	animation: tick_10_af calc(30s * var(--sc)) calc((var(--dl) - 21.75s) * var(--sc)) steps(1) infinite both;
+.tick_s>.tick_a>.after>div{
+	animation: tick_10_ab calc(30s * var(--sc)) calc((var(--dl) - 0.75s) * var(--sc)) steps(1) infinite both;
 }
-.tick_s>.tick_b>.before::before {
+.tick_s>.tick_b>.before>div{
 	animation: tick_10_af calc(30s * var(--sc)) calc((var(--dl) - 10.75s) * var(--sc)) steps(1) infinite both;
 }
-.tick_s>.tick_b>.after::after {
-	animation: tick_10_af calc(30s * var(--sc)) calc((var(--dl) - 1.75s) * var(--sc)) steps(1) infinite both;
+.tick_s>.tick_b>.after>div{
+	animation: tick_10_ab calc(30s * var(--sc)) calc((var(--dl) - 10.75s) * var(--sc)) steps(1) infinite both;
 }
-.tick_s>.tick_c>.before::before {
+.tick_s>.tick_c>.before>div{
 	animation: tick_10_af calc(30s * var(--sc)) calc((var(--dl) - 20.75s) * var(--sc)) steps(1) infinite both;
 }
-.tick_s>.tick_c>.after::after {
-	animation: tick_10_af calc(30s * var(--sc)) calc((var(--dl) - 11.75s) * var(--sc)) steps(1) infinite both;
+.tick_s>.tick_c>.after>div{
+	animation: tick_10_ab calc(30s * var(--sc)) calc((var(--dl) - 20.75s) * var(--sc)) steps(1) infinite both;
 }
 
 .tick_s>.tick_a {
@@ -702,17 +660,28 @@ body {
 
 
 @keyframes tick_10_af{
-	0.000000000%{content:"0";}
-	10.000000000%{content:"3";}
-	20.000000000%{content:"6";}
-	30.000000000%{content:"9";}
-	40.000000000%{content:"2";}
-	50.000000000%{content:"5";}
-	60.000000000%{content:"8";}
-	70.000000000%{content:"1";}
-	80.000000000%{content:"4";}
-	90.000000000%{content:"7";}
-	100.000000000%{content:"0";}
+	0.000000000%{top:0%;}
+	10.000000000%{top:-200%;}
+	20.000000000%{top:-400%;}
+	30.000000000%{top:-600%;}
+	40.000000000%{top:-800%;}
+	50.000000000%{top:-1000%;}
+	60.000000000%{top:-1200%;}
+	70.000000000%{top:-1400%;}
+	80.000000000%{top:-1600%;}
+	90.000000000%{top:-1800%;}	
+}
+@keyframes tick_10_ab{
+	0.000000000%{top:-100%;}
+	10.000000000%{top:-300%;}
+	20.000000000%{top:-500%;}
+	30.000000000%{top:-700%;}
+	40.000000000%{top:-900%;}
+	50.000000000%{top:-1100%;}
+	60.000000000%{top:-1300%;}
+	70.000000000%{top:-1500%;}
+	80.000000000%{top:-1700%;}
+	90.000000000%{top:-1900%;}	
 }
 
 @keyframes tick_6_af{
@@ -919,3 +888,50 @@ body {
 	100.000000000%{content:"3";}
 }
 */
+
+.content{
+	--h: 1.5em;
+	width:1em;
+	height: var(--h);
+	background-color:#FFC107;
+	position: relative;
+	/* overflow: hidden; */
+}
+.content>div{
+	width:100%;
+/* 	height: 1000%; */
+	position: absolute;
+	top: 100%;
+	animation: content 10s steps(1) infinite;
+}
+.content>div>div{
+	width:100%;
+	height: var(--h);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: #76bfff75;
+}
+@keyframes content{
+	0%{
+		top: 0%;
+	}10%{
+		top:-100%;
+	}20%{
+		top:-200%;
+	}30%{
+		top:-300%;
+	}40%{
+		top:-400%;
+	}50%{
+		top:-500%;
+	}60%{
+		top:-600%;
+	}70%{
+		top:-700%;
+	}80%{
+		top:-800%;
+	}90%{
+		top:-900%;
+	}
+}
