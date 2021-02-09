@@ -10,7 +10,7 @@
 	<link rel="stylesheet" type="text/css" href="css/animate.css">
 	<style>
 		.inbox,.outbox{
-			position:relative;			
+			position:relative;		
 		}
 		.inbox::after,.outbox::after{			
 			display:block;
@@ -34,6 +34,14 @@
 		}
 		.outbox::after{
 			content: "📤";
+		}
+		.list{
+ 			position:absolute;
+			left:0;
+			right:0;
+			top:1em;
+			bottom:0;
+			overflow:auto; 
 		}
 		.list>li{
 			padding-top:3px;
