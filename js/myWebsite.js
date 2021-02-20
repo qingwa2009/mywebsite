@@ -120,7 +120,8 @@ window.App = (() => {
 			, _menuItemsMap = {};
 		var _listener = null
 			, _target = null
-			, _context = null;
+			, _context = null
+			, _closeCallback = undefined;
 		//子菜单ID计数
 		var _submenuIdCounter;
 
@@ -304,8 +305,10 @@ window.App = (() => {
 			console.log("displayMenu");
 		}
 
-		function show(e, target, type) {
+		function show(e, target, type, closeCallback) {
 			_target = target || e.target;
+			_closeCallback = closeCallback;
+
 			_display(this, e, target, type);
 			
 			window.removeEventListener("mousedown", _listener);
@@ -320,8 +323,11 @@ window.App = (() => {
 				this.style.display = "none";
 				window.removeEventListener("mousedown", _listener);
 				window.removeEventListener("resize", _listener);
+				
+				if (_closeCallback) _closeCallback(_context, _target);
 				_listener = null;
 				_target = null;
+				_closeCallback = null;
 				_hideSubmenu();
 			}
 		}

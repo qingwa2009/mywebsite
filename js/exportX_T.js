@@ -156,9 +156,10 @@ window.addEventListener('DOMContentLoaded', ()=>{
 		var target = e.target;
 		if(!(target instanceof HTMLLIElement)) return;
 		let context = CommonFunc.getParent(target, HTMLFieldSetElement);
+		
+		select(target);
 		myMenu.loadMenuItems(context, menu);
-		myMenu.show(e, target, myMenu.TYPES.CONTEXTMENU);
-
+		myMenu.show(e, target, myMenu.TYPES.CONTEXTMENU, (ctx, em)=>{unSelect(em)});		
 	}
 
 	window.addEventListener("contextmenu", handleContextMenu, true);
@@ -182,6 +183,14 @@ window.addEventListener('DOMContentLoaded', ()=>{
 			console.log(e);
 			refresh();		
 		}
+	}
+
+	function select(em){
+		em.attributes.setNamedItem(document.createAttribute("selected"));
+	}
+
+	function unSelect(em){
+		em.attributes.removeNamedItem("selected");
 	}
 
 	refresh();
