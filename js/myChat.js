@@ -23,7 +23,7 @@ window.addEventListener('DOMContentLoaded', ()=>{
 	const players={};
 	var selfID=undefined;
 
-	const ws=App.createWebSocket(window, "multiplayer");
+	const ws=App.createWebSocket(window, "/multiplayer", "json");
 	ws.onmessage=e=>{handleData(JSON.parse(e.data));};
 	ws.onclose=e=>{console.warn(e);};
 

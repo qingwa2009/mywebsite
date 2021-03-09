@@ -175,7 +175,7 @@ window.addEventListener('DOMContentLoaded', ()=>{
 	}
 	
 	function reconnectWebSocket(){
-		ws=App.createWebSocket(window, "filelist");
+		ws=App.createWebSocket(window, "/filelist", "json");
 		ws.onclose=e=>{
 			alert(`导出X_T实时更新列表连接已关闭：${e.reason}\n请关闭该页面后重新打开！`);						
 		}
