@@ -8,8 +8,9 @@ window.addEventListener('DOMContentLoaded', ()=>{
 	const myMenu = App.myMenu;
 // 	const uploadURL = top.location.origin + "/upload";
 	const downloadURL = top.location.origin + "/upload";
-	const uploadURL = "/upload";
-	const _cmd = "/filelist?type=";
+	const uploadURL = "/exportxbupload";
+	const _cmd = "/exportxbfilelist?type=";
+	const wsurl="/exportxb";
 	const cmdExporting = _cmd + "exporting";
 	const cmdExported = _cmd + "exported";
 	const cmdDelete= _cmd + "delete";
@@ -175,7 +176,7 @@ window.addEventListener('DOMContentLoaded', ()=>{
 	}
 	
 	function reconnectWebSocket(){
-		ws=App.createWebSocket(window, "/filelist", "json");
+		ws=App.createWebSocket(window, wsurl, "json");
 		ws.onclose=e=>{
 			alert(`导出X_T实时更新列表连接已关闭：${e.reason}\n请关闭该页面后重新打开！`);						
 		}

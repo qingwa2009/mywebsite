@@ -699,8 +699,7 @@ window.App = (() => {
 	}
 
 	function createWebSocket(win, url, protocol){		
-		const p=location.protocol==="https:" ? "wss" : "ws";
-		return new win.WebSocket(`${p}://${location.host}${url}`, protocol);
+		return new win.WebSocket(`ws${location.origin.substr(4)}${url}`, protocol);
 	}
 
 	/*-------------------释放占有recordset资源相关-----------------------*/

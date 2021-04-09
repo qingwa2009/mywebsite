@@ -1,0 +1,138 @@
+@charset "utf-8"; html,body {
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	background-color: #ecf0f3;
+	--hover-color:lightgrey;
+	--active-color: chartreuse;
+}
+
+body {
+	display: flex;
+	flex-direction:column;
+	overflow: hidden;
+}
+body>div{
+	overflow:hidden;
+}
+body>div:nth-of-type(1){
+	flex-basis: auto;
+}
+body>div:nth-of-type(2){
+	flex-basis: auto;
+}
+body>div:nth-of-type(3){
+	flex-basis: 20%;
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+}
+body>div:nth-of-type(4){
+	flex-basis: 40%;
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+}
+body>div:nth-of-type(5){
+	flex-basis: 20%;
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+}
+body>div:nth-of-type(6){
+	flex-basis: 20%;
+}
+
+table{
+	width: 100%;
+	border-collapse: collapse;
+}
+td, th{
+	border: 1px solid gray;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	max-width: 20em;
+	min-width: 2em;
+}
+tr{
+	cursor: default;
+}
+tr:hover{
+	background-color:var(--hover-color);
+}
+tr[selected]{
+	background-color: cadetblue;
+	color: white;
+}
+#state:hover{
+	background-color:var(--hover-color);
+}
+#state::after {
+	content: '';
+	position: absolute;
+	top: 2px;
+	right: 2px;
+	width: .5em;
+	height: .5em;
+	border-radius: 50%;
+	background-color: red;
+}
+
+#state[running='false']::after {
+	background-color: red;
+}
+
+#state[running='true']::after {
+	background-color: var(--active-color);
+}
+#state{
+	border: 1px solid;
+	position: relative;
+	margin: 1px;
+	width: 8em;
+	text-align: center;
+	border-radius: 3px;
+}
+
+.logview, .readingview, .writingview, .wsview{
+	overflow:auto;
+	/* max-height:8em; */
+	/* min-height:4em; */
+	border: 1px dashed black;
+	flex-grow: 1;
+}
+
+input[type='checkbox']{
+	display:none;
+}
+input[type='checkbox']+label{
+	display: inline-block;
+	border: 1px solid black;
+	border-radius: 3px;
+	padding: 0 1em;	
+	position: relative;
+}
+input[type='checkbox']+label::after{
+	content: '';
+	width: .5em;
+	height: .5em;
+	border-radius: 50%;
+	background-color: gray;
+	display: inline-block;
+	position: absolute;
+	right: 3px;
+	top: 3px;
+}
+input[type='checkbox']:checked+label::after{
+	background-color: #0f0;
+}
+input[type='checkbox']+label:hover{
+	background-color: var(--hover-color);
+}
+
+textarea{
+	width: 99%;
+	height: 100%;
+	white-space: nowrap;
+}

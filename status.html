@@ -1,0 +1,79 @@
+<!doctype html>
+<html>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+	<head>
+		<title>Welcome</title>
+	</head>
+	<!--外部引用样式-->
+	<!-- 	<link rel="stylesheet" type="text/css" href="css/cssVar.css"> -->
+	<!-- 	<link rel="stylesheet" type="text/css" href="css/commStyle.css"> -->
+	<link rel="stylesheet" type="text/css" href="css/status.css">
+	<style type="text/css"></style>
+	<body>
+		<div>
+			<div id='state' running='false' title='click to restart server!(所有连接都关闭时才会生效!)'>
+				stop
+			</div>			
+		</div>
+		<div>
+			<div>
+				socket count: <label id='socketcount'>1</label>
+			</div>
+		</div>
+		<div>
+			<div class='page'>
+				websocket count: <label id='wscount'>2</label>
+			</div>
+			<div class='wsview'>
+				<table id="wslist">
+					<thead></thead>
+					<tbody></tbody>
+				</table>
+			</div>
+		</div>
+		<div>
+			<lable>file manager:</lable>
+			<div class='page'>
+				reading count: <label id='readingcount'>1</label>
+			</div>
+			<div class="readingview">
+				<table id="readinglist">
+					<thead></thead>
+					<tbody></tbody>
+				</table>
+			</div>
+			<div class='page'>
+				writing count: <label id='writingcount'>1</label>
+			</div>
+			<div class="writingview">
+				<table id="writinglist">
+					<thead></thead>
+					<tbody></tbody>
+				</table>
+			</div>
+		</div>
+		<div>
+			<div>
+				<input id="enablelog" type='checkbox'/>
+				<label for="enablelog">log</label>
+				<input id="enablewarn" type='checkbox'/>
+				<label for="enablewarn">warn</label>
+				<input id="enableerror" type='checkbox'/>
+				<label for="enableerror">error</label>
+				<input id="enableweblog" type='checkbox'/>
+				<label for="enableweblog">weblog</label>
+			</div>
+			<div class='logview'>
+				<table id="loglist">
+					<thead></thead>
+					<tbody></tbody>
+				</table>
+			</div>
+		</div>
+		<div>
+			<textarea id='content' wrap='none'></textarea>
+		</div>
+	</body>
+	<script type="text/javascript" src="js/status.js"></script>
+</html>

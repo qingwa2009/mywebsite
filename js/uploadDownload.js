@@ -76,7 +76,18 @@ window.addEventListener('DOMContentLoaded', function(){
 					startTime=Date.now();
 				}
 			}
-
+// 			xhr.onloadstart=function(e){
+// 				console.log("onloadstart", xhr);
+// 			}
+// 			xhr.onabort=function(e){
+// 				console.log('onabort', xhr);
+// 			}
+// 			xhr.onloadend=function(e){
+// 				console.log('onloadend', xhr);
+// 			}
+// 			xhr.ontimeout=function(e){
+// 				console.log('ontimeout', xhr);
+// 			}
 			xhr.upload.onload =function(e){
 				console.log(`上传成功！`);
 				progress.value = 100;
