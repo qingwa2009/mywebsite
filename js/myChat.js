@@ -86,6 +86,7 @@ window.addEventListener('DOMContentLoaded', ()=>{
 // 		`;
 	}
 
+	let moveStack=null;
 	function handleMouseMove(e){
 		const x=e.clientX;
 		const y=e.clientY;
@@ -94,8 +95,22 @@ window.addEventListener('DOMContentLoaded', ()=>{
 		dt[P_ACT]=ACT_MOV;
 		dt[P_X]=x;
 		dt[P_Y]=y;
-		ws.send(JSON.stringify(dt));
+		
+		moveStack=dt;
+// 		ws.send(JSON.stringify(dt));
 	}
+
+// 	let lastTimestamp=0;
+	(function fpsMove(timestamp){
+		if(moveStack!==null){
+			ws.send(JSON.stringify(moveStack));
+			moveStack=null;
+// 			console.log(timestamp-lastTimestamp);
+// 			lastTimestamp=timestamp;
+		}
+		requestAnimationFrame(fpsMove);	
+	})();
+	
 	
 	let clickPoints=[];
 	function handleMouseClick(e){
