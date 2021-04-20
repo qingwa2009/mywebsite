@@ -44,17 +44,31 @@ window.addEventListener('DOMContentLoaded', ()=>{
 	const wslist = $('wslist');
 	const loglist = $('loglist');
 	const state = $('state');
+	const updateWebsite = $('updateWebsite');
+	const updateServer = $('updateServer');
 	const enablelog=$('enablelog');
 	const enablewarn=$('enablewarn');
 	const enableerror=$('enableerror');
 	const enableweblog=$('enableweblog');
 	const content=$('content');
-	$('state').onclick=e=>{
-		var xhr=new XMLHttpRequest	();
-		xhr.open('get', '/restart');
+	
+	state.onclick=e=>request('/restart', e.currentTarget);
+	updateWebsite.onclick=e=>request('/updateWebsite', e.currentTarget);
+	updateServer.onclick=e=>request('/updateServer', e.currentTarget);
+	function request(url, btn){
+		var xhr=new XMLHttpRequest();
+		xhr.open('get', url);
 		xhr.send();
-	};
-
+		btn.disabled=true;
+		xhr.onloadend=()=>btn.disabled=false;
+		xhr.onload=(ev)=>{
+			if(xhr.status!==200)
+				alert(`${xhr.status} ${xhr.statusText}\r\n${xhr.responseText}`);
+		};
+		xhr.onerror=(ev)=>{
+			alert("请求错误！无法连接到服务器！");
+		};
+	}
 
 	function loadStatus(status) {
 				console.log(status);

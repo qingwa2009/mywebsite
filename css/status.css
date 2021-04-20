@@ -2,8 +2,8 @@
 	width: 100%;
 	height: 100%;
 	margin: 0;
-	background-color: #ecf0f3;
-	--hover-color:lightgrey;
+	background-color: #ffffff;
+	--hover-color: #d4f2ff;
 	--active-color: chartreuse;
 }
 
@@ -58,16 +58,39 @@ td, th{
 tr{
 	cursor: default;
 }
-tr:hover{
+tbody>tr:hover{
 	background-color:var(--hover-color);
 }
 tr[selected]{
 	background-color: cadetblue;
 	color: white;
 }
-#state:hover{
-	background-color:var(--hover-color);
+.btn{
+	border: 1px solid;
+	position: relative;
+	margin: 4px;
+	width: 8em;
+	height: 1.5em;
+	text-align: center;
+	border-radius: 3px;
+	transition:background 0.5s;
+	background-color:white;
 }
+
+.btn:hover{
+	background-color:var(--hover-color);
+	background-image: radial-gradient(circle, transparent 1%, var(--hover-color) 1%);
+	background-size: 15000%;
+	background-position: center;
+	background-repeat: no-repeat;
+}
+
+.btn:active{
+	background-color: #f8fdff;
+	background-size: 100%;
+	transition:background 0s;
+}
+
 #state::after {
 	content: '';
 	position: absolute;
@@ -86,14 +109,9 @@ tr[selected]{
 #state[running='true']::after {
 	background-color: var(--active-color);
 }
-#state{
-	border: 1px solid;
-	position: relative;
-	margin: 1px;
-	width: 8em;
-	text-align: center;
-	border-radius: 3px;
-}
+
+
+
 
 .logview, .readingview, .writingview, .wsview{
 	overflow:auto;
