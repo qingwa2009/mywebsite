@@ -56,6 +56,8 @@ window.addEventListener('DOMContentLoaded', ()=>{
 	updateWebsite.onclick=e=>request('/updateWebsite', e.currentTarget);
 	updateServer.onclick=e=>request('/updateServer', e.currentTarget);
 	function request(url, btn){
+		if(!confirm(`确定 '${btn.title}' ?`)) return;
+		
 		var xhr=new XMLHttpRequest();
 		xhr.open('get', url);
 		xhr.send();
