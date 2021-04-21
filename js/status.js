@@ -46,25 +46,27 @@ window.addEventListener('DOMContentLoaded', ()=>{
 	const state = $('state');
 	const updateWebsite = $('updateWebsite');
 	const updateServer = $('updateServer');
+	const showUpdateServerLog = $('showUpdateServerLog');
 	const enablelog=$('enablelog');
 	const enablewarn=$('enablewarn');
 	const enableerror=$('enableerror');
 	const enableweblog=$('enableweblog');
 	const content=$('content');
 	
-	state.onclick=e=>request('/restart', e.currentTarget);
-	updateWebsite.onclick=e=>request('/updateWebsite', e.currentTarget);
-	updateServer.onclick=e=>request('/updateServer', e.currentTarget);
-	function request(url, btn){
-		if(!confirm(`确定 '${btn.title}' ?`)) return;
+	state.onclick=e=>request('post', '/restart', undefined, e.currentTarget);
+	updateWebsite.onclick=e=>request('post', '/updateWebsite', undefined, e.currentTarget);
+	updateServer.onclick=e=>request('post', '/updateServer', undefined, e.currentTarget);
+	showUpdateServerLog.onclick=e=>request('get', '/updateServer', undefined, e.currentTarget, false);
+	function request(method, url, msg, btn, showComfirm=true){
+		if(showComfirm && (!confirm(`确定 '${btn.title}' ?`))) return;
 		
 		var xhr=new XMLHttpRequest();
-		xhr.open('get', url);
-		xhr.send();
+		xhr.open(method, url);
+		xhr.send(msg);
 		btn.disabled=true;
 		xhr.onloadend=()=>btn.disabled=false;
 		xhr.onload=(ev)=>{
-			if(xhr.status!==200)
+// 			if(xhr.status!==200)
 				alert(`${xhr.status} ${xhr.statusText}\r\n${xhr.responseText}`);
 		};
 		xhr.onerror=(ev)=>{

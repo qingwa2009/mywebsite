@@ -75,6 +75,8 @@ tr[selected]{
 	border-radius: 3px;
 	transition:background 0.5s;
 	background-color:white;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 .btn:hover{
