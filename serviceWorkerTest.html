@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+		<title>Welcome</title>
+		<link rel="manifest" href="js/serviceworkers/app.webmanifest">
+		<!--外部引用样式-->
+		<!-- 		<link rel="stylesheet" type="text/css" href="css/cssVar.css"> -->
+		<!-- 		<link rel="stylesheet" type="text/css" href="css/commStyle.css"> -->
+		<!-- 		<link rel="stylesheet" type="text/css" href="css/animate.css"> -->
+		<script type="text/javascript">
+			if (window.location.protocol !== 'https:')
+				alert("请使用https访问！");
+			if (!('serviceWorker'in navigator))
+				alert("当前浏览器不支持serviceWorker!");
+			navigator.serviceWorker.register('js/serviceWorkerTest.js', {
+				/*默认是脚本所在的目录*/
+				scope: '/js/serviceworkers/'
+			}).then(
+			res=>{
+				console.log(res);
+			}, 
+			rej=>{
+				console.error("service worker registration failed: ", rej.message);
+				if (rej.name == 'SecurityError') {
+					console.log("如果是证书错误，chrome浏览器可以通过设置启动目标来取消证书检查：");
+					console.log(`"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe" 
+						--ignore-certificate-errors 
+						--unsafely-treat-insecure-origin-as-secure=https://127.0.0.1`);
+				}
+			}
+			);
+		</script>
+	</head>
+	<body>
+	<!-- 	<script type="text/javascript" src="js/myPage.js"></script> -->
+	<!-- 		<script type="text/javascript" src="js/serviceWorkerTest.js"></script> -->
+	</body>
+</html>

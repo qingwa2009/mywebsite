@@ -1,0 +1,10 @@
+{
+	"name":"service worker test",
+	"short_name":"test",
+	"start_url":".",
+	"display":"standalone",
+	"background_color":"#abc",
+	"description":"just a service worker test",
+	"icons":[{"src":"icon.png", "sizes":"48x48", "type":"image/png"}],
+	"related_applications":[]
+}

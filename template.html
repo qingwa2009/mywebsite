@@ -1,20 +1,28 @@
 <!doctype html>
 <html>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
-	
 	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
 		<title>Welcome</title>
+		<!--外部引用样式-->
+		<link rel="stylesheet" type="text/css" href="css/cssVar.css">
+		<link rel="stylesheet" type="text/css" href="css/commStyle.css">
+		<link rel="stylesheet" type="text/css" href="css/animate.css">
+		<!--内联样式-->
+		<style type="text/css" >
+			/*css*/
+		</style>
+		<!--内联脚本-->
+		<script type="text/javascript">			
+			'use strict';
+		</script>
 	</head>
-	<!--外部引用样式-->
-	<link rel="stylesheet" type="text/css" href="css/cssVar.css">
-	<link rel="stylesheet" type="text/css" href="css/commStyle.css">
-	<link rel="stylesheet" type="text/css" href="css/animate.css">
-
 	<body>
-		
-	</body>
 
-	<script type="text/javascript" src="js/myPage.js"></script>
-	<script type="text/javascript" src="js/myChat.js"></script>
+		<!--module类型的脚本可以调用import引用模块-->
+		<script type="module" src="js/importTest.js"></script>
+		<!--普通脚本-->
+		<script type="text/javascript" src="js/myPage.js"></script>
+		<script type="text/javascript" src="js/myChat.js"></script>
+	</body>
 </html>

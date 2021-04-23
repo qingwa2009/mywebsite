@@ -11,4 +11,4 @@ window.addEventListener('load', ()=>{
 document.addEventListener('readystatechange', ()=>{
 	console.log('readystatechange: '+document.readyState);
 });
-console.log(window.kaka);
+console.log("in text/javascript window.kaka", window.kaka);

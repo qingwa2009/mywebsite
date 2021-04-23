@@ -16,4 +16,4 @@ window.addEventListener('load', ()=>{
 document.addEventListener('readystatechange', ()=>{
 	console.log('readystatechange: '+document.readyState);
 });
-console.log(window.lala);
+console.log("in module window.lala", window.lala);
