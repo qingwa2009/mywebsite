@@ -4,6 +4,7 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
 		<title>Welcome</title>
+		<!-- webapp manifest -->
 		<link rel="manifest" href="js/serviceworkers/app.webmanifest">
 		<!--外部引用样式-->
 		<!-- 		<link rel="stylesheet" type="text/css" href="css/cssVar.css"> -->
@@ -31,10 +32,39 @@
 				}
 			}
 			);
+
+
 		</script>
 	</head>
 	<body>
-	<!-- 	<script type="text/javascript" src="js/myPage.js"></script> -->
-	<!-- 		<script type="text/javascript" src="js/serviceWorkerTest.js"></script> -->
+		<button id='btnadd' style="display:none;">添加到主屏幕</button>		
+	
+		<script type="text/javascript">
+			let ee;
+			window.addEventListener('beforeinstallprompt', (e)=>{
+				//prevent chrome 67 and earlier form automatically showing the prompt
+				e.preventDefault();
+				ee=e;				
+				const btn = document.getElementById('btnadd');
+				btn.style.display="block";
+				btn.addEventListener('click', e=>{
+					btn.style.display="none";
+					ee.prompt();
+					ee.userChoice.then(choiceResult=>{
+						if(choiceResult.outcome==="accepted"){
+							console.log("user accepted the A2HS prompt");
+						}else{
+							console.log("user dismissed the A2HS prompt");
+						}
+						ee=null;
+					});
+				});
+						
+			});
+			
+
+		</script>
+		<!-- 	<script type="text/javascript" src="js/myPage.js"></script> -->
+		<!-- 	<script type="text/javascript" src="js/serviceWorkerTest.js"></script> -->
 	</body>
 </html>
