@@ -38,10 +38,12 @@
 	</head>
 	<body>
 		<button id='btnadd' style="display:none;">添加到主屏幕</button>		
-	
+		<button id='btnnotification'>随机消息</button>		
+
 		<script type="text/javascript">
 			let ee;
 			window.addEventListener('beforeinstallprompt', (e)=>{
+				console.log("beforeinstallprompt");
 				//prevent chrome 67 and earlier form automatically showing the prompt
 				e.preventDefault();
 				ee=e;				
@@ -62,6 +64,34 @@
 						
 			});
 			
+			window.addEventListener("DOMContentLoaded",()=>{
+				const btnnotification=document.getElementById("btnnotification");
+				btnnotification.addEventListener("click", e=>{
+					Notification.requestPermission().then(res=>{
+						if(res==='granted'){
+							randomNotification();
+						}
+					})
+				});
+				
+				let ntfs=[undefined, undefined];
+				let ntfi=0;
+				function randomNotification(){
+					const title=`title${Math.round(Math.random()*10)}`;
+					const options={
+						body:`body${Math.round(Math.random()*10)}`,
+						icon:"/js/serviceworkers/icon.png",
+						tag:`id${Math.round(Math.random()*10)}`,
+					};
+					if (ntfs[ntfi]) ntfs[ntfi].close();
+// 					ntfs[ntfi]=new Notification(title,options);
+					ntfi=(ntfi+1)%2;
+
+
+					new Notification('time', {body: new Date().getTime(), tag:'anim'});
+					setTimeout(randomNotification, 10);
+				}
+			});
 
 		</script>
 		<!-- 	<script type="text/javascript" src="js/myPage.js"></script> -->
