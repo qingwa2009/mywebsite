@@ -1,16 +1,15 @@
 <!doctype html>
-<html>
+<html style="user-select: none; background: white; margin:50px; padding: 50px;">
 
 <head>
-	<meta http-equiv="X-UA-Compatible" content="chrome=1">
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
-
 	<title>Welcome</title>
 	<!--外部引用样式-->
 	<link rel="stylesheet" type="text/css" href="/css/cssVar.css">
 	<link rel="stylesheet" type="text/css" href="/css/commStyle.css">
 	<link rel="stylesheet" type="text/css" href="/css/animate.css">
+	<link rel="stylesheet" type="text/css" href="/css/myMenu.css">
 	<!--内联样式-->
 	<style type="text/css">
 		/*css*/
@@ -21,11 +20,15 @@
 	</script>
 </head>
 
-<body>
-
+<body style="margin:40px; width:200vw; height: 200vh; background: yellow;">
+	<div id="id">菜单</div>
+	<div style="width:100px; height:200px; position:absolute; top:100vh; left:100vw; background:chartreuse"></div>
+	<iframe style="	width: 200px;height: 200px;border: 5px solid;padding: 10px;margin: 20px;" src="./myMenuTest2.html"
+		frameborder="10px"></iframe>
 	<!--module类型的脚本可以调用import引用模块-->
-	<!-- <script type="module" src="js/importTest.js"></script> -->
+	<!-- <script type="module" src="js/myMenuTest.js"></script> -->
 	<!--普通脚本-->
+	<!-- <script type="text/javascript" src="js/myPage.js"></script> -->
 	<!-- <script type="text/javascript" src="js/myChat.js"></script> -->
 </body>
 

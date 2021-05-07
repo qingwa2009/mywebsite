@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+	<title>Welcome</title>
+	<!--外部引用样式-->
+	<link rel="stylesheet" type="text/css" href="/css/cssVar.css">
+	<link rel="stylesheet" type="text/css" href="/css/commStyle.css">
+	<link rel="stylesheet" type="text/css" href="/css/animate.css">
+
+	<!--内联样式-->
+	<style type="text/css">
+		/*css*/
+	</style>
+	<!--内联脚本-->
+	<script type="text/javascript">
+		'use strict';
+	</script>
+</head>
+
+<body style="display: flex; justify-content:center; align-items:center;">
+	<popup-info data-text='lala'></popup-info>
+
+	<template id="temp">
+		<h1>i am template</h1>
+	</template>
+
+
+	<!-- <slot name="slot"> -->
+	<!-- <p>this is a slot</p> -->
+	<!-- </slot> -->
+	<!-- <h1 slot="slot">replace the slot</h1> -->
+
+	<my-comp templateid="template">
+		<h2 slot="title">title 1</h2>
+		<h1 slot="content">component 1</h1>
+	</my-comp>
+
+	<my-comp templateid="template">
+		<h1 slot="content">component 2</h1>
+	</my-comp>
+
+	<template is="my-template" src="components/test/mycomp.html" id="template"></template>
+
+	<script type="module" src="/js/myComponent.js"></script>
+	<script type="module" src="js/shadowDomTest.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+
+	<title>导出X_B</title>
+	<!--外部引用样式-->
+	<link rel="stylesheet" type="text/css" href="/css/cssVar.css">
+	<link rel="stylesheet" type="text/css" href="/css/commStyle.css">
+	<link rel="stylesheet" type="text/css" href="/css/animate.css">
+	<link rel="stylesheet" type="text/css" href="/css/mySplitter.css">
+	<link rel="stylesheet" type="text/css" href="exportX_T.css">
+</head>
+
+<body style="display:flex; flex-flow:row nowrap; user-select:none;">
+	<fieldset class="inbox" id="exporting" style="flex-grow: 1;">
+		<legend style="white-space:nowrap;">
+			<label class="help" title="将SolidWorks文件拖放到框内导出&#13导出失败的请右键删除">导出中</label>
+			<progress id="pg" value="0" max="100"></progress>
+		</legend>
+		<ol class="list"></ol>
+	</fieldset>
+	<my-splitter vertical editnext></my-splitter>
+	<fieldset class="outbox" id="exported" style="width:50%;">
+		<legend style="white-space:nowrap;">
+			<label class="help" title="将下列文件拖放到桌面下载&#13注意不能同时下载多个&#13下载完请右键删除">导出完成</label>
+		</legend>
+		<ol class="list"></ol>
+		</div>
+	</fieldset>
+	<script type="module" src="/js/mySplitter.js"></script>
+	<!--         <script type="text/javascript" src="js/myCrypto.js"></script> -->
+	<!--         <script type="text/javascript" src="js/myTable.js"></script> -->
+	<script type="module" src="exportX_T.js"></script>
+</body>
+
+</html>

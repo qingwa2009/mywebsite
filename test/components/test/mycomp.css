@@ -1,0 +1,10 @@
+div{
+    background-color: cadetblue;
+    border-radius: .5em;
+}
+.title{
+    background-color: yellow;
+}
+.content{
+    background-color: purple;
+}

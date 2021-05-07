@@ -1,0 +1,386 @@
+<!doctype html>
+<html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+
+<!--外部引用样式-->
+<link rel="stylesheet" type="text/css" href="/css/cssVar.css">
+<link rel="stylesheet" type="text/css" href="/css/commStyle.css">
+<link rel="stylesheet" type="text/css" href="/css/animate.css">
+<link rel="stylesheet" type="text/css" href="/css/mySplitter.css">
+<link rel="stylesheet" type="text/css" href="/css/myTable.css">
+
+<head>
+  <title>研发BOM选件查询</title>
+</head>
+
+<body style="display:flex;flex-flow: column nowrap;">
+  <!--   -----------------------------查询区--------------------------------------- -->
+  <form name="searchBOM" autocomplete="off" autocapitalize="characters" style="flex-shrink:0;">
+    <fieldset id="searchBOMHead" style="position:relative;">
+      <legend>查询条件</legend>
+      <div class="grid" style="grid:repeat(4,auto)/repeat(8,auto 1fr);">
+        <!--1------------------------------------------ -->
+        <label>产品编号</label>
+        <input type="search" name="产品编号">
+        <label>样品单</label>
+        <input type="search" name="样品单">
+        <label>BOM类别</label>
+        <input list="dt0" type="search" name="BOM类别">
+        <datalist id="dt0">
+          <option value="研发BOM">
+          <option value="MES生产BOM-后厂">
+          <option value="MES生产BOM-前厂">
+          <option value="产品部件组成表">
+          <option value="产品部件入箱表">
+        </datalist>
+        <label>选件类别</label>
+        <input list="dt1" type="search" name="选件类别">
+        <datalist id="dt1">
+          <option value="主架">
+          <option value="大件">
+          <option value="编藤">
+          <option value="包装材料">
+          <option value="桌面">
+          <option value="座垫填充物及其它">
+          <option value="小揽枕填充物及其它">
+          <option value="桌面及配料">
+          <option value="座垫布">
+          <option value="小揽枕布">
+          <option value="说明书">
+        </datalist>
+        <label>创建人组别</label>
+        <select name="创建人组别"></select>
+        <label>组长确认状态</label>
+        <select name="组长确认状态">
+          <option value="">全部</option>
+          <option>未确认</option>
+          <option>已确认</option>
+        </select>
+        <label>组长确认日期</label>
+        <input type="date" name="组长确认日期0">
+        <label>➜</label>
+        <input type="date" name="组长确认日期1">
+        <!--2------------------------------------------------ -->
+        <label>选件编号</label>
+        <input type="search" name="选件编号">
+        <label>设计通知单</label>
+        <input type="search" name="设计通知单">
+        <label>BOM状态</label>
+        <input list="dt2" type="search" name="BOM状态">
+        <datalist id="dt2">
+          <option value="样品">
+          <option value="转正">
+          <option value="失效">
+          <option value="待定">
+        </datalist>
+        <label>部件分配</label>
+        <input type="search" name="部件分配">
+        <label>主管</label>
+        <select name="主管"></select>
+        <label>主管确认状态</label>
+        <select name="主管确认状态">
+          <option value="">全部</option>
+          <option>未确认</option>
+          <option>已确认</option>
+        </select>
+        <label>主管确认日期</label>
+        <input type="date" name="主管确认日期0">
+        <label>➜</label>
+        <input type="date" name="主管确认日期1">
+        <!--3------------------------------------------- -->
+        <label>客户编号</label>
+        <input type="search" name="客户编号">
+        <label>转正通知单</label>
+        <input type="search" name="转正通知单">
+        <label>研发BOM转正</label>
+        <select name="研发BOM转正">
+          <option value="">全部</option>
+          <option>无转正</option>
+          <option>已装正</option>
+        </select>
+        <label>规格</label>
+        <input type="search" name="规格">
+        <label>专案</label>
+        <select name="专案"></select>
+        <label>专案确认状态</label>
+        <select name="专案确认状态">
+          <option value="">全部</option>
+          <option>未确认</option>
+          <option>已确认</option>
+        </select>
+        <label>专案确认日期</label>
+        <input type="date" name="专案确认日期0">
+        <label>➜</label>
+        <input type="date" name="专案确认日期1">
+        <!--4------------------------------------------- -->
+        <label for="cb1">无样品单</label>
+        <input id="cb1" type="checkbox" name="无样品单" value="1">
+        <label for="cb2">隐藏失效项</label>
+        <input id="cb2" type="checkbox" name="隐藏失效项" value="1">
+        <label for="cb3">无子数据</label>
+        <input id="cb3" type="checkbox" name="无子数据" value="1">
+        <label>备注</label>
+        <input type="search" name="备注">
+        <label>报价备注</label>
+        <input type="search" name="报价备注">
+        <label>创建人</label>
+        <select name="创建人"></select>
+        <label>创建日期</label>
+        <input type="date" name="创建日期0">
+        <label>➜</label>
+        <input type="date" name="创建日期1">
+      </div>
+    </fieldset>
+    <button id="btnSearch" type="submit">查询</button>
+    <!--     <button id="btnOpen">查看BOM明细</button> -->
+    <button id="btnConfirm3" type="button" style="float: right;">专案确认</button>
+    <button id="btnConfirm2" type="button" style="float: right;">主管确认</button>
+    <button id="btnConfirm1" type="button" style="float: right;">组长确认</button>
+  </form>
+  <!--   -----------------------------查询结果列表-------------------------------------- -->
+  <div class="my-table-div" style="min-height:5em;flex-grow:1;">
+    <table is="my-table" id="tbSearchBOM" data-column-fixed=2>
+      <thead>
+        <tr>
+          <td>产品编号</td>
+          <td>旧产品编号</td>
+          <td>选件编号</td>
+          <td>复制于选件</td>
+          <td>BOM类别</td>
+          <td>BOM状态</td>
+          <td>部件分配</td>
+          <td>产品规格</td>
+          <td>客户</td>
+          <td>样品单</td>
+          <td>研发转正</td>
+          <td>备注</td>
+          <td>图档数</td>
+          <td>类别说明</td>
+          <td>created by</td>
+          <td>created</td>
+          <td>updated by</td>
+          <td>updated</td>
+          <td>组长审核时间</td>
+          <td>主管审核时间</td>
+          <td>理论重量</td>
+          <td>NG净重</td>
+          <td>毛重</td>
+          <td>柜量</td>
+          <td>设计通知单</td>
+          <td>喷粉表面积合计</td>
+          <td>预算报价备注</td>
+          <td>组长审核</td>
+          <td>主管审核</td>
+          <td>专案负责人审核</td>
+          <td>专案负责人审核时间</td>
+          <td>预算人员审核</td>
+          <td>预算人员审核时间</td>
+          <td>审核人员</td>
+          <td>审核时间</td>
+          <td>样品单产品编号</td>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+  <!--   -----------------------------选中列表项详细信息区------------------------------- -->
+  <!--     <div style="text-align:center;">---------分割线--------</div> -->
+  <my-splitter horizontal editnext></my-splitter>
+  <div style="position:relative;height:20em;min-height:5em;">
+    <div class="my-tab" style="position:absolute;top:0;left:2px;bottom:2px;right:2px;">
+      <!--关联BOM选件-------------------------------------------------------->
+      <input type="radio" name="tab" id="tab1" checked />
+      <label for="tab1">关联BOM选件</label>
+      <div class="my-tab-ct" srcdoc="bom-list.html">
+        <div style="width:100%;height:100%;">
+          <table is="my-table" id="tbScBOMTab1">
+            <thead>
+              <tr>
+                <td>关联号</td>
+                <td>被关联选件</td>
+                <td>关联选件</td>
+                <td>BOM类别</td>
+                <td>关联说明</td>
+                <td>关联状态</td>
+                <td>产品编号</td>
+                <td>旧产品编号</td>
+                <td>样品单</td>
+                <td>设计单</td>
+                <td>BOM状态</td>
+                <td>选件明细修改日</td>
+                <td>选件明细修改人</td>
+                <td>组长审核</td>
+                <td>组长审核时间</td>
+                <td>主管审核</td>
+                <td>主管审核时间</td>
+                <td>专案负责人审核</td>
+                <td>专案负责人审核时间</td>
+                <td>预算人员审核</td>
+                <td>预算人员审核时间</td>
+                <td>created</td>
+                <td>created by</td>
+                <td>updated</td>
+                <td>updated by</td>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+      <!--被关联BOM选件(主架)--------------------------------------------------------->
+      <input type="radio" name="tab" id="tab2" />
+      <label for="tab2">被关联BOM选件(主架)</label>
+      <div class="my-tab-ct" srcdoc="tab2.html">
+        <div style="width:100%;height:100%;">
+          <table is="my-table" id="tbScBOMTab2">
+            <thead>
+              <tr>
+                <td>关联号</td>
+                <td>被关联选件</td>
+                <td>关联选件</td>
+                <td>BOM类别</td>
+                <td>被关联说明</td>
+                <td>关联状态</td>
+                <td>产品编号</td>
+                <td>旧产品编号</td>
+                <td>样品单</td>
+                <td>设计单</td>
+                <td>BOM状态</td>
+                <td>选件明细修改日</td>
+                <td>选件明细修改人</td>
+                <td>组长审核</td>
+                <td>组长审核时间</td>
+                <td>主管审核</td>
+                <td>主管审核时间</td>
+                <td>专案负责人审核</td>
+                <td>专案负责人审核时间</td>
+                <td>预算人员审核</td>
+                <td>预算人员审核时间</td>
+                <td>created</td>
+                <td>created by</td>
+                <td>updated</td>
+                <td>updated by</td>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+      <!--对应产品的所有BOM选件------------------------------------------------------------>
+      <input type="radio" name="tab" id="tab3" />
+      <label for="tab3">对应产品的所有BOM选件(n行)</label>
+      <div class="my-tab-ct" srcdoc="tab3.html">
+        <div style="width:100%;height:100%;">
+          <table is="my-table" id="tbScBOMTab3">
+            <thead>
+              <tr>
+                <td>产品编号</td>
+                <td>旧产品编号</td>
+                <td>选件编号</td>
+                <td>复制于选件</td>
+                <td>BOM类别</td>
+                <td>BOM状态</td>
+                <td>部件分配</td>
+                <td>产品规格</td>
+                <td>客户</td>
+                <td>样品单</td>
+                <td>研发转正</td>
+                <td>备注</td>
+                <td>图档数</td>
+                <td>类别说明</td>
+                <td>created</td>
+                <td>created by</td>
+                <td>updated</td>
+                <td>updated by</td>
+                <td>组长审核时间</td>
+                <td>主管审核时间</td>
+                <td>理论重量</td>
+                <td>NG净重</td>
+                <td>毛重</td>
+                <td>柜量</td>
+                <td>设计通知单</td>
+                <td>喷粉表面积合计</td>
+                <td>预算报价备注</td>
+                <td>组长审核</td>
+                <td>主管审核</td>
+                <td>专案负责人审核</td>
+                <td>专案负责人审核时间</td>
+                <td>预算人员审核</td>
+                <td>预算人员审核时间</td>
+                <td>审核人员</td>
+                <td>审核时间</td>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+      <!--研发BOM转正----------------------------------------------------------->
+      <input type="radio" name="tab" id="tab4" />
+      <label for="tab4">研发BOM转正</label>
+      <div class="my-tab-ct" srcdoc="tab4.html">
+        <div style="width:100%;height:100%;">
+          <table is="my-table" id="tbScBOMTab4">
+            <thead>
+              <tr>
+                <td>BOM转正单</td>
+                <td>转正状态</td>
+                <td>公司别</td>
+                <td>产品编号</td>
+                <td>样品单</td>
+                <td>客户</td>
+                <td>主架主管</td>
+                <td>专案负责人</td>
+                <td>版本</td>
+                <td>合并BOM</td>
+                <td>配套编号</td>
+                <td>转正单号</td>
+                <td>粉</td>
+                <td>藤</td>
+                <td>布</td>
+                <td>桌面</td>
+                <td>包装说明</td>
+                <td>有效开始日</td>
+                <td>有效截止日</td>
+                <td>最新报价单号</td>
+                <td>参考报价单号</td>
+                <td>配套序号</td>
+                <td>坐垫款别</td>
+                <td>小揽枕歀别</td>
+                <td>编藤歀别</td>
+                <td>包装方式别</td>
+                <td>备注说明</td>
+                <td>确认时间</td>
+                <td>确认人员</td>
+                <td>设计课长确认时间</td>
+                <td>设计课长确认人员</td>
+                <td>确认时间（专案人）</td>
+                <td>确认人员（专案人）</td>
+                <td>确认时间（业务）</td>
+                <td>确认人员（业务）</td>
+                <td>确认时间（分厂技术部）</td>
+                <td>确认人员（分厂技术部）</td>
+                <td>确认时间（专案负责人可否发图）</td>
+                <td>确认人员（专案负责人可否发图）</td>
+                <td>BOM转正单号</td>
+                <td>created</td>
+                <td>created by</td>
+                <td>updated</td>
+                <td>updated by</td>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="text/javascript" src="/js/mySplitter.js"></script>
+  <script type="text/javascript" src="/js/myTable.js"></script>
+  <script type="text/javascript" src="searchBOM.js"></script>
+
+</body>
+
+</html>

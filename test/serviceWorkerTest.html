@@ -1,0 +1,103 @@
+<!doctype html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+	<title>Welcome</title>
+	<!-- webapp manifest -->
+	<link rel="manifest" href="js/serviceworkers/app.webmanifest">
+	<!--外部引用样式-->
+	<!-- 		<link rel="stylesheet" type="text/css" href="css/cssVar.css"> -->
+	<!-- 		<link rel="stylesheet" type="text/css" href="css/commStyle.css"> -->
+	<!-- 		<link rel="stylesheet" type="text/css" href="css/animate.css"> -->
+	<script type="text/javascript">
+		if (window.location.protocol !== 'https:')
+			alert("请使用https访问！");
+		if (!('serviceWorker' in navigator))
+			alert("当前浏览器不支持serviceWorker!");
+		navigator.serviceWorker.register('js/serviceWorkerTest.js', {
+			/*默认是脚本所在的目录*/
+			scope: 'js/serviceworkers/'
+		}).then(
+			res => {
+				console.log(res);
+			},
+			rej => {
+				console.error("service worker registration failed: ", rej.message);
+				if (rej.name == 'SecurityError') {
+					console.log("如果是证书错误，chrome浏览器可以通过设置启动目标来取消证书检查：");
+					console.log(`"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe" 
+						--ignore-certificate-errors 
+						--unsafely-treat-insecure-origin-as-secure=https://127.0.0.1`);
+				}
+			}
+		);
+
+
+	</script>
+</head>
+
+<body>
+	<button id='btnadd' style="display:none;">添加到主屏幕</button>
+	<button id='btnnotification'>随机消息</button>
+
+	<script type="text/javascript">
+		let ee;
+		window.addEventListener('beforeinstallprompt', (e) => {
+			console.log("beforeinstallprompt");
+			//prevent chrome 67 and earlier form automatically showing the prompt
+			e.preventDefault();
+			ee = e;
+			const btn = document.getElementById('btnadd');
+			btn.style.display = "block";
+			btn.addEventListener('click', e => {
+				btn.style.display = "none";
+				ee.prompt();
+				ee.userChoice.then(choiceResult => {
+					if (choiceResult.outcome === "accepted") {
+						console.log("user accepted the A2HS prompt");
+					} else {
+						console.log("user dismissed the A2HS prompt");
+					}
+					ee = null;
+				});
+			});
+
+		});
+
+		window.addEventListener("DOMContentLoaded", () => {
+			const btnnotification = document.getElementById("btnnotification");
+			btnnotification.addEventListener("click", e => {
+				Notification.requestPermission().then(res => {
+					if (res === 'granted') {
+						randomNotification();
+					}
+				})
+			});
+
+			let ntfs = [undefined, undefined];
+			let ntfi = 0;
+			function randomNotification() {
+				const title = `title${Math.round(Math.random() * 10)}`;
+				const options = {
+					body: `body${Math.round(Math.random() * 10)}`,
+					icon: "/js/serviceworkers/icon.png",
+					tag: `id${Math.round(Math.random() * 10)}`,
+				};
+				if (ntfs[ntfi]) ntfs[ntfi].close();
+				// 					ntfs[ntfi]=new Notification(title,options);
+				ntfi = (ntfi + 1) % 2;
+
+
+				new Notification('time', { body: new Date().getTime(), tag: 'anim' });
+				setTimeout(randomNotification, 10);
+			}
+		});
+
+	</script>
+	<!-- 	<script type="text/javascript" src="js/myPage.js"></script> -->
+	<!-- 	<script type="text/javascript" src="js/serviceWorkerTest.js"></script> -->
+</body>
+
+</html>

@@ -1,0 +1,43 @@
+@charset "utf-8";
+.mymenu {
+    user-select: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    min-width: 15em;
+    background-color: var(--background-color);
+    box-shadow: 1px 1px 5px 1px var(--border-color);
+    padding: .5em 0;
+    z-index: 100;
+}
+  
+.mymenu button {
+    display: block;
+    width: 100%;
+    border: none;
+    background-color: transparent;
+    text-align: start;
+    padding: .2em 1em;
+    position: relative;
+}
+  
+.mymenu button[disabled] {
+    /*   background-color:var(--back-color-disabled); */
+    color: var(--font-color-disabled);
+}
+  
+.mymenu button:enabled:hover {
+    background-color: var(--preselect-color);
+}
+  
+.mymenu button:active {
+    background-color: var(--selected-color);
+    /*   color: white; */
+}
+  
+.hassubmenu:after {
+    content: "►";
+    position: absolute;
+    right: .5em;
+    color: var(--color);
+}

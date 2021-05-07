@@ -48,6 +48,7 @@ body {
 ::-webkit-scrollbar {
   width: 1em;
   height: 1em;
+  /* padding: 40px; */
 }
 ::-webkit-scrollbar-button {
   /*   background-color: var(--border-color); */
@@ -56,6 +57,7 @@ body {
   border-radius: 50%;
   width: 1em;
   height: 1em;
+  /* border-left: 70px; */
 }
 ::-webkit-scrollbar-button:hover {
   border-color: var(--color);

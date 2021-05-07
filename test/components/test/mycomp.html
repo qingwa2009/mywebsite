@@ -1,0 +1,15 @@
+<link rel="stylesheet" href="mycomp.css">
+<div>
+    <div class="title">
+        <slot name='title'>
+            <h1>i am title</h1>
+        </slot>
+    </div>
+    <div class="content">
+        <slot name='content'>
+            <h1>i am content</h1>
+        </slot>
+    </div>
+</div>
+<!-- script不会加载辣鸡 -->
+<script type="text/javascript" src="mycomp.js"></script>

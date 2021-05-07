@@ -1,35 +1,7 @@
 "use strict"
-window.CommonFunc=(()=>{
-	function getParent(em, htmlEm){
-		var p = em;
-		while (1) {
-			p = p.parentElement;
-			if (p == null) {
-				return null;
-			} else if (p instanceof htmlEm) {
-				return p;
-			}
-		}
-	}
-
-	function split2(s, pe){
-		var n = pe.length;
-		var i = s.indexOf(pe);
-		var ss = [];
-		if (i !== -1) {
-			ss.push(s.substring(0, i));
-			ss.push(s.substring(n + i));
-		} else {
-			ss.push(s);
-		}
-		return ss;
-	}
-
-	return {
-		getParent:getParent,
-		split2:split2,
-	};
-})();
+import { getParent, defineProperty } from './myUtil.js';
+import { MyTabPage } from './myTab.js';
+import MyMenu from './myMenu.js';
 
 window.MyTableData = function () {
 	Object.defineProperty(this, "title", {
@@ -45,336 +17,74 @@ window.MyTableData = function () {
 	this.order = new Set();
 };
 
-window.App = (() => {
-	const THEME_CLS_DARK="dark-color";
-	const THEME_CLS_LIGHT="light-color";
+defineProperty(window, 'App', (() => {
+	const THEME_CLS_DARK = "dark-color";
+	const THEME_CLS_LIGHT = "light-color";
 
 	const CMDLIST = {};
 	const userSetting = {};
 	const menus = {};
 	const cmds = {};
-	const myMenu = document.createElement("span");
-	
-	const sysMenuEnum = {
-		"修改密码": 1,
-		"刷新权限": 2,
-		"重新加载下拉列表": 3
-	};
-	const funcSysmenu = function () {
-		switch (this.id) {
-			case sysMenuEnum.修改密码:
-				alert("还没写");
-				break;
-			case sysMenuEnum.刷新权限:
-				refreshPermission();
-				break;
-			case sysMenuEnum.重新加载下拉列表:
-				clearSelectLists();
-				break;
-		}
-	};
-	const sysMenu = [];
-	Object.keys(sysMenuEnum).map(t => {
-		sysMenu.push({
-			id: sysMenuEnum[t],
-			title: t,
-			func: funcSysmenu,
-			disabled: false
-		})
+	/**@type{MyMenu} */
+	let myMenu = null;
+
+	const sysMenu = [
+		{ title: "修改密码", func: (currentTarget, target, obj) => alert("还没写"), disabled: false },
+		{ title: "刷新权限", func: refreshPermission, disabled: false },
+		{ title: "重新加载下拉列表", func: clearSelectLists, disabled: false },
+	];
+
+	const tabMenu = [
+		{ title: "重新加载", func: funcTabmenuReload, disabled: false },
+		"",
+		{ title: "添加收藏", func: funcTabmenuFavor, disabled: false },
+		"",
+		{ title: "关闭其他", func: funcTabmenuCloseOther, disabled: false },
+		{ title: "关闭所有", func: funcTabmenuCloseAll, disabled: false }
+	];
+	function funcTabmenuFilter(e) {
+		/**@type{HTMLElement} */
+		const target = e.target;
+		return (target.classList.contains(MyTabPage.CLASSES.TITLE) && target.id.endsWith(MyTabPage.IDSURFIX.TITLE));
 	}
-	);
+	function funcTabmenuReload(currentTarget, target, obj) {
+		/**@type{MyTabPage} */
+		const tpem = currentTarget.host;
+		const id = tpem.getTabId(target);
+		const page = tpem.getTabPageElement(id);
+		page.src = page.src;
+		tpem.setAnimate(id);
+	}
+	function funcTabmenuFavor(currentTarget, target, obj) {
+		/**@type{MyTabPage} */
+		const tpem = currentTarget.host;
+		alert("还没写!");
+	}
+
+	function funcTabmenuCloseOther(currentTarget, target, obj) {
+		/**@type{MyTabPage} */
+		const tpem = currentTarget.host;
+		const id = tpem.getTabId(target);
+		tpem.removeAllTabExcept(id);
+	}
+
+	function funcTabmenuCloseAll(currentTarget, target, obj) {
+		/**@type{MyTabPage} */
+		const tpem = currentTarget.host;
+		tpem.removeAllTab();
+	}
 
 	var userId = "";
 	var replaceLinkPattern = /\b(src|href)\s*?=\s*?(["'])(.+?)\2/gi;
 	var isValidFilePath = /\.[^\//\?\*<>\|]+$/;
+	/**@type {MyTabPage} */
 	var myTabPage = null;
 	var wsc = null;
 	//WebSocket
 	var btnExecuteInfo = null
 		, btnStatisticInfo = null
 		, btnUserInfo = null;
-	/*----------------------------------菜单------------------------------*/
-	const MyMenu = (function () {
-		function f() { }
-		f.decorate = function (span) {
-			span.__proto__ = f.prototype;
-			span.decorate();
-		}
-		return f;
-	})();
-	MyMenu.prototype = (function () {
-		const IDS = {
-			MYMENU: "myMenu"
-		};
-		const CLASSES = {
-			MYMENU: "my-menu",
-			HASSUBMENU: "has-submenu"
-		};
-		const TYPES = {
-			CONTEXTMENU: 0,
-			SUBMENU: 1,
-			MENU: 2
-		};
-		var _submenu = null
-			, _menuItems = null
-			, _menuItemsMap = {};
-		var _listener = null
-			, _target = null
-			, _context = null
-			, _closeCallback = undefined;
-		//子菜单ID计数
-		var _submenuIdCounter;
 
-		function decorate() {
-			this.id = IDS.MYMENU;
-			this.classList.add(CLASSES.MYMENU);
-			this.style.display = "none";
-			this.oncontextmenu = e => e.preventDefault();
-			this.onmouseover = _onMouseOver.bind(this);
-			this.onclick = _onClick.bind(this);
-
-			_submenu = _submenu || document.createElement("span");
-			_submenu.classList.add(CLASSES.MYMENU);
-		}
-		/**
-		 * menuItems=[{id,title,func,disabled},"",[title,{id,title.func,disabled},"",...],...]  
-		 * 子菜单第一个元素为标题名称  
-		 * func(context,target), func的this={id,title,func,disabled}  
-		 * func尽量不要使用箭头函数
-		 * @param {*} context 
-		 * @param {*} menuItems 
-		 */
-		function loadMenuItems(context, menuItems) {
-			if (_menuItems !== menuItems) {
-				_menuItems = menuItems;
-				_createMenuItems(this, menuItems)
-				console.log("loadMenuItems");
-			}
-			_context = context;
-		}
-
-		function _createMenuItems(span, ts) {
-			_submenuIdCounter = 0;
-			var its = [];
-			var it;
-			for (var i = 0; i < ts.length; i++) {
-				it = ts[i];
-				switch (it.constructor.name) {
-					case "Object":
-						_addMenuItem(its, it);
-						break;
-					case "Array":
-						_addMenuHasSubMenu(its, it)
-						break;
-					default:
-						_addMenuSplitter(its);
-				}
-			}
-			span.innerHTML = its.join("");
-			console.log("_createMenuItems");
-		}
-
-		function _addMenuItem(its, it) {
-			if (it.disabled) {
-				its.push("<button cmd=" + it.id + " disabled>" + it.title + "</button>");
-			} else {
-				its.push("<button cmd=" + it.id + ">" + it.title + "</button>");
-				_menuItemsMap[it.id] = it;
-			}
-		}
-
-		function _addMenuSplitter(its) {
-			its.push("<hr>");
-		}
-
-		function _addMenuHasSubMenu(its, it) {
-			_submenuIdCounter--;
-			its.push("<button class=" + CLASSES.HASSUBMENU + " cmd=" + _submenuIdCounter + ">" + it[0] + "</button>");
-			_menuItemsMap[_submenuIdCounter] = it;
-		}
-
-		function _createSubMenuItems(span, cmdId) {
-			var subits = [];
-			var its = _menuItemsMap[cmdId];
-			var it;
-			for (var j = 1; j < its.length; j++) {
-				it = its[j];
-				switch (it.constructor.name) {
-					case "Object":
-						_addMenuItem(subits, it);
-						break;
-					default:
-						_addMenuSplitter(subits);
-				}
-			}
-			span.innerHTML = subits.join("");
-			console.log("_createSubMenuItems");
-		}
-
-		function _onMouseOver(e) {
-			var t = e.target;
-			if (t.classList.contains(CLASSES.HASSUBMENU)) {
-				if (_submenu.cmdId !== t.getAttribute("cmd"))
-					_showSubmenu.call(this, e, t);
-			} else {//this.hideSubmenu();
-			}
-		}
-
-		function _onClick(e) {
-			var t = e.target;
-			var target = _target;
-			if (!(t instanceof HTMLButtonElement))
-				return;
-			var it = _menuItemsMap[t.getAttribute("cmd")];
-			if (it !== undefined && it.constructor.name === "Object") {
-				it.func(_context, target, it);
-				this.hide();
-			}
-		}
-
-		function getElementRectInDoc(em, doc) {
-			const r0 = em.getBoundingClientRect();
-			const rect = {
-				x: r0.x,
-				y: r0.y,
-				width: r0.width,
-				height: r0.height
-			};
-
-			function _getElementRect(emDoc) {
-				if (emDoc === doc)
-					return;
-				const fem = emDoc.defaultView.frameElement;
-				const r1 = fem.getBoundingClientRect();
-				rect.x += r1.x;
-				rect.y += r1.y;
-				_getElementRect(fem.ownerDocument);
-			}
-			_getElementRect(em.ownerDocument);
-			return rect;
-		}
-
-		function _display(span, e, target, type) {
-			target = target || e.target;
-			span.style.display = "block";
-
-			const docSpan = span.ownerDocument;
-			const rect = getElementRectInDoc(target, docSpan);
-			const rt = target.getBoundingClientRect();
-
-			switch (type) {
-				case TYPES.SUBMENU:
-					break;
-				case TYPES.MENU:
-					rect.y += rt.height + 5;
-					break;
-				default:
-					rect.x += e.offsetX;
-					rect.y += e.offsetY;
-			}
-
-			const rdoc = docSpan.documentElement.getBoundingClientRect();
-			const maxX = rdoc.right;
-			const maxY = rdoc.bottom;
-			const rSpan = span.getBoundingClientRect();
-			const right = rect.x + rSpan.width;
-			const bottom = rect.y + rSpan.height;
-
-			if (type !== TYPES.SUBMENU) {
-				if (right >= maxX) {
-					rect.x += maxX - right - 5;
-				}
-				if (bottom >= maxY) {
-					rect.y += maxY - bottom - 5;
-				}
-			} else {
-				if (rect.x + rect.width + rSpan.width >= maxX) {
-					rect.x = -rSpan.width;
-				} else {
-					rect.x = rt.width - 3;
-				}
-				if (rect.y + rSpan.height >= maxY) {
-					rect.y = rect.height - rSpan.height;
-				} else {
-					rect.y = 0;
-				}
-			}
-
-			span.style.top = `${rect.y}px`;
-			span.style.left = `${rect.x}px`;
-			console.log("displayMenu");
-		}
-
-		function show(e, target, type, closeCallback) {
-			_target = target || e.target;
-			_closeCallback = closeCallback;
-
-			_display(this, e, target, type);
-			
-			window.removeEventListener("mousedown", _listener);
-			window.removeEventListener("resize", _listener);
-			_listener = _handleClose.bind(this);
-			window.addEventListener("mousedown", _listener);
-			window.addEventListener("resize", _listener);
-		}
-
-		function hide() {
-			if (this.style.display !== "none") {
-				this.style.display = "none";
-				window.removeEventListener("mousedown", _listener);
-				window.removeEventListener("resize", _listener);
-				
-				if (_closeCallback) _closeCallback(_context, _target);
-				_listener = null;
-				_target = null;
-				_closeCallback = null;
-				_hideSubmenu();
-			}
-		}
-
-		function _handleClose(e) {
-			var t = e.target;
-			if (e.type === "mousedown") {
-				var p = (t instanceof MyMenu) ? t : CommonFunc.getParent(t, MyMenu);
-				if (p)
-					return;
-			}
-			this.hide();
-		}
-
-		function _showSubmenu(e, target) {
-			var cmdId = target.getAttribute("cmd");
-			_createSubMenuItems(_submenu, cmdId);
-			target.appendChild(_submenu);
-			_display(_submenu, e, target, TYPES.SUBMENU);
-			_submenu.cmdId = cmdId;
-		}
-
-		function _hideSubmenu() {
-			_submenu.style.display = "none";
-			_submenu.cmdId = -1;
-		}
-		
-		//绑定窗口单击和调整大小时关闭菜单
-		function bindWindow(w){
-			if(w===window)return;		
-			w.addEventListener("mousedown", this.hide.bind(this));
-			w.addEventListener("resize", this.hide.bind(this));
-		}
-
-		return {
-			constructor: MyMenu,
-			__proto__: HTMLSpanElement.prototype,
-			decorate: decorate,
-			loadMenuItems: loadMenuItems,
-			show: show,
-			hide: hide,
-			bindWindow:bindWindow,//绑定窗口单击和调整大小时关闭菜单
-			CLASSES: CLASSES,
-			IDS: IDS,
-			TYPES: TYPES
-		};
-	})();
 
 	/**
 	 * 异步发送请求
@@ -432,7 +142,7 @@ window.App = (() => {
 		// 		}, function(error) {
 		// 			console.error("GET /cmd-userSetting failed:", error);
 		// 		});
-		
+
 		_setPLMMenu(window.websiteMenu);
 	}
 
@@ -446,72 +156,42 @@ window.App = (() => {
 		listCmds.forEach(a => cmds[`/cmd-${a}`] = 1);
 	}
 
-	function _funcPlmMenu(context, target) {
-		console.log(context, target, this);
-		var path = `${this.folder}${this.file}.html`;
-		openNewPage(this.title, path);		
+	function _menuFunc(currentTarget, target, obj) {
+		openNewPage(obj.title, obj.url);
 	}
 
 	function _setPLMMenu(ms) {
-		let htmls = [];
-		const root = [];
-		let ID=0;
+		const menubar = document.getElementById("menuBar");
 
 		for (let i = 0; i < ms.length; i++) {
-			_create(ms[i], root, "");
-			let t;
-			if (root[i] instanceof Array) {
-				t = root[i].shift();
+			const msi = ms[i];
+			const btn = document.createElement("button");
+			btn.textContent = msi.title;
+			if (msi.disabled) btn.disabled = true;
+
+			if (typeof msi.url === "string") {
+				btn.addEventListener("click", (e) => { _menuFunc(btn, btn, msi) });
 			} else {
-				t = root[i]["title"];
-			}
-			menus[t] = root[i];
-			htmls.push(`<button id="${t}">${t}</button>`);
-		}
-
-		function _create(obj, col, folder) {
-			let nobj = null;
-			let title = obj["title"];
-			let file = obj["file"]||title;			//file:undefined时将用title的名称作为文件名
-			if (file instanceof Array) {
-				nobj = [];				
-				nobj.push(title);					//第一个元素作为目录名
-				let fd=obj["folder"]||title;		//folder:undefined时将用title的名称作为文件夹名
-				for (let i = 0; i < file.length; i++) {
-					_create(file[i], nobj, `${folder}${fd}/`);
+				const menuItems = msi.url;
+				for (let j = 0; j < menuItems.length; j++) {
+					const msii = menuItems[j];
+					switch (msii.constructor.name) {
+						case "Object":
+							msii.func = _menuFunc;
+							break;
+						case "Array":
+							for (let k = 0; k < msii.length; k++) {
+								if (typeof msii[k] === "object") msii[k].func = _menuFunc;
+							}
+							break;
+						default:
+							break;
+					}
 				}
-			} else {				
-				nobj = {
-					id: ID,
-					title: title,
-					file: file,
-					folder: folder,
-					func: _funcPlmMenu,
-					disabled: !(obj["enable"]||false)
-				};	
-				ID++;			
+				myMenu.bindElementMenu(btn, menuItems, MyMenu.TYPES.MENU);
 			}
-			col.push(nobj);
+			menubar.appendChild(btn);
 		}
-
-		console.log(ms);
-		console.log(menus);
-
-		const div = document.getElementById("menuBar");
-		div.innerHTML = htmls.join("");
-		div.addEventListener('click', (e) => {
-			let target = e.target;
-			let dt = menus[target.id];
-			if (dt) {
-				if (dt instanceof Array) {
-					myMenu.loadMenuItems(div, dt);
-					myMenu.show(e, target, myMenu.TYPES.MENU);
-				} else {
-					dt.func(e.currentTarget, target);
-				}
-			}
-		}
-		);
 	}
 
 	/*-------------------------------刷新权限---------------------------------*/
@@ -525,76 +205,74 @@ window.App = (() => {
 		});
 	}
 	/*-----------------------------------------------------------------------*/
-	//Recordset转tableData
-	function parseRecordsetStr2TableData(s) {
-		var rsd = JSON.parse(s);
-		var tableData = new MyTableData();
-		//     tableData.title={};
-		//     tableData.data={};
-		tableData.EOF = rsd.EOF;
-		tableData.totalCount = rsd.totalCount;
-		tableData.GUID = rsd.GUID;
-		tableData.PK = rsd.PK;
-		const pki = rsd.title.indexOf(rsd.PK);
-		if (pki === -1)
-			throw new Error("Recordset数据缺少主键！");
-		for (var i = 0; i < rsd.title.length; i++) {
-			tableData.title[rsd.title[i]] = rsd.type[i];
-		}
-		for (var i = 0; i < rsd.data.length; i++) {
-			var d = {};
-			for (var j = 0; j < rsd.title.length; j++) {
-				d[rsd.title[j]] = rsd.data[i][j];
-			}
-			let k = rsd.data[i][pki];
-			if (tableData.data.hasOwnProperty(k))
-				throw new Error("Recordset数据含有重复的主键！");
-			tableData.data[k] = d;
-			tableData.order.add(k);
-		}
-		console.log(tableData);
-		return tableData;
-	}
+	// //Recordset转tableData
+	// function parseRecordsetStr2TableData(s) {
+	// 	var rsd = JSON.parse(s);
+	// 	var tableData = new MyTableData();
+	// 	//     tableData.title={};
+	// 	//     tableData.data={};
+	// 	tableData.EOF = rsd.EOF;
+	// 	tableData.totalCount = rsd.totalCount;
+	// 	tableData.GUID = rsd.GUID;
+	// 	tableData.PK = rsd.PK;
+	// 	const pki = rsd.title.indexOf(rsd.PK);
+	// 	if (pki === -1)
+	// 		throw new Error("Recordset数据缺少主键！");
+	// 	for (var i = 0; i < rsd.title.length; i++) {
+	// 		tableData.title[rsd.title[i]] = rsd.type[i];
+	// 	}
+	// 	for (var i = 0; i < rsd.data.length; i++) {
+	// 		var d = {};
+	// 		for (var j = 0; j < rsd.title.length; j++) {
+	// 			d[rsd.title[j]] = rsd.data[i][j];
+	// 		}
+	// 		let k = rsd.data[i][pki];
+	// 		if (tableData.data.hasOwnProperty(k))
+	// 			throw new Error("Recordset数据含有重复的主键！");
+	// 		tableData.data[k] = d;
+	// 		tableData.order.add(k);
+	// 	}
+	// 	console.log(tableData);
+	// 	return tableData;
+	// }
 
-	
+	// /**
+	//  * 替换htmlDoc里面的src与href
+	//  * @param {string} htmlDoc 
+	//  */
+	// function _replaceLink(htmlDoc) {
+	// 	return htmlDoc.replace(replaceLinkPattern, "$1=\"$3?User-Id=" + userId + "\"");
+	// }
+	// /**
+	//  * 替换主题
+	//  * @param {string} htmlDoc 
+	//  */
+	// function _replaceHtmlDarkColor(htmlDoc) {
+	// 	return htmlDoc.replace(/<html\b/, `<html class="${THEME_CLS_DARK}"`);
+	// }
 
-	/**
-	 * 替换htmlDoc里面的src与href
-	 * @param {string} htmlDoc 
-	 */
-	function _replaceLink(htmlDoc) {
-		return htmlDoc.replace(replaceLinkPattern, "$1=\"$3?User-Id=" + userId + "\"");
-	}
-	/**
-	 * 替换主题
-	 * @param {string} htmlDoc 
-	 */
-	function _replaceHtmlDarkColor(htmlDoc) {
-		return htmlDoc.replace(/<html\b/, `<html class="${THEME_CLS_DARK}"`);
-	}
-
-	function _iframeReqSuccess(req, iframe) {
-		var htmlDoc = req.responseText;
-		htmlDoc = _replaceLink(htmlDoc);
-		if (document.documentElement.classList.contains(THEME_CLS_DARK)) {
-			htmlDoc = _replaceHtmlDarkColor(htmlDoc);
-		}
-		return new Promise((s, f) => {
-			iframe.addEventListener("load", e => s(e));
-			iframe.srcdoc = htmlDoc;
-		}
-		);
-	}
-	/**
-	 * 手动加载iframe
-	 * @param {HTMLIFrameElement} iframe 
-	 */
-	function iframeRequest(iframe) {
-		var path = iframe.srcdoc;
-		return myHttpRequest("GET", path).then(req => {
-			return _iframeReqSuccess(req, iframe);
-		});
-	}
+	// function _iframeReqSuccess(req, iframe) {
+	// 	var htmlDoc = req.responseText;
+	// 	htmlDoc = _replaceLink(htmlDoc);
+	// 	if (document.documentElement.classList.contains(THEME_CLS_DARK)) {
+	// 		htmlDoc = _replaceHtmlDarkColor(htmlDoc);
+	// 	}
+	// 	return new Promise((s, f) => {
+	// 		iframe.addEventListener("load", e => s(e));
+	// 		iframe.srcdoc = htmlDoc;
+	// 	}
+	// 	);
+	// }
+	// /**
+	//  * 手动加载iframe，iframe.srcdoc必须已经赋值要加载的url
+	//  * @param {HTMLIFrameElement} iframe 
+	//  */
+	// function iframeRequest(iframe) {
+	// 	var path = iframe.srcdoc;
+	// 	return myHttpRequest("GET", path).then(req => {
+	// 		return _iframeReqSuccess(req, iframe);
+	// 	});
+	// }
 
 	/**
 	 * 打开新的tab窗口
@@ -607,35 +285,42 @@ window.App = (() => {
 		// 			alert("用户登录状态丢失，请重新登录！");
 		// 			return;
 		// 		}
-		var iframe = myTabPage.addTab(name, path, true);
+		// var iframe = myTabPage.createNewTab(name, path, true);
+		var iframe = myTabPage.createNewTab(name);
 		if (iframe !== null) {
+			iframe.src = path;
 			let id = myTabPage.getTabId(iframe);
 			myTabPage.setAnimate(id);
-			iframeRequest(iframe).then(function (event) {
-				myTabPage.resetAnimate(id);
-				if (data) {
-					iframe.contentWindow.myPage.setPageByStr(data);
+			// iframeRequest(iframe).then(function (event) {
+			// 	myTabPage.resetAnimate(id);
+			// 	if (data) {
+			// 		iframe.contentWindow.myPage.setPageByStr(data);
+			// 	}
+			// 	_handleNewPageLoaded(iframe, name, path, data);
+			// }, function (error) {
+			// 	myTabPage.resetAnimate(id);
+			// 	console.error(error);
+			// });
+
+			iframe.addEventListener('load', e => {
+				if (document.documentElement.classList.contains(THEME_CLS_DARK)) {
+					iframe.contentDocument.documentElement.classList.add(THEME_CLS_DARK);
 				}
-				_handleNewPageLoaded(iframe,name,path,data);
-			}, function (error) {
 				myTabPage.resetAnimate(id);
-				console.error(error);
+				_handleNewPageLoaded(iframe, name, path, data);
 			});
-			
 		} else {
 			alert("窗口过多！请关闭部分窗口！");
 		}
 	}
 
 	function _handleNewPageLoaded(iframe, name, path, data) {
-// 		console.log("_handleNewPageLoaded:", iframe, name, path, data);
+		// 		console.log("_handleNewPageLoaded:", iframe, name, path, data);
 		myMenu.bindWindow(iframe.contentWindow);
-		if(iframe.contentDocument.title){
+		if (iframe.contentDocument.title) {
 			myTabPage.renameTab(iframe.contentWindow, iframe.contentDocument.title);
 		}
 	}
-	//关闭Tab窗口触发事件
-	function _handleMyTabPageClose(t, tid) { }
 
 	//更换主题触发事件
 	function _onSwitchColor(e) {
@@ -655,10 +340,10 @@ window.App = (() => {
 		}
 		if (e.target.checked) {
 			htmls.forEach(a => a.classList.add(THEME_CLS_DARK));
-			localStorage.setItem("theme",THEME_CLS_DARK);
+			localStorage.setItem("theme", THEME_CLS_DARK);
 		} else {
 			htmls.forEach(a => a.classList.remove(THEME_CLS_DARK));
-			localStorage.setItem("theme",THEME_CLS_LIGHT);
+			localStorage.setItem("theme", THEME_CLS_LIGHT);
 		}
 	}
 
@@ -698,7 +383,7 @@ window.App = (() => {
 		btnStatisticInfo.textContent = s;
 	}
 
-	function createWebSocket(win, url, protocol){		
+	function createWebSocket(win, url, protocol) {
 		return new win.WebSocket(`ws${location.origin.substr(4)}${url}`, protocol);
 	}
 
@@ -712,7 +397,7 @@ window.App = (() => {
 	const winTables = {};
 	//记录table占有的Recordset
 	function registerRecordset(guid, win) {
-		let tid = myTabPage.getTabId(win.frameElement);
+		let tid = myTabPage.getTabIdByWin(win);
 		if (winTables.hasOwnProperty(tid))
 			return;
 		winTables[guid] = tid;
@@ -723,32 +408,33 @@ window.App = (() => {
 	}
 
 	//关闭Tab窗口事件
-	function handleMyTabPageClose(t, tid) {
-		var tids;
-		switch (t) {
-			case myTabPage.CLOSETYPE.ALL:
-				tids = Object.keys(winTables);
-				break;
-			case myTabPage.CLOSETYPE.OTHERS:
-				tids = Object.keys(winTables).filter(a => winTables[a] !== tid);
-				break;
-			default:
-				tids = Object.keys(winTables).filter(a => winTables[a] === tid);
-				break;
-		}
-		if (!tids || tids.length === 0)
-			return;
-		tids.forEach(a => unregisterRecordset(a));
-		const dic = {};
-		dic.GUID = tids;
+	function _handleMyTabPageClose(t, tid) {
+		console.log(t, tid);
+		// var tids;
+		// switch (t) {
+		// 	case MyTabPage.CLOSETYPE.ALL:
+		// 		tids = Object.keys(winTables);
+		// 		break;
+		// 	case MyTabPage.CLOSETYPE.OTHERS:
+		// 		tids = Object.keys(winTables).filter(a => winTables[a] !== tid);
+		// 		break;
+		// 	default:
+		// 		tids = Object.keys(winTables).filter(a => winTables[a] === tid);
+		// 		break;
+		// }
+		// if (!tids || tids.length === 0)
+		// 	return;
+		// tids.forEach(a => unregisterRecordset(a));
+		// const dic = {};
+		// dic.GUID = tids;
 
-		const s = JSON.stringify(dic);
-		//释放recordset资源
-		myHttpRequest("POST", App.CMDLIST.cmdReleaseRs, s).then(function (req) {
-			console.log("release recordset successed!", tids);
-		}, function (req) {
-			console.log("release recordset failed!", tids);
-		});
+		// const s = JSON.stringify(dic);
+		// //释放recordset资源
+		// myHttpRequest("POST", App.CMDLIST.cmdReleaseRs, s).then(function (req) {
+		// 	console.log("release recordset successed!", tids);
+		// }, function (req) {
+		// 	console.log("release recordset failed!", tids);
+		// });
 	}
 	/*--------------------------select元素相关----------------------------*/
 	const _selectLists = {};
@@ -779,37 +465,36 @@ window.App = (() => {
 		loadUserSetting();
 	}
 	function onDomLoaded(e) {
-		MyMenu.decorate(myMenu);
-		document.body.appendChild(myMenu);
+		myMenu = document.createElement(MyMenu.TAG);
+		myMenu.init();
 
 		myTabPage = document.getElementById("myTabPage");
 		myTabPage.addCloseListener(_handleMyTabPageClose);
-		myTabPage.myMenu = myMenu;
 
 		btnExecuteInfo = document.getElementById("executeInfo");
 		btnStatisticInfo = document.getElementById("statisticInfo");
 		btnUserInfo = document.getElementById("userInfo");
 
-		btnUserInfo.addEventListener("click",
-			e => {
-				myMenu.loadMenuItems(btnUserInfo, sysMenu);
-				myMenu.show(e, btnUserInfo, myMenu.TYPES.MENU);
-			}, true
-		);
+		myMenu.bindElementMenu(btnUserInfo, sysMenu, MyMenu.TYPES.MENU);
+		myMenu.bindElementMenu(myTabPage.shadowRoot, tabMenu, MyMenu.TYPES.CONTEXTMENU, funcTabmenuFilter);
+		// btnUserInfo.addEventListener("click",
+		// 	e => {
+		// 		myMenu.loadMenuItems(btnUserInfo, sysMenu);
+		// 		myMenu.show(e, btnUserInfo, myMenu.TYPES.MENU);
+		// 	}, true
+		// );
 
-		let btnTheme=document.getElementById("switchColor");
-		let theme = localStorage.getItem("theme");		
-		switch(theme){
+		let btnTheme = document.getElementById("switchColor");
+		let theme = localStorage.getItem("theme");
+		switch (theme) {
 			case THEME_CLS_DARK:
 				document.documentElement.classList.add(THEME_CLS_DARK);
-				btnTheme.checked=true;
+				btnTheme.checked = true;
 				break;
 			default:
 				break;
-		}		
-		btnTheme.onchange = _onSwitchColor;		
-
-		myTabPage.addCloseListener(handleMyTabPageClose);
+		}
+		btnTheme.onchange = _onSwitchColor;
 	}
 	window.addEventListener('DOMContentLoaded', onDomLoaded);
 	window.addEventListener("load", onLoad);
@@ -825,15 +510,17 @@ window.App = (() => {
 			return cmds
 		},
 		userSetting: userSetting,
-		myMenu: myMenu,
+		get myMenu() {
+			return myMenu;
+		},
 		get myTabPage() {
 			return myTabPage
 		},
 		myHttpRequest: myHttpRequest,
 		openNewPage: openNewPage,
-		iframeRequest: iframeRequest,
+		// iframeRequest: iframeRequest,
 		CMDLIST: CMDLIST,
-		parseRecordsetStr2TableData: parseRecordsetStr2TableData,
+		// parseRecordsetStr2TableData: parseRecordsetStr2TableData,
 		showExecuteInfo: showExecuteInfo,
 		showStatisticInfo: showStatisticInfo,
 		replayAnim: replayAnim,
@@ -846,4 +533,4 @@ window.App = (() => {
 		createWebSocket: createWebSocket,
 	}
 }
-)();
+)());

@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+
+<head>
+	<title>上传下载</title>
+</head>
+<!--外部引用样式-->
+<link rel="stylesheet" type="text/css" href="/css/cssVar.css">
+<link rel="stylesheet" type="text/css" href="/css/commStyle.css">
+<link rel="stylesheet" type="text/css" href="./uploadDownload.css">
+
+<body>
+	<form>
+		<label style="width:40px;text-align: center;">📤</label>
+		<div class="uploadpg">
+			<input id="upload" type="file" required />
+			<progress id="pg" value="0" max="100"></progress>
+		</div>
+		<input type="submit" value="上传">
+	</form>
+	<ol>
+		<li class="title">
+			<label>名称</label>
+			<label>大小(bytes)</label>
+			<label>修改日期</label>
+		</li>
+	</ol>
+	<ol id="list" class="list">
+		<!-- 
+			<li>
+				<label>welcom.x_t</label>
+				<label>2020年10月8日 14:01:08</label>
+				<label>1580byte</label>
+			</li>
+			 -->
+	</ol>
+</body>
+<script type="text/javascript" src="./uploadDownload.js"></script>
+
+</html>

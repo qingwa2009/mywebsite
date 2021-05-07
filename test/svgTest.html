@@ -1,0 +1,326 @@
+<!doctype html>
+<html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, user-scalable=0">
+
+<head>
+	<title>SVGTest</title>
+</head>
+<!--外部引用样式-->
+	
+	<link rel="stylesheet" type="text/css" href="css/svgTest.css">
+<!-- 	<link rel="stylesheet" type="text/css" href="css/commStyle.css"> -->
+<!-- 	<link rel="stylesheet" type="text/css" href="css/animate.css"> -->
+	
+
+<body style="display:flex; flex-flow:column nowrap; position:relative; align-items: center">
+<!--     
+    <div class="eyes">
+		<div class="eye">
+			<div class="eye_1">
+				<div class="eye_2" id="el">
+
+				</div>
+			</div>
+			<div class="eye_h"></div>
+			<div class="eye_l"></div>
+		</div>
+		<div class="eye">
+			<div class="eye_1">
+				<div class="eye_2" id="er">
+
+				</div>
+			</div>
+			<div class="eye_h"></div>
+			<div class="eye_l eye_l_r"></div>
+		</div>
+    </div>
+ -->
+	<svg width="110" height="250" style="border:1px solid gray;">
+		<rect x="10" y="10" width="30" height="30" stroke="black" fill="transparent" />
+		<rect x="60" y="10" rx="10" ry="10" width="30" height="30" stroke="black" fill="transparent" stroke-width="5" />
+		<circle cx="25" cy="75" r="20" stroke="red" fill="transparent" stroke-width="5" />
+		<ellipse cx="75" cy="75" rx="20" ry="5" stroke="red" fill="transparent" stroke-width="5" />
+		<line x1="10" x2="50" y1="110" y2="150" stroke="orange" stroke-width="5" />
+		<polyline points="60 110 65 120 70 115 75 130 80 125 85 140 90 135 95 150 100 145" stroke="orange"
+			fill="transparent" stroke-width="5" />
+		<polygon points="50 160 55 180 70 180 60 190 65 205 50 195 35 205 40 190 30 180 45 180" stroke="green"
+			fill="transparent" stroke-width="5" />
+		<path d="M20,230 Q40,205 50, 230 T90,230" fill="none" stroke="blue" stroke-width="5" />
+	</svg>
+	<svg width="190" height="160" style="border:1px solid gray;">
+		<path d="M0 10 H190" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M0 20 H190" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M0 30 H190" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M0 40 H190" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M0 50 H190" stroke="#aaaaaa80" stroke-width="2" />
+		<path d="M0 60 H190" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M0 70 H190" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M0 80 H190" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M0 90 H190" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M0 100 H190" stroke="#aaaaaa80" stroke-width="2" />
+		<path d="M0 110 H190" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M0 120 H190" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M0 130 H190" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M0 140 H190" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M0 150 H190" stroke="#aaaaaa80" stroke-width="2" />
+
+		<path d="M10 0 v160" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M20 0 v160" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M30 0 v160" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M40 0 v160" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M50 0 v160" stroke="#aaaaaa80" stroke-width="2" />
+		<path d="M60 0 v160" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M70 0 v160" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M80 0 v160" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M90 0 v160" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M100 0 v160" stroke="#aaaaaa80" stroke-width="2" />
+		<path d="M110 0 v160" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M120 0 v160" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M130 0 v160" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M140 0 v160" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M150 0 v160" stroke="#aaaaaa80" stroke-width="2" />
+		<path d="M160 0 v160" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M170 0 v160" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M180 0 v160" stroke="#aaaaaa80" stroke-width=".5" />
+
+		<path d="M10 10 C20 20, 40 20, 50 10" stroke="black" fill="transparent" />
+		<path d="M10 10 L20 20" stroke="red" />
+		<path d="M40 20 L50 10" stroke="red" />
+
+		<path d="M70 10 C70 20, 110 20, 110 10" stroke="black" fill="transparent" />
+		<path d="M70 10 L70 20" stroke="red" />
+		<path d="M110 20 L110 10" stroke="red" />
+
+		<path d="M130 10 C120 20, 180 20, 170 10" stroke="black" fill="transparent" />
+		<path d="M130 10 L120 20" stroke="red" />
+		<path d="M180 20 L170 10" stroke="red" />
+
+		<path d="M10 60 C20 80, 40 80, 50 60" stroke="black" fill="transparent" />
+		<path d="M10 60 L20 80" stroke="red" />
+		<path d="M40 80 L50 60" stroke="red" />
+
+		<path d="M70 60 C70 80, 110 80, 110 60" stroke="black" fill="transparent" />
+		<path d="M70 60 L70 80" stroke="red" />
+		<path d="M110 80 L110 60" stroke="red" />
+
+		<path d="M130 60 C120 80, 180 80, 170 60" stroke="black" fill="transparent" />
+		<path d="M130 60 L120 80" stroke="red" />
+		<path d="M180 80 L170 60" stroke="red" />
+
+		<path d="M10 110 C20 140, 40 140, 50 110" stroke="black" fill="transparent" />
+		<path d="M10 110 L20 140" stroke="red" />
+		<path d="M40 140 L50 110" stroke="red" />
+
+		<path d="M70 110 C70 140, 110 140, 110 110" stroke="black" fill="transparent" />
+		<path d="M70 110 L70 140" stroke="red" />
+		<path d="M110 140 L110 110" stroke="red" />
+
+		<path d="M130 110 C120 140, 180 140, 170 110" stroke="black" fill="transparent" />
+		<path d="M130 110 L120 140" stroke="red" />
+		<path d="M180 140 L170 110" stroke="red" />
+	</svg>
+
+	<svg width="190" height="160" style="border:1px solid gray;">
+		<path d="M0 10 H190" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M0 20 H190" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M0 30 H190" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M0 40 H190" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M0 50 H190" stroke="#aaaaaa80" stroke-width="2" />
+		<path d="M0 60 H190" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M0 70 H190" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M0 80 H190" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M0 90 H190" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M0 100 H190" stroke="#aaaaaa80" stroke-width="2" />
+		<path d="M0 110 H190" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M0 120 H190" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M0 130 H190" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M0 140 H190" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M0 150 H190" stroke="#aaaaaa80" stroke-width="2" />
+
+		<path d="M10 0 v160" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M20 0 v160" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M30 0 v160" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M40 0 v160" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M50 0 v160" stroke="#aaaaaa80" stroke-width="2" />
+		<path d="M60 0 v160" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M70 0 v160" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M80 0 v160" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M90 0 v160" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M100 0 v160" stroke="#aaaaaa80" stroke-width="2" />
+		<path d="M110 0 v160" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M120 0 v160" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M130 0 v160" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M140 0 v160" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M150 0 v160" stroke="#aaaaaa80" stroke-width="2" />
+		<path d="M160 0 v160" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M170 0 v160" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M180 0 v160" stroke="#aaaaaa80" stroke-width=".5" />
+
+		<path d="M10 80 C40 10, 105 50, 95 80 S150 150, 180 80" stroke="black" fill="transparent" />
+		<path d="M10 80 L40 10" stroke="red" />
+		<path d="M105 50 L95 80" stroke="red" />
+		<path d="M95 80 L85 110" stroke="blue" />
+		<path d="M150 150 L180 80" stroke="red" />
+	</svg>
+
+	<svg width="190" height="160" style="border:1px solid gray;">
+		<path d="M0 10 H190" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M0 20 H190" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M0 30 H190" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M0 40 H190" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M0 50 H190" stroke="#aaaaaa80" stroke-width="2" />
+		<path d="M0 60 H190" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M0 70 H190" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M0 80 H190" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M0 90 H190" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M0 100 H190" stroke="#aaaaaa80" stroke-width="2" />
+		<path d="M0 110 H190" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M0 120 H190" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M0 130 H190" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M0 140 H190" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M0 150 H190" stroke="#aaaaaa80" stroke-width="2" />
+
+		<path d="M10 0 v160" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M20 0 v160" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M30 0 v160" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M40 0 v160" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M50 0 v160" stroke="#aaaaaa80" stroke-width="2" />
+		<path d="M60 0 v160" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M70 0 v160" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M80 0 v160" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M90 0 v160" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M100 0 v160" stroke="#aaaaaa80" stroke-width="2" />
+		<path d="M110 0 v160" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M120 0 v160" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M130 0 v160" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M140 0 v160" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M150 0 v160" stroke="#aaaaaa80" stroke-width="2" />
+		<path d="M160 0 v160" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M170 0 v160" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M180 0 v160" stroke="#aaaaaa80" stroke-width=".5" />
+
+		<path d="M10 80 Q95 10 180 80" stroke="black" fill="transparent" />
+		<path d="M10 80 L95 10" stroke="red" />
+		<path d="M95 10 L180 80" stroke="red" />
+	</svg>
+
+	<svg width="190" height="160" style="border:1px solid gray;">
+		<path d="M0 10 H190" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M0 20 H190" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M0 30 H190" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M0 40 H190" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M0 50 H190" stroke="#aaaaaa80" stroke-width="2" />
+		<path d="M0 60 H190" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M0 70 H190" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M0 80 H190" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M0 90 H190" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M0 100 H190" stroke="#aaaaaa80" stroke-width="2" />
+		<path d="M0 110 H190" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M0 120 H190" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M0 130 H190" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M0 140 H190" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M0 150 H190" stroke="#aaaaaa80" stroke-width="2" />
+
+		<path d="M10 0 v160" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M20 0 v160" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M30 0 v160" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M40 0 v160" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M50 0 v160" stroke="#aaaaaa80" stroke-width="2" />
+		<path d="M60 0 v160" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M70 0 v160" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M80 0 v160" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M90 0 v160" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M100 0 v160" stroke="#aaaaaa80" stroke-width="2" />
+		<path d="M110 0 v160" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M120 0 v160" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M130 0 v160" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M140 0 v160" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M150 0 v160" stroke="#aaaaaa80" stroke-width="2" />
+		<path d="M160 0 v160" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M170 0 v160" stroke="#aaaaaa80" stroke-width=".5" />
+		<path d="M180 0 v160" stroke="#aaaaaa80" stroke-width=".5" />
+
+		<path d="M10 80 Q52.5 10, 95 80 T180 80" stroke="black" fill="transparent" />
+		<path d="M10 80 L52.5 10" stroke="red" />
+		<path d="M52.5 10 L95 80" stroke="red" />
+		<path d="M95 80 L137.5 150" stroke="blue" />
+		<path d="M137.5 150 L180 80" stroke="blue" />
+	</svg>
+		
+	<svg width="320" height="320" style="border:1px solid gray;">
+		<path d="M10 315 
+			L110 215 
+			A30 50 0 0 1 162.55 162.45 
+			L172.55 152.45
+			A30 50 -45 0 1 215.1 109.9 
+			L315 10"
+			stroke="black" fill="green"/>
+	</svg>
+
+	<svg width="325" height="325" style="border:1px solid gray;">
+		<path d="M80 80
+			A45 45, 0,0,0, 125 125
+			L125 80 Z" fill="green"/>
+		<circle cx="125" cy="80" r="45" stroke="gray" fill="transparent"/>
+		<circle cx="80" cy="125" r="45" stroke="gray" fill="transparent"/>
+
+		<path d="M230 80
+			A45 45, 0,1,0, 275 125
+			L275 80 Z" fill="red"/>
+		<circle cx="275" cy="80" r="45" stroke="gray" fill="transparent"/>
+		<circle cx="230" cy="125" r="45" stroke="gray" fill="transparent"/>
+
+		<path d="M80 230
+			A45 45, 0,0,1, 125 275
+			L125 230 Z" fill="purple"/>
+		<circle cx="125" cy="230" r="45" stroke="gray" fill="transparent"/>
+		<circle cx="80" cy="275" r="45" stroke="gray" fill="transparent"/>
+
+		<path d="M230 230
+			A45 45, 0,1,1, 275 275
+			L275 230 Z" fill="blue"/>
+		<circle cx="275" cy="230" r="45" stroke="gray" fill="transparent"/>
+		<circle cx="230" cy="275" r="45" stroke="gray" fill="transparent"/>
+	</svg>
+
+	<svg width="160" height="280" style="border:1px solid gray;">
+		<polyline points="40 60 80 20 120 60" stroke="black" stroke-width="20" 
+			stroke-linecap="butt" fill="none" stroke-linejoin="miter"/>
+		<polyline points="40 60 80 20 120 60" stroke="white" fill="none"/>
+
+		<polyline points="40 140 80 100 120 140" stroke="black" stroke-width="20" 
+			stroke-linecap="round" fill="none" stroke-linejoin="round"/>
+		<polyline points="40 140 80 100 120 140" stroke="white" fill="none"/>
+
+		<polyline points="40 220 80 180 120 220" stroke="black" stroke-width="20" 
+			stroke-linecap="square" fill="none" stroke-linejoin="bevel"/>
+		<polyline points="40 220 80 180 120 220" stroke="white" fill="none"/>
+	</svg>
+
+	<svg width="200" height="150" style="border:1px solid gray;">
+		<path d="M10 75 Q50 10 100 75 T190 75" stroke="black" stroke-linecap="round" stroke-dasharray="5,10,5" fill="none"/>
+		<path d="M10 75 L190 75" stroke="red" stroke-linecap="round" stroke-width="1" stroke-dasharray="5,5" fill="none"/>
+	</svg>
+
+	<svg width="200" height="150" style="border:1px solid gray;">
+		<path class="wind" d="
+			M10 90 
+			c100 -10, 125 -25, 125 -50
+			s-100 50, 60 10			
+			" 
+			stroke-width=10
+			stroke="aliceblue"
+			fill="none"
+			stroke-dasharray="200, 4000"
+			stroke-dashoffset=0px
+		/>
+	</svg>
+</body>
+
+	
+	<script type="text/javascript" src="js/svgTest.js"></script>
+<!-- 	<script type="text/javascript" src="js/myChat.js"></script>  -->
+	
+
+</html>

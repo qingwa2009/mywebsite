@@ -1,40 +1,49 @@
+<!doctype html>
 <html>
+
+<head>
+	<meta http-equiv="X-UA-Compatible" content="chrome=1">
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
-	<head>
-		<title>Welcome</title>
-	</head>
+
+	<title>Welcome</title>
+
 	<link rel="stylesheet" type="text/css" href="css/cssVar.css">
 	<link rel="stylesheet" type="text/css" href="css/animate.css">
 	<link rel="stylesheet" type="text/css" href="css/myWebsite.css">
+	<link rel="stylesheet" type="text/css" href="css/myMenu.css">
 	<script type="text/javascript">
-		if (!(/chrome/i.test(window.navigator.userAgent))){
+		if (!(/chrome/i.test(window.navigator.userAgent))) {
 			alert("请使用谷歌浏览器（Chrome）打开本网站！");
 		}
 		if (top.window != window) {
 			top.window.location.replace("/");
 		}
 	</script>
-	<body style="display:flex; flex-flow:column nowrap; position:relative; user-select:none;" oncontextmenu="return false;">
-		<div id="menuBar" style="flex-shrink:0;"></div>
-		<div id="favrBar" class="menu-bar-item" style="flex-shrink:0;">
-			<!--     收藏栏 -->
-			<button>收藏栏</button>
+</head>
+
+
+<body style="display:flex; flex-flow:column nowrap; position:relative; user-select:none;" oncontextmenu="return false;">
+	<div id="menuBar" style="flex-shrink:0;"></div>
+	<div id="favrBar" class="menu-bar-item" style="flex-shrink:0;">
+		<!--     收藏栏 -->
+		<button>收藏栏</button>
+	</div>
+	<div id="content" style="position:relative;flex-grow:1;">
+		<my-tab-page id="myTabPage" style="position: absolute;left: 0;right: 0;top: 0;bottom: 0;"></my-tab-page>
+	</div>
+	<div id="statusBar" class="menu-bar-item" style="flex-shrink:0;">
+		<!--     信息栏 -->
+		<div style="display:flex;flex-flow: row nowrap;">
+			<button style="flex-grow:1;" id="executeInfo">其他信息</button>
+			<button style="flex-grow:1;" id="statisticInfo">统计信息</button>
+			<button style="flex-grow:1;" id="userInfo">登陆信息</button>
+			<input id="switchColor" type="checkbox" />
 		</div>
-		<div id="content" style="position:relative;flex-grow:1;">
-			<my-tab-page id="myTabPage" style="position: absolute;left: 0;right: 0;top: 0;bottom: 0;"></my-tab-page>
-		</div>
-		<div id="statusBar" class="menu-bar-item" style="flex-shrink:0;">
-			<!--     信息栏 -->
-			<div style="display:flex;flex-flow: row nowrap;">
-				<button style="flex-grow:1;" id="executeInfo">其他信息</button>
-				<button style="flex-grow:1;" id="statisticInfo">统计信息</button>
-				<button style="flex-grow:1;" id="userInfo">登陆信息</button>
-				<input id="switchColor" type="checkbox"/>
-			</div>
-		</div>
-		<script type="text/javascript" src="js/myTab.js"></script>
-		<script type="text/javascript" src="js/websiteMenu.js"></script>
-		<script type="text/javascript" src="js/myWebsite.js"></script>
-	</body>
+	</div>
+	<!-- <script type="text/javascript" src="js/myTab.js"></script> -->
+	<script type="text/javascript" src="js/websiteMenu.js"></script>
+	<script type="module" src="js/myWebsite.js"></script>
+</body>
+
 </html>

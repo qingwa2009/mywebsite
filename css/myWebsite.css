@@ -24,111 +24,21 @@ button:active {
   background-color: var(--selected-color);
 }
 
-/*------tab选选项卡-------*/
-/* 
-.my-tab {
-  user-select: none;
-  display: grid;
-  grid: auto 1fr / repeat(10, auto) 1fr;
-}
-
-.my-tab>input[type="radio"] {
-  display: none;
-}
-
-.my-tab>label {
-  padding: .8em .4em 0;
-  transition-duration: 200ms;
-  transition-property: padding;
-}
-
-.my-tab>input:checked+label {
-  border: 1px solid var(--border-color);
-  border-bottom: transparent;
-  padding: .4em;
-  position: relative;
-}
-
-.my-tab>input:checked+label:after {
-  content: "";
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  right: 0;
-  height: 3px;
-  display: block;
-  background-color: var(--background-color);
-}
-
-.my-tab>.my-tab-ct {
-  grid-column: 1/-1;
-  grid-row: 2;
-  height: auto;
-  align-self: stretch;
-  display: none;
-  border: 1px solid var(--border-color);
-}
-
-#tab1:checked ~ #tab1Ct, #tab2:checked ~ #tab2Ct, #tab3:checked ~ #tab3Ct, #tab4:checked ~ #tab4Ct, #tab5:checked ~ #tab5Ct {
-  display: block;
-}
- */
-/*-----------------------*/
-.my-menu {
-  position: absolute;
-  top: 0;
-  left: 0;
-  min-width: 15em;
-  background-color: var(--background-color);
-  box-shadow: 1px 1px 5px 1px var(--border-color);
-  padding: .5em 0;
-  z-index: 100;
-}
-
-.my-menu button {
-  display: block;
-  width: 100%;
-  border: none;
-  background-color: transparent;
-  text-align: start;
-  padding: .2em 1em;
-  position: relative;
-}
-
-.my-menu button[disabled] {
-/*   background-color:var(--back-color-disabled); */
-  color: var(--font-color-disabled);
-}
-
-.my-menu button:enabled:hover {
-  background-color: var(--preselect-color);
-}
-
-.my-menu button:active {
-  background-color: var(--selected-color);
-/*   color: white; */
-}
-
-.has-submenu:after {
-  content: "►";
-  position: absolute;
-  right: .5em;
-  color: var(--color);
-}
-
-/*-----------------------*/
 #menuBar {
   background-color: #3F51B5;
   padding: 5px;
 }
-#menuBar button{
+#menuBar>button{
   background-color: transparent;
   border:0;
   border-left: 1px solid transparent;
   border-right: 1px solid transparent;
   color: #ffffffbb;
 }
-#menuBar button:hover{
+#menuBar>button:disabled{
+  color: rgb(96, 108, 177);
+}
+#menuBar>button:enabled:hover{
   color:#ffffffdd;
   border-left: 1px solid currentColor;
   border-right: 1px solid currentColor;

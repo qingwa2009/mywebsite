@@ -1,0 +1,15 @@
+@charset "utf-8";
+my-splitter[vertical]{
+	cursor: w-resize; 
+	margin: 2px 0;
+	border: 2px dotted var(--border-color);
+}
+my-splitter[horizontal]{
+	cursor: n-resize; 
+	margin: 2px 0;
+	border: 3px dotted var(--border-color);
+}
+my-splitter:hover{
+/*  border-color:var(--color); */
+	border-style:dashed;
+}
