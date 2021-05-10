@@ -18,7 +18,7 @@
  */
 window.websiteMenu = [
 	{
-		title: "导出X_T", url: "/导出X_T/导出X_T.html", disabled: false
+		title: "导出X_T", url: "导出X_T/导出X_T.html", disabled: false
 	},
 	{
 		title: "菜单测试", url: [
@@ -26,12 +26,12 @@ window.websiteMenu = [
 				"子菜单1",
 				{ title: "子菜单3", url: "", disabled: true },
 				"",
-				{ title: "子菜单4", url: "", disabled: false },
+				{ title: "子菜单4", url: "菜单测试/研发BOM选件查询/研发BOM选件查询.html", disabled: false },
 
 			],
 			"",
-			{ title: "实时通讯", url: "/菜单测试/实时通讯/实时通讯.html", disabled: false }
+			{ title: "实时通讯", url: "菜单测试/实时通讯/实时通讯.html", disabled: false }
 		], disabled: false
 	},
-	{ title: "子菜单5", url: "/菜单测试/研发BOM选件查询/研发BOM选件查询.html", disabled: false },
+	{ title: "子菜单5", url: "", disabled: false },
 ];

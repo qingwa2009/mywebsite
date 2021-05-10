@@ -1,5 +1,19 @@
 @charset "utf-8";
 
 table{
+	table-layout: fixed;
+	border-collapse: collapse;
 	border: 1px solid;
+	height: 5em;
+	width: 20em;
+}
+td{
+	width: 3em;
+	word-break: keep-all;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	border: 1px solid red;
+}
+thead td{
+	background-color: lightgray;
 }
