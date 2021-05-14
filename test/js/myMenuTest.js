@@ -53,8 +53,10 @@ window.addEventListener("DOMContentLoaded", () => {
         myMenu.bindWindow(frame2.contentWindow);
         frame2.contentWindow.addEventListener("DOMContentLoaded", () => {
             myMenu.bindElementMenu(frame2.contentDocument.getElementById("id"), menu, MyMenu.TYPES.MENU);
+            console.log("load 2");
         });
+        console.log("load 1");
     });
 
-
+    console.log("load 0");
 });

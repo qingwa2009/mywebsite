@@ -12,97 +12,213 @@
 
 	<title>Welcome</title>
 	<!--外部引用样式-->
-	<link rel="stylesheet" type="text/css" href="/css/cssVar.css">
-	<link rel="stylesheet" type="text/css" href="/css/commStyle.css">
-	<link rel="stylesheet" type="text/css" href="/css/animate.css">
+	<!-- 	<link rel="stylesheet" type="text/css" href="/css/cssVar.css"> -->
+	<!-- 	<link rel="stylesheet" type="text/css" href="/css/commStyle.css"> -->
 	<link rel="stylesheet" type="text/css" href="css/myTableTest.css">
 	<!--内联样式-->
 	<style type="text/css">
 		/*css*/
 	</style>
-	<!--内联脚本-->
-	<script type="text/javascript">
-		'use strict';
-	</script>
+
 </head>
 
 <body style="margin: 10px;
 	border: 15px solid beige;
 	padding: 20px;
 	background-color: antiquewhite;">
-	<table is="my-table" id="tbSearchBOM" data-column-fixed=2>
-		<thead>
-			<tr>
-				<td>产品编号</td>
-				<td>旧产品编号</td>
-				<td>选件编号</td>
-				<td>复制于选件</td>
-				<td>BOM类别</td>
-				<td>BOM状态</td>
-				<td>部件分配</td>
-			</tr>
-		</thead>
-		<tbody>
-			<tr>
-				<td>产品编号</td>
-				<td>旧产品编号</td>
-				<td>选件编号</td>
-				<td>复制于选件</td>
-				<td>BOM类别</td>
-				<td>BOM状态</td>
-				<td>部件分配</td>
-			</tr>
-			<tr>
-				<td>产品编号</td>
-				<td>旧产品编号</td>
-				<td>选件编号</td>
-				<td>复制于选件</td>
-				<td>BOM类别</td>
-				<td>BOM状态</td>
-				<td>部件分配</td>
-			</tr>
-			<tr>
-				<td>产品编号</td>
-				<td>旧产品编号</td>
-				<td>选件编号</td>
-				<td>复制于选件</td>
-				<td>BOM类别</td>
-				<td>BOM状态</td>
-				<td>部件分配</td>
-			</tr>
-			<tr>
-				<td>产品编号</td>
-				<td>旧产品编号</td>
-				<td>选件编号</td>
-				<td>复制于选件</td>
-				<td>BOM类别</td>
-				<td>BOM状态</td>
-				<td>部件分配</td>
-			</tr>
-			<tr>
-				<td>产品编号</td>
-				<td>旧产品编号</td>
-				<td>选件编号</td>
-				<td>复制于选件</td>
-				<td>BOM类别</td>
-				<td>BOM状态</td>
-				<td>部件分配</td>
-			</tr>
-			<tr>
-				<td>产品编号</td>
-				<td>旧产品编号</td>
-				<td>选件编号</td>
-				<td>复制于选件</td>
-				<td>BOM类别</td>
-				<td>BOM状态</td>
-				<td>部件分配</td>
-			</tr>
-		</tbody>
-	</table>
+	<my-table class="test" style="width:25em; height: 10em;">
+		<table id="tbSearchBOM">
+			<colgroup>
+				<col width="300px">
+			</colgroup>
+			<thead>
+				<tr id="head">
+					<td sortby="num">产品编号</td>
+					<td sortby="zh">旧产品编号</td>
+					<td>选件编号</td>
+					<td>复制于选件</td>
+					<td>数量</td>
+					<td>BOM状态</td>
+					<td>部件分配</td>
+				</tr>
+
+			</thead>
+			<tbody id="tbody">
+				<tr>
+					<td>1产品编号</td>
+					<td>是否更好</td>
+					<td>选件编号</td>
+					<td>复制于选件</td>
+					<td>123</td>
+					<td>BOM状态</td>
+					<td>刚好看见</td>
+				</tr>
+				<tr>
+					<td>10产品编号</td>
+					<td>；gjdl</td>
+					<td>选件编号</td>
+					<td>复制于选件</td>
+					<td>0.24</td>
+					<td>BOM状态</td>
+					<td>快乐和减肥</td>
+				</tr>
+				<tr>
+					<td>3产品编号</td>
+					<td>以后的法国</td>
+					<td>选件编号</td>
+					<td>复制于选件</td>
+					<td>0.98</td>
+					<td>BOM状态</td>
+					<td>鳄鱼</td>
+				</tr>
+				<tr>
+					<td>4产品编号</td>
+					<td>刚回家看法国</td>
+					<td>选件编号</td>
+					<td>复制于选件</td>
+					<td>0</td>
+					<td>BOM状态</td>
+					<td>与</td>
+				</tr>
+				<tr>
+					<td>5产品编号</td>
+					<td>威尔泰</td>
+					<td>选件编号</td>
+					<td>复制于选件</td>
+					<td></td>
+					<td>BOM状态</td>
+					<td>瑞</td>
+				</tr>
+				<tr>
+					<td>6产品编号</td>
+					<td>回家看了</td>
+					<td>选件编号</td>
+					<td>复制于选件</td>
+					<td>65</td>
+					<td>BOM状态</td>
+					<td>奇热</td>
+				</tr>
+			</tbody>
+		</table>
+	</my-table>
+	<my-table class="test" style="width:25em; height: 10em;">
+		<table id="tbSearchBOM">
+
+			<thead>
+				<tr id="head">
+					<td>0产品编号</td>
+					<td>旧产品编号</td>
+					<td>选件编号</td>
+					<td>复制于选件</td>
+					<td>BOM类别</td>
+					<td>BOM状态</td>
+					<td>部件分配</td>
+				</tr>
+
+			</thead>
+			<tbody id="tbody">
+				<!-- <tr>
+					<td>1产品编号</td>
+					<td>旧产品编号</td>
+					<td>选件编号</td>
+					<td>复制于选件</td>
+					<td>BOM类别</td>
+					<td>BOM状态</td>
+					<td>部件分配</td>
+				</tr>
+				<tr>
+					<td>2产品编号</td>
+					<td>旧产品编号</td>
+					<td>选件编号</td>
+					<td>复制于选件</td>
+					<td>BOM类别</td>
+					<td>BOM状态</td>
+					<td>部件分配</td>
+				</tr>
+				<tr>
+					<td>3产品编号</td>
+					<td>旧产品编号</td>
+					<td>选件编号</td>
+					<td>复制于选件</td>
+					<td>BOM类别</td>
+					<td>BOM状态</td>
+					<td>部件分配</td>
+				</tr>
+				<tr>
+					<td>4产品编号</td>
+					<td>旧产品编号</td>
+					<td>选件编号</td>
+					<td>复制于选件</td>
+					<td>BOM类别</td>
+					<td>BOM状态</td>
+					<td>部件分配</td>
+				</tr>
+				<tr>
+					<td>5产品编号</td>
+					<td>旧产品编号</td>
+					<td>选件编号</td>
+					<td>复制于选件</td>
+					<td>BOM类别</td>
+					<td>BOM状态</td>
+					<td>部件分配</td>
+				</tr>
+				<tr>
+					<td>6产品编号</td>
+					<td>旧产品编号</td>
+					<td>选件编号</td>
+					<td>复制于选件</td>
+					<td>BOM类别</td>
+					<td>BOM状态</td>
+					<td>部件分配</td>
+				</tr> -->
+			</tbody>
+		</table>
+	</my-table>
 	<!--module类型的脚本可以调用import引用模块-->
-	<!-- <script type="module" src="/js/myTable.js"></script> -->
+	<script type="module" src="/js/myTable.js"></script>
 	<!--普通脚本-->
 	<!-- <script type="text/javascript" src="js/myChat.js"></script> -->
+	<!--内联脚本-->
+	<script type="text/javascript">
+		'use strict';
+		window.addEventListener("DOMContentLoaded", () => {
+			const mymenu = document.getElementsByTagName("my-menu")[0];
+			mymenu.classList.add("test");
+			const mytable = document.getElementsByTagName("my-table")[0];
+			const extendMenuItems = [
+				"",
+				{ title: "menu1", func: callback, disabled: false },
+				"",
+				[
+					"submenu",
+					{ title: "menu2", func: callback, disabled: true },
+					{ title: "menu3", func: callback, disabled: false },
+					"",
+					{ title: "menu4", func: callback, disabled: false },
+				],
+				{ title: "menu5", func: callback, disabled: false },
+				[
+					"submenu",
+					{ title: "menu6", func: callback, disabled: true },
+					{ title: "menu7", func: callback, disabled: false },
+					"",
+					{ title: "menu8", func: callback, disabled: false },
+				],
+				"",
+			];
+			function callback(...args) {
+				console.log(args);
+			}
+			mytable.extendMenuItems(extendMenuItems, -2);
+		});
+		// const h = document.getElementById("head");
+		// const b = document.getElementById("tbody");
+		// function updateScroll() {
+		// 	h.style.left = -b.scrollLeft + "px";
+		// }
+		// b.onscroll = function (e) { updateScroll() };
+		// updateScroll();
+	</script>
 </body>
 
 </html>

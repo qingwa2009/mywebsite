@@ -3,13 +3,13 @@
 html {
   height: 100%;
   --background-color: #ffffff;
-  --border-color:#00000030;
+  --border-color:#bdbdbd;
   --selected-color:#03A9F4;
   --preselect-color:#aabbcc3a;
   --frozon-color:#ececec;
   --drag-color:#2196F3;
   --color:#000000;
-  --thead-color:#ffffff;
+  --backcolor-thead:#ffffff ;
   --animate-color:#3F51B5;
   --back-color-disabled:#ececec;
   --font-color-disabled:#999999;
@@ -20,13 +20,13 @@ html {
 html.dark-color {
   height: 100%;
   --background-color: #313131;
-  --border-color:#ffffff30;
+  --border-color:#7c7c7c;
   --selected-color:#03A9F4;
   --preselect-color:#aabbcc3a;
   --frozon-color:#111111;
   --drag-color:#a9ffad;
   --color:#ffffffba;
-  --thead-color:var(--background-color);
+  --backcolor-thead:var(--background-color) ;
   --animate-color:#FFC107;
   --back-color-disabled:#454545;
   --font-color-disabled:#999999;

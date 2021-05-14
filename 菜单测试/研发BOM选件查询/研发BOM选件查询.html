@@ -7,8 +7,6 @@
 <link rel="stylesheet" type="text/css" href="/css/cssVar.css">
 <link rel="stylesheet" type="text/css" href="/css/commStyle.css">
 <link rel="stylesheet" type="text/css" href="/css/animate.css">
-<link rel="stylesheet" type="text/css" href="/css/mySplitter.css">
-<link rel="stylesheet" type="text/css" href="/css/myTable.css">
 
 <head>
   <title>研发BOM选件查询</title>
@@ -139,8 +137,8 @@
     <button id="btnConfirm1" type="button" style="float: right;">组长确认</button>
   </form>
   <!--   -----------------------------查询结果列表-------------------------------------- -->
-  <div class="my-table-div" style="min-height:5em;flex-grow:1;">
-    <table is="my-table" id="tbSearchBOM" data-column-fixed=2>
+  <my-table style="min-height:5em;flex-grow:1;">
+    <table id="tbSearchBOM">
       <thead>
         <tr>
           <td>产品编号</td>
@@ -183,7 +181,7 @@
       </thead>
       <tbody></tbody>
     </table>
-  </div>
+  </my-table>
   <!--   -----------------------------选中列表项详细信息区------------------------------- -->
   <!--     <div style="text-align:center;">---------分割线--------</div> -->
   <my-splitter horizontal editnext></my-splitter>
@@ -193,8 +191,8 @@
       <input type="radio" name="tab" id="tab1" checked />
       <label for="tab1">关联BOM选件</label>
       <div class="my-tab-ct" srcdoc="bom-list.html">
-        <div style="width:100%;height:100%;">
-          <table is="my-table" id="tbScBOMTab1">
+        <my-table style="width:100%;height:100%;">
+          <table id="tbScBOMTab1">
             <thead>
               <tr>
                 <td>关联号</td>
@@ -226,14 +224,14 @@
             </thead>
             <tbody></tbody>
           </table>
-        </div>
+        </my-table>
       </div>
       <!--被关联BOM选件(主架)--------------------------------------------------------->
       <input type="radio" name="tab" id="tab2" />
       <label for="tab2">被关联BOM选件(主架)</label>
       <div class="my-tab-ct" srcdoc="tab2.html">
-        <div style="width:100%;height:100%;">
-          <table is="my-table" id="tbScBOMTab2">
+        <my-table style="width:100%;height:100%;">
+          <table id="tbScBOMTab2">
             <thead>
               <tr>
                 <td>关联号</td>
@@ -265,14 +263,14 @@
             </thead>
             <tbody></tbody>
           </table>
-        </div>
+        </my-table>
       </div>
       <!--对应产品的所有BOM选件------------------------------------------------------------>
       <input type="radio" name="tab" id="tab3" />
       <label for="tab3">对应产品的所有BOM选件(n行)</label>
       <div class="my-tab-ct" srcdoc="tab3.html">
-        <div style="width:100%;height:100%;">
-          <table is="my-table" id="tbScBOMTab3">
+        <my-table style="width:100%;height:100%;">
+          <table id="tbScBOMTab3">
             <thead>
               <tr>
                 <td>产品编号</td>
@@ -314,14 +312,14 @@
             </thead>
             <tbody></tbody>
           </table>
-        </div>
+        </my-table>
       </div>
       <!--研发BOM转正----------------------------------------------------------->
       <input type="radio" name="tab" id="tab4" />
       <label for="tab4">研发BOM转正</label>
       <div class="my-tab-ct" srcdoc="tab4.html">
-        <div style="width:100%;height:100%;">
-          <table is="my-table" id="tbScBOMTab4">
+        <my-table style="width:100%;height:100%;">
+          <table id="tbScBOMTab4">
             <thead>
               <tr>
                 <td>BOM转正单</td>
@@ -372,13 +370,13 @@
             </thead>
             <tbody></tbody>
           </table>
-        </div>
+        </my-table>
       </div>
     </div>
   </div>
 
-  <script type="text/javascript" src="/js/mySplitter.js"></script>
-  <script type="text/javascript" src="/js/myTable.js"></script>
+  <script type="module" src="/js/mySplitter.js"></script>
+  <script type="module" src="/js/myTable.js"></script>
   <script type="text/javascript" src="searchBOM.js"></script>
 
 </body>

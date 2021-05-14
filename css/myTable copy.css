@@ -1,0 +1,113 @@
+@charset "utf-8";
+
+.my-table-div{
+	--color-outline:#C0C0C0;
+	--color-frozen : #f1f1f1;
+	--color-drag :#2196F3;
+
+	--width-splitter:5px;
+
+	/*包含table的div样式*/
+	position:relative;
+	overflow:auto;
+	border:1px solid var(--color-outline);
+	border:1px solid var(--border-color);
+}
+
+[is="my-table"]{
+	/*自定义颜色属性*/
+	table-layout:fixed;
+	width:auto;
+	position:absolute;
+	top:0;
+	left:0;
+}
+[is="my-table"]:before{
+	/*选中行数*/
+	content:attr(data-sel-rows);
+	display:block;
+	position:absolute;
+	background-color: var(--selected-color);
+	color:white;
+	padding:.2em .2em;
+	top:var(--scroll-top,0);
+	left:var(--scroll-left,0);
+	z-index:10;
+	box-sizing: border-box;
+	font-weight:bold;
+	font-family: serif;
+	border-radius:1em;
+	box-shadow: 1px 1px 3px grey;
+}
+[is="my-table"] td{
+	/*单元格样式*/
+	cursor: default;
+	overflow:hidden;text-overflow:ellipsis;
+	border-right:1px solid var(--color-outline);
+	border-bottom:1px solid var(--color-outline);
+	padding:.2em .5em;
+}
+[is="my-table"] tbody td:nth-last-child(n+2){
+	/*最后一列宽度不可压缩*/
+	max-width:10px;
+}
+[is="my-table"] tbody tr:hover{
+	background:var(--preselect-color);
+}
+.my-table-head td{
+	/*标题样式*/
+	background-image:-webkit-linear-gradient(#FAFAFA00 20%,#C8C8C8AA);
+	background-image:linear-gradient(rgba(250,250,250,0) 20%,rgba(200,200,200,0.67));
+	background-color:var(--thead-color);
+}
+.my-table-head td:hover{
+	/*标题悬浮样式*/
+	background-image:-webkit-linear-gradient(#03A9F420 10%,#FAFAFAFF 35%,#FAFAFAFF 38%,#03A9F470 40%,#03A9F450);
+	background-color:var(--frozon-color);
+}
+.my-table-head td:active{
+	/*标题点击样式*/
+	background:var(--selected-color) !important;
+}
+.my-table-head td:hover:after{
+	/*分割线样式*/
+	content:"";
+	cursor:e-resize !important;
+	display: block;
+	width: var(--width-splitter);
+	position:absolute;
+	top:0;
+	bottom:0;
+	right:0;
+	/*background-color: var(--drag-color);*/
+	box-sizing: border-box;
+}
+.column-drag-left:before,.column-drag-right:after{
+	/*拖放光标样式*/
+	content:"";
+	display: block;
+	width: 12px;
+	position:absolute;
+	top:0;
+	bottom:0;
+	background-color: var(--color-drag);
+	border: 3px solid  var(--color-drag);
+	border-left-color: transparent;
+	border-right-color: transparent;
+	background-clip: padding-box;
+	box-sizing: border-box;
+}
+.column-drag-left:before{
+	/*左拖放光标*/
+	left:0;
+	transform:translateX(-50%);
+}
+.column-drag-right:after{
+	/*右拖放光标*/
+	right:0;
+	transform:translateX(50%);
+}
+.row-selected td{
+	background-color:var(--selected-color) !important;
+	color:white;
+}

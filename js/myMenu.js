@@ -24,7 +24,8 @@ import { getParent, getTopViewPortOffset } from "./myUtil.js";
  */
 export default class MyMenu extends HTMLElement {
     static TAG = "my-menu";
-    static CLASS_MENU = "mymenu"
+    static CLASS_MENU = "menu"
+    static CLASS_SUB_MENU = "submenu"
     static CLASS_HASSUBMENU = "hassubmenu";
 
     static TYPES = {
@@ -42,15 +43,25 @@ export default class MyMenu extends HTMLElement {
         if (this._inited) return;
         this._inited = true;
 
-        // this._menu = document.createElement("span");
-        this.classList.add(MyMenu.CLASS_MENU);
+        this.attachShadow({ mode: "open" });
+        const link = document.createElement("link");
+        link.rel = "stylesheet";
+        link.type = "text/css";
+        link.href = "/css/myMenu.css"
+        this.shadowRoot.appendChild(link);
+
+        this._menu = document.createElement("span");
+        this._menu.classList.add(MyMenu.CLASS_MENU);
+        this.shadowRoot.appendChild(this._menu);
+
         this.style.display = "none";
-        this.addEventListener("contextmenu", e => e.preventDefault());
-        this.addEventListener("mouseover", this._onMouseOver.bind(this));
-        this.addEventListener("click", this._onClick.bind(this));
+
+        this._menu.addEventListener("contextmenu", e => e.preventDefault());
+        this._menu.addEventListener("mouseover", this._onMouseOver.bind(this), true);
+        this._menu.addEventListener("click", this._onClick.bind(this));
 
         this._submenu = document.createElement("span");
-        this._submenu.classList.add(MyMenu.CLASS_MENU);
+        this._submenu.classList.add(MyMenu.CLASS_SUB_MENU);
 
         this._menuItems = [];
         this._submenuItems = [];
@@ -63,8 +74,8 @@ export default class MyMenu extends HTMLElement {
     _loadMenuItems(menuItems) {
         if (this._menuItems !== menuItems) {
             this._menuItems = menuItems;
-            this.innerHTML = "";
-            this._createMenuItems(this, menuItems, false)
+            this._menu.innerHTML = "";
+            this._createMenuItems(this._menu, menuItems, false)
             console.log("loadMenuItems: ", menuItems);
         }
     }
@@ -154,8 +165,7 @@ export default class MyMenu extends HTMLElement {
         e.preventDefault();
         const em = e.currentTarget;
         if (em.menuFilterFunc && (!em.menuFilterFunc(e))) return;
-        this._menuEvCurrentTarget = em;
-        this._menuEvTarget = e.target;
+        this._setVar(em, e.target);
         this._loadMenuItems(em.menuItems);
         this._showMenu(e, isContextMenu);
     }
@@ -176,7 +186,7 @@ export default class MyMenu extends HTMLElement {
             const xx = document.documentElement.clientWidth - clientX - rect.width - 3;
             if (xx < 0) x += xx;
             const yy = document.documentElement.clientHeight - clientY - rect.height - 3;
-            if (yy < 0 && clientY > rect.height) y -= rect.height;
+            if (yy < 0 && clientY > rect.height) y += yy;
         } else {
             const rect1 = e.currentTarget.getBoundingClientRect();
             clientX = rect1.left + topOffset[0];
@@ -238,9 +248,19 @@ export default class MyMenu extends HTMLElement {
             window.removeEventListener("mousedown", this._listener);
             window.removeEventListener("mouseup", this._listener);
             window.removeEventListener("resize", this._listener);
-            if (this._menuEvCurrentTarget.menuCloseCallback) this._menuEvCurrentTarget.menuCloseCallback(this._menuEvCurrentTarget, this._menuEvTarget);
+            if (this._menuEvCurrentTarget && this._menuEvCurrentTarget.menuCloseCallback)
+                this._menuEvCurrentTarget.menuCloseCallback(this._menuEvCurrentTarget, this._menuEvTarget);
             this._hideSubmenu();
         }
+        this._resetVar();
+    }
+
+    _setVar(currentTarget, target) {
+        this._menuEvCurrentTarget = currentTarget;
+        this._menuEvTarget = target;
+    }
+
+    _resetVar() {
         this._menuEvCurrentTarget = null;
         this._menuEvTarget = null;
     }

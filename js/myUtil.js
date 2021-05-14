@@ -59,3 +59,11 @@ export function getTopViewPortOffset(win, topWin) {
     }
     return offset;
 }
+
+/**四舍五入 */
+export function round(s, i) {
+    var s = "" + s;
+    var re = new RegExp("^(\\d*\\.\\d{" + i + "})(\\d)");
+    var ns = s.replace(re, (m, p0, p1, o, ss) => p1 >= 5 ? p0 + 8 : p0 + 2);
+    return parseFloat(ns).toFixed(i);
+}

@@ -1,6 +1,6 @@
 "use strict";
 
-class MySplitter extends HTMLElement {
+export default class MySplitter extends HTMLElement {
   static TAG = "my-splitter";
   static TYPE = { horizontal: "horizontal", vertical: "vertical" }
   static EDIT = { prev: "editprev", next: "editnext", both: "editboth" }
@@ -12,6 +12,13 @@ class MySplitter extends HTMLElement {
       mousemove: this._handleOnMouseMove.bind(this),
       mouseup: this._handleOnMouseUp.bind(this)
     };
+
+    this.attachShadow({ mode: "open" });
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.type = "text/css";
+    link.href = "/css/mySplitter.css"
+    this.shadowRoot.appendChild(link);
 
     console.log("MySplitter.constructed!");
   }

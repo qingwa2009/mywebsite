@@ -1,76 +1,98 @@
 @charset "utf-8";
-
-.my-table-div{
-	--color-outline:#C0C0C0;
-	--color-frozen : #f1f1f1;
-	--color-drag :#2196F3;
-
-	--width-splitter:5px;
-
-	/*包含table的div样式*/
-	position:relative;
-	overflow:auto;
-	border:1px solid var(--color-outline);
-	border:1px solid var(--border-color);
+:host(.test){
+	--preselect-color:#aabbcc3a;
+	--selected-color:#03A9F4;
+	
+	--backcolor-thead:#ffffff;
+	--border-color:#00000030;
+	
 }
 
-[is="my-table"]{
-	/*自定义颜色属性*/
-	table-layout:fixed;
-	width:auto;
-	position:absolute;
-	top:0;
-	left:0;
+:host(my-table){	
+	--color-drag-indicator:#03A9F4;
+	--width-splitter:8px;
+
+	display: block;	
+	border:2px inset gray; 
 }
-[is="my-table"]:before{
-	/*选中行数*/
-	content:attr(data-sel-rows);
+
+
+
+table{
+	user-select: none;
+	table-layout: fixed;
+	border-collapse: collapse;
+	border-spacing: 0;
+	height: 100%;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+	/* border: 1px solid; */
+}
+
+tbody tr{
+	/* display: block; */
+	border-bottom: 1px solid var(--border-color);
+}
+
+thead, thead tr{
+	display: block;
+	position: relative;
+}
+
+tbody{
 	display:block;
-	position:absolute;
-	background-color: var(--selected-color);
-	color:white;
-	padding:.2em .2em;
-	top:var(--scroll-top,0);
-	left:var(--scroll-left,0);
-	z-index:10;
-	box-sizing: border-box;
-	font-weight:bold;
-	font-family: serif;
-	border-radius:1em;
-	box-shadow: 1px 1px 3px grey;
+	overflow: auto;
+	height: 100%;
+	width: 100%;
 }
-[is="my-table"] td{
-	/*单元格样式*/
+
+tbody tr:hover{
+	background-color:var(--preselect-color);
+}
+
+td{
+	max-width: 0em;
+	min-width: 5em;
+	border-left: 1px solid var(--border-color);
+	border-right: 1px solid var(--border-color);
+	padding: 2px;
+	word-break: keep-all;
+	text-overflow: ellipsis;
+	overflow: hidden;
 	cursor: default;
-	overflow:hidden;text-overflow:ellipsis;
-	border-right:1px solid var(--color-outline);
-	border-bottom:1px solid var(--color-outline);
-	padding:.2em .5em;
 }
-[is="my-table"] tbody td:nth-last-child(n+2){
-	/*最后一列宽度不可压缩*/
-	max-width:10px;
+
+td:last-of-type{
+	/* min-width: auto !important; */
+	/* max-width: unset; */
+	/* width: 100%; */
 }
-[is="my-table"] tbody tr:hover{
-	background:var(--preselect-color);
+
+thead td{
+	position: relative;
+	white-space: nowrap;
 }
-.my-table-head td{
+
+thead td{
 	/*标题样式*/
 	background-image:-webkit-linear-gradient(#FAFAFA00 20%,#C8C8C8AA);
 	background-image:linear-gradient(rgba(250,250,250,0) 20%,rgba(200,200,200,0.67));
-	background-color:var(--thead-color);
+	background-color:var(--backcolor-thead);
 }
-.my-table-head td:hover{
+thead td:hover{
 	/*标题悬浮样式*/
 	background-image:-webkit-linear-gradient(#03A9F420 10%,#FAFAFAFF 35%,#FAFAFAFF 38%,#03A9F470 40%,#03A9F450);
-	background-color:var(--frozon-color);
+	background-color:var(--preselect-color);
 }
-.my-table-head td:active{
+thead td:active{
 	/*标题点击样式*/
-	background:var(--selected-color) !important;
+	background-color:var(--color-drag-indicator) !important;
 }
-.my-table-head td:hover:after{
-	/*分割线样式*/
+
+/*调整列宽*/
+thead td:hover::after{
 	content:"";
 	cursor:e-resize !important;
 	display: block;
@@ -79,35 +101,32 @@
 	top:0;
 	bottom:0;
 	right:0;
-	/*background-color: var(--drag-color);*/
+	/* background-color: red; */
 	box-sizing: border-box;
 }
-.column-drag-left:before,.column-drag-right:after{
-	/*拖放光标样式*/
+
+/*拖放光标样式*/
+.column-drag-left::before,.column-drag-right::after{
 	content:"";
 	display: block;
-	width: 12px;
+	width: var(--width-splitter);
 	position:absolute;
 	top:0;
 	bottom:0;
-	background-color: var(--color-drag);
-	border: 3px solid  var(--color-drag);
-	border-left-color: transparent;
-	border-right-color: transparent;
-	background-clip: padding-box;
-	box-sizing: border-box;
+	background-color: var(--color-drag-indicator);
 }
-.column-drag-left:before{
-	/*左拖放光标*/
+/*左拖放光标*/
+.column-drag-left::before{	
 	left:0;
 	transform:translateX(-50%);
 }
-.column-drag-right:after{
-	/*右拖放光标*/
+/*右拖放光标*/
+.column-drag-right::after{	
 	right:0;
 	transform:translateX(50%);
 }
-.row-selected td{
+
+tr[selected]{
 	background-color:var(--selected-color) !important;
 	color:white;
 }

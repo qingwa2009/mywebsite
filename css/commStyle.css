@@ -17,9 +17,10 @@ input,select{
 
 
 tr{
-  white-space:nowrap; 
-  margin:0px; 
+  white-space:nowrap;
+  margin:0px;
   padding:0px;
+  /* display: block; */
 }
 
 td{

@@ -1,6 +1,6 @@
 "use strict";
 
-export class MyTabPage extends HTMLElement {
+export default class MyTabPage extends HTMLElement {
   static IDPREFIX = "tab";
   static IDSURFIX = { TITLE: "_ttl", CLS: "_cls", PAGE: "_pge" };
   static CLASSES = { TAB: "tab", TITLE: "title", CLS: "cls", PAGE: "page" };

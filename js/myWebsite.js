@@ -1,6 +1,6 @@
 "use strict"
 import { getParent, defineProperty } from './myUtil.js';
-import { MyTabPage } from './myTab.js';
+import MyTabPage from './myTab.js';
 import MyMenu from './myMenu.js';
 
 window.MyTableData = function () {
