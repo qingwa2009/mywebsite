@@ -1,7 +1,7 @@
 "use strict";
-import { getParent, getTopViewPortOffset } from "./myUtil.js";
+import { getParent, getTopViewPortOffset } from "../../js/myUtil.js";
 // 使用方法
-// const myMenu = document.createElement(MyMenu.TAG)；
+// const myMenu = document.createElement(MyMenu.TAG);
 // myMenu.init();
 // const menu = [
 //     { title: "menuitem1", func: func, disabled: false },
@@ -47,7 +47,7 @@ export default class MyMenu extends HTMLElement {
         const link = document.createElement("link");
         link.rel = "stylesheet";
         link.type = "text/css";
-        link.href = "/css/myMenu.css"
+        link.href = new URL("myMenu.css", import.meta.url);
         this.shadowRoot.appendChild(link);
 
         this._menu = document.createElement("span");

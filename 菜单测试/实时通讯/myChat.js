@@ -1,4 +1,6 @@
 "use strict";
+import { createWebSocket } from '/js/myUtil.js';
+
 window.addEventListener('DOMContentLoaded', () => {
 	const App = top.window.App;
 	// const CommonFunc=top.window.CommonFunc;
@@ -23,7 +25,7 @@ window.addEventListener('DOMContentLoaded', () => {
 	const players = {};
 	var selfID = undefined;
 
-	const ws = App.createWebSocket(window, "/multiplayer", "json");
+	const ws = createWebSocket(window, "/multiplayer", "json");
 	ws.onmessage = e => { handleData(JSON.parse(e.data)); };
 	ws.onclose = e => { console.warn(e); };
 

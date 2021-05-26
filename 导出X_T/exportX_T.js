@@ -1,15 +1,16 @@
 'use strict';
-import { getParent } from '/js/myUtil.js';
-// import MyMenu from "/js/myMenu.js";
+import { createWebSocket } from '../js/myUtil.js';
+import MyMenu from "../components/myMenu/myMenu.js";
 
 window.addEventListener('DOMContentLoaded', () => {
 	const App = top.window.App;
 	/**@type{MyMenu} */
-	const myMenu = App.myMenu;
+	const myMenu = App.myMenu || document.createElement(MyMenu.TAG);
+	myMenu.init();
 	// 	const uploadURL = top.location.origin + "/upload";
 	const downloadURL = top.location.origin + "/upload";
-	const uploadURL = "/exportxbupload";
-	const _cmd = "/exportxbfilelist?type=";
+	const uploadURL = "/exportxb/upload";
+	const _cmd = "/exportxb/filelist?type=";
 	const wsurl = "/exportxb";
 	const cmdExporting = _cmd + "exporting";
 	const cmdExported = _cmd + "exported";
@@ -180,7 +181,7 @@ window.addEventListener('DOMContentLoaded', () => {
 	}
 
 	function reconnectWebSocket() {
-		ws = App.createWebSocket(window, wsurl, "json");
+		ws = createWebSocket(window, wsurl, "json");
 		ws.onclose = e => {
 			alert(`导出X_T实时更新列表连接已关闭：${e.reason}\n请关闭该页面后重新打开！`);
 		}

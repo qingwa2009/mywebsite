@@ -1,6 +1,6 @@
 "use strict";
-import { round } from "./myUtil.js";
-import MyMenu from "./myMenu.js"
+import { round } from "../../js/myUtil.js";
+import MyMenu from "../myMenu/myMenu.js";
 /**@type{MyMenu} */
 const myMenu = top.App ? top.App.myMenu : document.createElement(MyMenu.TAG);
 myMenu.init();
@@ -40,7 +40,7 @@ export default class MyTable extends HTMLElement {
         const link = document.createElement("link");
         link.rel = "stylesheet";
         link.type = "text/css";
-        link.href = "/css/myTable.css"
+        link.href = new URL("myTable.css", import.meta.url);
         const style = document.createElement("style");
 
         this.shadowRoot.appendChild(link);
@@ -60,8 +60,6 @@ export default class MyTable extends HTMLElement {
         this._selectionChangeEvents = [];
 
         this._initHeadRow();
-
-
 
         this.headRow.addEventListener("mousedown", this._onHeadRowMouseDown.bind(this));
         this.headRow.addEventListener("dblclick", this._onHeadRowDbClick.bind(this));
@@ -89,15 +87,14 @@ export default class MyTable extends HTMLElement {
     }
 
     _initHeadRow() {
-        const tds = this.headRow.getElementsByTagName("td");
+        const tds = this.headRow.cells;
         const n = tds.length;
         for (let i = 0; i < n; i++) {
             const ind = this.colStylesheet.insertRule(`td:nth-of-type(${i + 1}){}`);
             this._colStyles.push(this.colStylesheet.cssRules[ind]);
             tds[i].setAttribute("draggable", true);
         }
-
-        // console.log(this._colStyles);
+        this.loadSetting();
     }
 
     /**
@@ -736,7 +733,97 @@ export default class MyTable extends HTMLElement {
     static _headRowSaveSetting(/**@type{HTMLTableRowElement} */tr, /**@type{HTMLTableCellElement} */td, obj) {
         /**@type{MyTable} */
         const mytable = tr.getRootNode().host;
-        alert("还没写");
+        mytable.saveSetting();
+    }
+
+    saveSetting() {
+        if (!this.title) {
+            const msg = "my-table没有定义title，不能保存设置！";
+            console.error(msg);
+            alert(msg);
+            return;
+        }
+        const cs = this.headRow.cells;
+        const n = cs.length;
+        const setting = { title: this.title, data: [] };
+        for (let i = 0; i < n; i++) {
+            const c = cs[i];
+            setting.data.push({ col: c.textContent, width: parseInt(window.getComputedStyle(c).width) });
+        }
+        if (top.App) {
+            top.App.saveTableSetting(setting);
+        } else {
+            this._saveSettingInLocal(setting);
+        }
+    }
+
+    loadSetting() {
+        /**@type{{title:string, data:{col:string, width:number}[]}} */
+        let setting;
+        if (top.App) {
+            setting = top.App.getTableSetting(this.title);
+        } else {
+            setting = this._getSettingFromLocal(this.title);
+        }
+        if (!setting) return;
+
+        const cells = this.headRow.cells;
+        const map = new Map();
+        for (let i = 0; i < cells.length; i++) {
+            const cell = cells[i];
+            map.set(cell.textContent, cell)
+        }
+
+        if (!this.tempDoc) this.tempDoc = document.createDocumentFragment();
+
+        const data = setting.data;
+        for (let i = 0; i < data.length; i++) {
+            const dt = data[i];
+            let em = map.get(dt.col);
+            if (!em) {
+                em = document.createElement("td");
+                em.textContent = dt.col;
+                em.setAttribute("draggable", true);
+            } else {
+                map.delete(dt.col);
+            }
+
+            this.tempDoc.appendChild(em);
+
+            let style = this._colStyles[i];
+            if (!style) {
+                const ind = this.colStylesheet.insertRule(`td:nth-of-type(${i + 1}){}`);
+                style = this.colStylesheet.cssRules[ind];
+                this._colStyles.push(style);
+            }
+            this.setColumnWidth(i, dt.width);
+        }
+        map.forEach(v => v.remove());
+        this.headRow.appendChild(this.tempDoc);
+    }
+
+
+    static LOCAL_SETTING_NAME = "tableSettings"
+    /**
+	 * @param {{title:string, data:{col:string, width:number}[]}} setting 
+	 */
+    _saveSettingInLocal(setting) {
+        let settings = localStorage.getItem(MyTable.LOCAL_SETTING_NAME);
+        if (!settings || typeof settings !== "object") {
+            settings = {}
+        }
+        settings[this.title] = setting;
+        localStorage.setItem(MyTable.LOCAL_SETTING_NAME, JSON.stringify(settings));
+        console.log("table setting saved in localStorage!", setting);
+    }
+
+    _getSettingFromLocal(title) {
+        let settings = localStorage.getItem(MyTable.LOCAL_SETTING_NAME);
+        if (!settings) return undefined;
+        settings = JSON.parse(settings);
+        const setting = settings[title];
+        if (setting) console.log("tsable setting loaded from localStorage!", setting);
+        return setting;
     }
 
     static TBody_MenuItems = [

@@ -26,7 +26,7 @@
 	border: 15px solid beige;
 	padding: 20px;
 	background-color: antiquewhite;">
-	<my-table class="test" style="width:25em; height: 10em;">
+	<my-table title="tableTest" class="test" style="width:25em; height: 10em;">
 		<table id="tbSearchBOM">
 			<colgroup>
 				<col width="300px">
@@ -40,6 +40,7 @@
 					<td>数量</td>
 					<td>BOM状态</td>
 					<td>部件分配</td>
+					<td>多余的</td>
 				</tr>
 
 			</thead>
@@ -175,7 +176,7 @@
 		</table>
 	</my-table>
 	<!--module类型的脚本可以调用import引用模块-->
-	<script type="module" src="/js/myTable.js"></script>
+	<script type="module" src="/components/myTable/myTable.js"></script>
 	<!--普通脚本-->
 	<!-- <script type="text/javascript" src="js/myChat.js"></script> -->
 	<!--内联脚本-->
