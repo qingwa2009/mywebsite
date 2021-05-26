@@ -7,15 +7,13 @@ window.addEventListener('DOMContentLoaded', () => {
 	/**@type{MyMenu} */
 	const myMenu = App.myMenu || document.createElement(MyMenu.TAG);
 	myMenu.init();
-	// 	const uploadURL = top.location.origin + "/upload";
-	const downloadURL = top.location.origin + "/upload";
-	const uploadURL = "/exportxb/upload";
-	const _cmd = "/exportxb/filelist?type=";
-	const wsurl = "/exportxb";
-	const cmdExporting = _cmd + "exporting";
-	const cmdExported = _cmd + "exported";
-	const cmdDelete = _cmd + "delete";
 
+	const wsurl = "/exportxb";
+	const cmdExporting = "/exportxb/filelist?type=exporting";
+	const cmdExported = "/exportxb/filelist?type=exported";
+	const cmdDelete = "/exportxb/delete?file=";
+	const cmdUpload = "/exportxb/upload?file="
+	const cmdDownload = "/exportxb/download?file="
 
 	const A = document.createElement("a");
 	A.style.display = "none";
@@ -33,7 +31,7 @@ window.addEventListener('DOMContentLoaded', () => {
 		const filename = target.textContent;
 		A.download = filename;
 		const fn = encodeURI(filename);
-		A.href = `${downloadURL}/${fn}`;
+		A.href = `${cmdDownload}${fn}`;
 		A.click();
 	}
 
@@ -111,7 +109,7 @@ window.addEventListener('DOMContentLoaded', () => {
 		}
 		worker.postMessage({
 			"file": file,
-			"url": uploadURL
+			"url": cmdUpload
 		});
 	}
 
@@ -129,7 +127,7 @@ window.addEventListener('DOMContentLoaded', () => {
 	}
 
 	function reqDelFile(name) {
-		App.myHttpRequest("POST", cmdDelete, name, true).then(
+		App.myHttpRequest("GET", `${cmdDelete}${name}`, true).then(
 			req => {
 				refresh();
 			}
@@ -164,7 +162,7 @@ window.addEventListener('DOMContentLoaded', () => {
 	}
 
 	function getTransferDataURL(file) {
-		return `application/file:${file}:${downloadURL}/${file}`;
+		return `application/file:${file}:${top.location.origin}${cmdDownload}${file}`;
 	}
 
 
