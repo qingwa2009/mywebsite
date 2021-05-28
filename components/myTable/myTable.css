@@ -32,7 +32,6 @@ table{
 }
 
 tbody tr{
-	/* display: block; */
 	border-bottom: 1px solid var(--border-color);
 }
 
@@ -60,7 +59,7 @@ td{
 	padding: 2px;
 	word-break: keep-all;
 	text-overflow: ellipsis;
-	overflow: hidden;
+	overflow: hidden;	
 	cursor: default;
 }
 
@@ -72,6 +71,10 @@ td:last-of-type{
 
 thead td{
 	position: relative;
+	white-space: nowrap;
+}
+
+tbody td{
 	white-space: nowrap;
 }
 

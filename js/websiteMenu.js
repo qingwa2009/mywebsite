@@ -27,6 +27,7 @@ window.websiteMenu = [
 				{ title: "子菜单3", url: "", disabled: true },
 				"",
 				{ title: "子菜单4", url: "菜单测试/研发BOM选件查询/研发BOM选件查询.html", disabled: false },
+				{ title: "子菜单5", url: "菜单测试/物料查询/物料查询.html", disabled: false },
 
 			],
 			"",

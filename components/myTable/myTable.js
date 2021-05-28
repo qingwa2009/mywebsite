@@ -1,5 +1,6 @@
 "use strict";
 import { round } from "../../js/myUtil.js";
+import MyTableData from "./MyTableData.js";
 import MyMenu from "../myMenu/myMenu.js";
 /**@type{MyMenu} */
 const myMenu = top.App ? top.App.myMenu : document.createElement(MyMenu.TAG);
@@ -83,7 +84,18 @@ export default class MyTable extends HTMLElement {
     }
 
     _setTableScrollableWhenEmpty() {
-        this.table.style.overflowX = this.tbody.rows.length > 0 ? "" : "auto";
+        if (this.tbody.rows.length > 0) {
+            if (this.table.style.overflowX != "") {
+                this.tbody.scrollLeft = this.table.scrollLeft;
+                this.table.style.overflowX = "";
+                this.table.scrollLeft = 0;
+            }
+        } else {
+            if (this.table.style.overflowX != "auto") {
+                this.table.style.overflowX = "auto";
+                this.table.scrollLeft = 0;
+            }
+        }
     }
 
     _initHeadRow() {
@@ -97,6 +109,20 @@ export default class MyTable extends HTMLElement {
         this.loadSetting();
     }
 
+    /**
+     * @param {number} i 
+     * @returns {number}
+     */
+    getColumnWidth(i) {
+        return this.getCellWidth(this.headRow.cells[i]);
+    }
+    /**
+     * @param {HTMLTableCellElement} cell 
+     * @returns {number}
+     */
+    getCellWidth(cell) {
+        return parseInt(window.getComputedStyle(cell).width)
+    }
     /**
      * @param {number} i 
      * @param {number} width px
@@ -117,8 +143,9 @@ export default class MyTable extends HTMLElement {
         //     s.style.minWidth = `fit-content`;
         //     s.style.maxWidth = "unset";
         // }
+        if (!MyTable._ctx) MyTable._ctx = document.createElement("canvas").getContext("2d");
         var rs = this.table.rows;
-        var ctx = document.createElement("canvas").getContext("2d");
+        let ctx = MyTable._ctx;
         ctx.font = getComputedStyle(rs[0].cells[i]).font;
         var width = 0;
         for (var j = 0; j < rs.length; j++) {
@@ -748,13 +775,20 @@ export default class MyTable extends HTMLElement {
         const setting = { title: this.title, data: [] };
         for (let i = 0; i < n; i++) {
             const c = cs[i];
-            setting.data.push({ col: c.textContent, width: parseInt(window.getComputedStyle(c).width) });
+            setting.data.push({ col: c.textContent, width: this.getCellWidth(c) });
         }
         if (top.App) {
             top.App.saveTableSetting(setting);
         } else {
             this._saveSettingInLocal(setting);
         }
+    }
+
+    _createColumn(name) {
+        const em = document.createElement("td");
+        em.textContent = name;
+        em.setAttribute("draggable", true);
+        return em;
     }
 
     loadSetting() {
@@ -767,6 +801,14 @@ export default class MyTable extends HTMLElement {
         }
         if (!setting) return;
 
+        const data = setting.data;
+        this._reloadTitles(data);
+    }
+
+    /**
+     * @param {{col:string, width:number}[]} data 
+     */
+    _reloadTitles(data) {
         const cells = this.headRow.cells;
         const map = new Map();
         for (let i = 0; i < cells.length; i++) {
@@ -774,32 +816,28 @@ export default class MyTable extends HTMLElement {
             map.set(cell.textContent, cell)
         }
 
-        if (!this.tempDoc) this.tempDoc = document.createDocumentFragment();
+        if (!this._tempDoc) this._tempDoc = document.createDocumentFragment();
 
-        const data = setting.data;
         for (let i = 0; i < data.length; i++) {
             const dt = data[i];
             let em = map.get(dt.col);
             if (!em) {
-                em = document.createElement("td");
-                em.textContent = dt.col;
-                em.setAttribute("draggable", true);
+                em = this._createColumn(dt.col);
             } else {
                 map.delete(dt.col);
             }
 
-            this.tempDoc.appendChild(em);
+            this._tempDoc.append(em);
 
             let style = this._colStyles[i];
             if (!style) {
-                const ind = this.colStylesheet.insertRule(`td:nth-of-type(${i + 1}){}`);
-                style = this.colStylesheet.cssRules[ind];
+                style = this.insertStyleRule(`td:nth-of-type(${i + 1}){}`);
                 this._colStyles.push(style);
             }
             this.setColumnWidth(i, dt.width);
         }
         map.forEach(v => v.remove());
-        this.headRow.appendChild(this.tempDoc);
+        this.headRow.appendChild(this._tempDoc);
     }
 
 
@@ -822,7 +860,7 @@ export default class MyTable extends HTMLElement {
         if (!settings) return undefined;
         settings = JSON.parse(settings);
         const setting = settings[title];
-        if (setting) console.log("tsable setting loaded from localStorage!", setting);
+        if (setting) console.log("table setting loaded from localStorage!", setting);
         return setting;
     }
 
@@ -909,9 +947,7 @@ export default class MyTable extends HTMLElement {
         const mytable = tr.getRootNode().host;
         const column = td.cellIndex;
         const rs = mytable.tbody.rows;
-        const result = MyTable._sum(rs, column);
-        if (result === false) alert("只能求和数字列！");
-        else alert(`求和结果：${result}`);
+        MyTable._calcShowSumResult(rs, column, mytable, "整列");
     }
 
     static _sumSelectedColumn(/**@type{HTMLTableRowElement} */tr, /**@type{HTMLTableCellElement} */td, obj) {
@@ -919,9 +955,13 @@ export default class MyTable extends HTMLElement {
         const mytable = tr.getRootNode().host;
         const column = td.cellIndex;
         const rs = mytable.getSelectedRows();
+        MyTable._calcShowSumResult(rs, column, mytable, `选中${rs.length}行`);
+    }
+
+    static _calcShowSumResult(/**@type{HTMLTableRowElement[]} */rs, /**@type{number} */column, /**@type{MyTable} */mytable, msg) {
         const result = MyTable._sum(rs, column);
         if (result === false) alert("只能求和数字列！");
-        else alert(`求和结果：${result}`);
+        else alert(`'${mytable.headRow.cells[column].textContent}'${msg}求和结果：${result}`);
     }
 
     static _sum(rs, column) {
@@ -937,11 +977,116 @@ export default class MyTable extends HTMLElement {
         return parseFloat(round(sum(arr), 4));
     }
 
+    /*--------------------------加载数据-----------------------------------------------*/
+    /**
+     * 加载表格数据
+     * @param {MyTableData} mtd 
+     * @param {boolean} clear 是否清除原有数据，默认true
+     * @param {(tr:HTMLTableRowElement, dt:Object<string, HTMLTableCellElement>)} callback 每添加一行就调用一次
+     * @throws new TypeError("新添加的数据title与原有的数据不匹配！") | new TypeError("Its not MyTableData!")
+     */
+    setTableData(mtd, clear = true, callback = undefined) {
+        if (!(mtd instanceof MyTableData)) {
+            MyTableData.decorate(mtd);
+        }
+        if (clear) {
+            this.clearTable();
+            if (!this.isColumnHeadsMatch(mtd.title)) {
+                const data = [];
+                const has = {};
+                let cs = this.headRow.cells;
+                let n = cs.length;
+                for (let i = 0; i < n; i++) {
+                    const c = cs[i];
+                    const t = c.textContent;
+                    if (mtd.title.includes(t)) {
+                        data.push({ col: t, width: this.getCellWidth(c) });
+                        has[t] = true;
+                    }
+                }
+
+                n = mtd.title.length;
+                for (let i = 0; i < n; i++) {
+                    const t = mtd.title[i];
+                    if (!has[t]) {
+                        data.push({ col: t, width: -1 });
+                    }
+                }
+
+                this._reloadTitles(data);
+            }
+        } else {
+            if (!this.isColumnHeadsMatch(mtd.title))
+                throw new TypeError("新添加的数据与原有的数据长度不匹配！");
+        }
+
+        let cs = this.headRow.cells;
+        let n = cs.length;
+        for (const dt of mtd.iterator(false)) {
+            const tr = document.createElement("tr");
+
+            for (let i = 0; i < n; i++) {
+                const t = cs[i].textContent;
+                const em = document.createElement("td");
+                em.textContent = dt[t];
+                em.title = em.textContent;
+                dt[t] = em;
+                tr.appendChild(em);
+            }
+            if (callback) callback(tr, dt);
+
+            this._tempDoc.append(tr)
+        }
+        this.tbody.appendChild(this._tempDoc);
+        this._setTableScrollableWhenEmpty();
+    }
+
+    /**
+     * 检测原有的列标题是否与给定的title匹配
+     * @param {string[]} title 
+     */
+    isColumnHeadsMatch(title) {
+        const cs = this.headRow.cells;
+        const n = cs.length;
+        if (n !== title.length)
+            return false;
+
+        for (let i = 0; i < n; i++) {
+            const c = cs[i];
+            if (!title.includes(c.textContent)) return false
+        }
+
+        return true;
+    }
+
+    /**
+     * @param {string} rule 
+     * @returns {CSSStyleRule}
+     */
+    insertStyleRule(rule) {
+        const ind = this.colStylesheet.insertRule(rule);
+        return this.colStylesheet.cssRules[ind];
+    }
+
+    /**
+     * @param {number} height px
+     */
+    setRowHeight(height) {
+        if (!this._rowHeightRule) {
+            this._rowHeightRule = this.insertStyleRule(`tbody tr{height:${height}px;}`);
+            // this._tdNoWrapRule = this.insertStyleRule(`tbody td{white-space: normal;}`);
+        } else {
+            this._rowHeightRule.style.height = `${height}px`;
+        }
+    }
+
+
     clearTable() {
         this.lastClickCell = null;
         this._lastSelected = null;
-        this._setTableScrollableWhenEmpty();
+
         this.tbody.innerHTML = "";
+        this._setTableScrollableWhenEmpty();
     }
 }
 

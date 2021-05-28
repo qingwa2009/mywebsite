@@ -1,0 +1,122 @@
+<!doctype html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+
+	<title>物料查询</title>
+
+	<!--外部引用样式-->
+	<link rel="stylesheet" type="text/css" href="/css/cssVar.css">
+	<link rel="stylesheet" type="text/css" href="/css/commStyle.css">
+	<link rel="stylesheet" type="text/css" href="/css/animate.css">
+</head>
+
+<body style="display:flex;flex-flow: column nowrap;">
+	<!--   -----------------------------查询区--------------------------------------- -->
+	<form name="searchBOM" autocomplete="off" autocapitalize="characters" style="flex-shrink:0;">
+		<fieldset id="searchBOMHead" style="position:relative;">
+			<legend>查询条件</legend>
+			<div class="grid" style="grid:repeat(3,auto)/repeat(6,auto 1fr);">
+				<!--1------------------------------------------ -->
+				<label>大类编号</label>
+				<select name=""></select>
+
+				<label>中类编号</label>
+				<select name=""></select>
+
+				<label>小类编号</label>
+				<select name=""></select>
+
+				<label>小小类编号</label>
+				<select name=""></select>
+
+				<label>小小类名称</label>
+				<input type="search" name="">
+
+				<label>物料编号</label>
+				<input type="search" name="">
+
+				<!--2------------------------------------------- -->
+				<label>物料名称</label>
+				<input type="search" name="">
+
+				<label>材质</label>
+				<input type="search" name="">
+
+				<label>尺寸规格</label>
+				<input type="search" name="">
+
+				<label>研发编号</label>
+				<input type="search" name="">
+
+				<label>物料描述</label>
+				<input type="search" name="">
+
+				<label>备注说明</label>
+				<input type="search" name="">
+
+				<!--3------------------------------------------- -->
+				<label>计价公式</label>
+				<select name=""></select>
+
+				<label>工程图号</label>
+				<input type="search" name="">
+
+				<label>配套序列号</label>
+				<input type="search" name="">
+
+				<label>创建日期</label>
+				<input type="date" name="">
+
+				<label>➜</label>
+				<input type="date" name="">
+
+				<label>物料状态</label>
+				<select name=""></select>
+			</div>
+		</fieldset>
+		<button id="btnSearch" type="submit">查询</button>
+	</form>
+
+	<!--   -----------------------------查询结果列表-------------------------------------- -->
+	<my-table id="tbSelectItems" title="物料明细" style="min-height:5em;flex-grow:1;">
+		<table>
+			<thead>
+				<tr> </tr>
+			</thead>
+			<tbody></tbody>
+		</table>
+	</my-table>
+
+
+	<!--   -----------------------------分割线------------------------------- -->
+	<my-splitter horizontal editboth></my-splitter>
+
+	<!--   -----------------------------选中列表项详细信息区------------------------------- -->
+	<div style="position:relative;height:10em;min-height:2em;">
+		<div class="my-tab" style="position:absolute;top:0;left:2px;bottom:2px;right:2px;">
+			<!--模具明细-------------------------------------------------------->
+			<input type="radio" name="tab" id="tab1" checked />
+			<label for="tab1">模具明细</label>
+			<div class="my-tab-ct">
+				<my-table id="tbScBOMTab1" style="width:100%;height:100%;">
+					<table>
+						<thead>
+							<tr> </tr>
+						</thead>
+						<tbody></tbody>
+					</table>
+				</my-table>
+			</div>
+		</div>
+	</div>
+
+	<script type="module" src="/components/mySplitter/mySplitter.js"></script>
+	<script type="module" src="/components/myTable/myTable.js"></script>
+	<script type="module" src="searchItem.js"></script>
+
+</body>
+
+</html>

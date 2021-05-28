@@ -1,5 +1,6 @@
 "use strict"
-import { getParent, defineProperty, MyTableData } from './myUtil.js';
+import { getParent, defineProperty } from './myUtil.js';
+import MyTableData from '../components/myTable/MyTableData.js';
 import MyTabPage from '../components/myTab/myTab.js';
 import MyMenu from '../components/myMenu/myMenu.js';
 
@@ -70,7 +71,7 @@ defineProperty(window, 'App', (() => {
 
 
 	/**
-	 * 异步发送请求
+	 * 异步发送请求，如果响应的状态码不是200就弹出错误提示框
 	 * @param {string} method 
 	 * @param {string} url 
 	 * @param {string} data 
@@ -88,10 +89,11 @@ defineProperty(window, 'App', (() => {
 					resolve(req);
 				} else {
 					alert(`请求未完成：${req.status} ${req.statusText}\n${req.responseText}`);
-					reject(req);
+					reject(new Error(`${req.status}: ${req.responseText}`));
 				}
 			}
 			req.onerror = () => {
+				alert("请求错误！无法连接到服务器！");
 				reject(new Error("请求错误！无法连接到服务器！"));
 			}
 

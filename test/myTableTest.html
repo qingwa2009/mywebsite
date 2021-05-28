@@ -175,51 +175,14 @@
 			</tbody>
 		</table>
 	</my-table>
+	<button id="clear">clear</button>
+	<button id="add">add</button>
+	<button id="reload">reload</button>
 	<!--module类型的脚本可以调用import引用模块-->
-	<script type="module" src="/components/myTable/myTable.js"></script>
+	<script type="module" src="js/myTableTest.js"></script>
 	<!--普通脚本-->
 	<!-- <script type="text/javascript" src="js/myChat.js"></script> -->
 	<!--内联脚本-->
-	<script type="text/javascript">
-		'use strict';
-		window.addEventListener("DOMContentLoaded", () => {
-			const mymenu = document.getElementsByTagName("my-menu")[0];
-			mymenu.classList.add("test");
-			const mytable = document.getElementsByTagName("my-table")[0];
-			const extendMenuItems = [
-				"",
-				{ title: "menu1", func: callback, disabled: false },
-				"",
-				[
-					"submenu",
-					{ title: "menu2", func: callback, disabled: true },
-					{ title: "menu3", func: callback, disabled: false },
-					"",
-					{ title: "menu4", func: callback, disabled: false },
-				],
-				{ title: "menu5", func: callback, disabled: false },
-				[
-					"submenu",
-					{ title: "menu6", func: callback, disabled: true },
-					{ title: "menu7", func: callback, disabled: false },
-					"",
-					{ title: "menu8", func: callback, disabled: false },
-				],
-				"",
-			];
-			function callback(...args) {
-				console.log(args);
-			}
-			mytable.extendMenuItems(extendMenuItems, -2);
-		});
-		// const h = document.getElementById("head");
-		// const b = document.getElementById("tbody");
-		// function updateScroll() {
-		// 	h.style.left = -b.scrollLeft + "px";
-		// }
-		// b.onscroll = function (e) { updateScroll() };
-		// updateScroll();
-	</script>
 </body>
 
 </html>
