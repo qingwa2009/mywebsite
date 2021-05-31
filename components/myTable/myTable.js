@@ -19,12 +19,15 @@ export default class MyTable extends HTMLElement {
     static ATTR_SORT_BY_NUM = "num";
     static ATTR_SORT_BY_ALPHA = "alpha";
     static ATTR_SORT_BY_ZH = "zh";
+    static ATTR_ROW_HEIGHT = "rowheight";
+
     static SORT_FUNC_MAP = {
         [MyTable.ATTR_SORT_BY_ALPHA]: MyTable.FuncSortByAlpha,
         [MyTable.ATTR_SORT_BY_NUM]: MyTable.FuncSortByNum,
         [MyTable.ATTR_SORT_BY_ZH]: MyTable.FuncSortByZh,
     };
     static ATTR_SELECTED = "selected";
+    static DEFAULT_ROW_HEIGHT = 24;
 
     constructor() {
         super();
@@ -32,9 +35,17 @@ export default class MyTable extends HTMLElement {
         this.thead = this.table.getElementsByTagName("thead")[0] || document.createElement("thead");
         this.headRow = this.thead.getElementsByTagName("tr")[0] || document.createElement("tr");
         this.tbody = this.table.getElementsByTagName("tbody")[0] || document.createElement("tbody");
+        this.tbodyPlaceholder = document.createElement("div");
+
+        this.table.id = "table";
+        this.thead.id = "thead";
+        this.headRow.id = "headrow";
+        this.tbody.id = "tbody";
+        this.tbodyPlaceholder.id = "tbodyplaceholder";
 
         this.thead.appendChild(this.headRow);
         this.table.appendChild(this.thead);
+        this.tbody.appendChild(this.tbodyPlaceholder);
         this.table.appendChild(this.tbody);
 
         this.attachShadow({ mode: "open" });
@@ -60,7 +71,11 @@ export default class MyTable extends HTMLElement {
         /**@type{((rs:HTMLTableRowElement[])=>{})[]} */
         this._selectionChangeEvents = [];
 
+        /**@type{HTMLTableRowElement[]} */
+        this.rows = [];
+
         this._initHeadRow();
+        this._initTableRows();
 
         this.headRow.addEventListener("mousedown", this._onHeadRowMouseDown.bind(this));
         this.headRow.addEventListener("dblclick", this._onHeadRowDbClick.bind(this));
@@ -72,41 +87,87 @@ export default class MyTable extends HTMLElement {
         this.addEventListener("contextmenu", MyTable._onTableContextMenu, { once: true, capture: true });
         myMenu.bindElementMenu(this.headRow, MyTable.HeadRow_MenuItems, MyMenu.TYPES.CONTEXTMENU, MyTable._ContextMenuFilter);
 
-        this.tbody.addEventListener("scroll", e => {
-            this.updateScroll();
-        });
-        this.updateScroll();
-        this._setTableScrollableWhenEmpty();
-    }
-
-    updateScroll() {
-        this.headRow.style.left = `${-this.tbody.scrollLeft}px`;
-    }
-
-    _setTableScrollableWhenEmpty() {
-        if (this.tbody.rows.length > 0) {
-            if (this.table.style.overflowX != "") {
-                this.tbody.scrollLeft = this.table.scrollLeft;
-                this.table.style.overflowX = "";
-                this.table.scrollLeft = 0;
-            }
+        this.tbody.addEventListener("scroll", this._handleScroll.bind(this));
+        if (ResizeObserver) {
+            new ResizeObserver(this._handleResize.bind(this)).observe(this);
         } else {
-            if (this.table.style.overflowX != "auto") {
-                this.table.style.overflowX = "auto";
-                this.table.scrollLeft = 0;
-            }
+            window.addEventListener("resize", this._handleResize.bind(this));
         }
+
+
+
+        this._preScrollTop = 0;
+
+        this._rowHeight = -1;
+        const rh = this.getAttribute(MyTable.ATTR_ROW_HEIGHT);
+        this.setRowHeight(rh ? rh : MyTable.DEFAULT_ROW_HEIGHT, false);
+
+        this._handleScroll();
+
+        this._updatePlaceholderSize();
+        this._updateRowsPosition();
+        this._updateRowsVisibility();
     }
 
     _initHeadRow() {
-        const tds = this.headRow.cells;
-        const n = tds.length;
+        const cs = this.headRow.cells;
+        const n = cs.length;
         for (let i = 0; i < n; i++) {
-            const ind = this.colStylesheet.insertRule(`td:nth-of-type(${i + 1}){}`);
+            const c = cs[i];
+            if (!(c.nextSibling instanceof HTMLTableCellElement) && c.nextSibling) c.nextSibling.remove(); //移除空白的textnode
+            const currWidth = getComputedStyle(c).width;
+            const ind = this.colStylesheet.insertRule(`#table td:nth-of-type(${i + 1}){min-width:${currWidth};}`);
             this._colStyles.push(this.colStylesheet.cssRules[ind]);
-            tds[i].setAttribute("draggable", true);
+            c.setAttribute("draggable", true);
         }
         this.loadSetting();
+    }
+
+    _initTableRows() {
+        const rs = this.tbody.rows;
+        const m = rs.length;
+        for (let j = 0; j < m; j++) {
+            const r = rs[j];
+            const cs = r.cells;
+            const n = cs.length;
+            for (let i = 0; i < n; i++) {
+                const c = cs[i];
+                if (!(c.nextSibling instanceof HTMLTableCellElement) && c.nextSibling) c.nextSibling.remove(); //移除空白的textnode             
+            }
+            this.rows.push(r);
+        }
+    }
+
+    _handleScroll() {
+        this.headRow.style.left = `${-this.tbody.scrollLeft}px`;
+        if (this._preScrollTop !== this.tbody.scrollTop) {
+            this._preScrollTop = this.tbody.scrollTop;
+            this._updateRowsVisibility();
+            if (this.rows.length > 0 && this._preScrollTop + this.tbody.clientHeight >= this.tbody.scrollHeight) {
+                this._raiseScrollBottomEvent();
+            }
+        }
+    }
+
+    /**
+     * 添加滚动到末尾事件
+     * @param {()=>{}} callback 
+     */
+    addScrollBottomEvent(callback) {
+        if (!this._scrollBottomEvents) this._scrollBottomEvents = [];
+        this._scrollBottomEvents.push(callback);
+    }
+
+    _raiseScrollBottomEvent() {
+        if (!this._scrollBottomEvents) return;
+        for (let i = 0; i < this._scrollBottomEvents.length; i++) {
+            this._scrollBottomEvents[i]();
+        }
+    }
+
+    _handleResize() {
+        this._updatePlaceholderSize();
+        this._updateRowsVisibility();
     }
 
     /**
@@ -114,25 +175,40 @@ export default class MyTable extends HTMLElement {
      * @returns {number}
      */
     getColumnWidth(i) {
-        return this.getCellWidth(this.headRow.cells[i]);
+        // return this.getCellWidth(this.headRow.cells[i]);
+        return parseInt(this._colStyles[i].style.minWidth);
     }
+
     /**
      * @param {HTMLTableCellElement} cell 
      * @returns {number}
      */
     getCellWidth(cell) {
-        return parseInt(window.getComputedStyle(cell).width)
+        // return parseInt(window.getComputedStyle(cell).width);
+        return this.getColumnWidth(cell.cellIndex);
     }
+
     /**
      * @param {number} i 
      * @param {number} width px
+     * @param {boolean} update 是否立即更新滚动条，默认true
      */
-    setColumnWidth(i, width) {
+    setColumnWidth(i, width, update = true) {
         const s = this._colStyles[i];
         if (s) {
             s.style.minWidth = `${width}px`;
             s.style.maxWidth = "";
         }
+        if (update)
+            this._updatePlaceholderSize();
+    }
+
+    /**
+     * 获取所有行，包含标题行
+     * @returns {HTMLTableRowElement[]}
+     */
+    getAllRows() {
+        return [this.headRow, ...this.rows];
     }
     /**
      * @param {number} i 
@@ -144,12 +220,14 @@ export default class MyTable extends HTMLElement {
         //     s.style.maxWidth = "unset";
         // }
         if (!MyTable._ctx) MyTable._ctx = document.createElement("canvas").getContext("2d");
-        var rs = this.table.rows;
+        var rs = this.getAllRows();
         let ctx = MyTable._ctx;
-        ctx.font = getComputedStyle(rs[0].cells[i]).font;
+        const st = getComputedStyle(rs[0].cells[i]);
+        const add = parseInt(st.paddingLeft) + parseInt(st.paddingRight) + parseInt(st.borderLeft) + parseInt(st.borderRight);
+        ctx.font = st.font;
         var width = 0;
         for (var j = 0; j < rs.length; j++) {
-            var w = ctx.measureText(rs[j].cells[i].textContent).width;
+            var w = ctx.measureText(rs[j].cells[i].textContent).width + add;
             if (width < w) width = w;
         }
         ctx = null;
@@ -166,13 +244,10 @@ export default class MyTable extends HTMLElement {
 
     /**
      * 判断表格是否矩形     
-     * @param {HTMLTableElement} tb 
      */
-    isTableInvalid(tb) {
-        if (tb.tHead.rows.length !== 1 || tb.tBodies.length > 1) return true;
-        if (tb.tBodies.length === 0) return false;
-        const n = tb.tHead.rows[0].cells.length;
-        var rs = tb.tBodies[0].rows;
+    _isTableInvalid() {
+        const n = this.headRow.cells.length;
+        var rs = this.rows;
         for (var i = 0; i < rs.length; i++) {
             if (rs[i].cells.length !== n) return true;
         }
@@ -258,7 +333,7 @@ export default class MyTable extends HTMLElement {
         var td = e.target;
         if (!(td instanceof HTMLTableCellElement)) return;
 
-        console.log("dragStart:", e);
+        // console.log("dragStart:", e);
         e.dataTransfer.dropEffect = "move";
         var handlers = {
             dragenter: onDragEnter.bind(this),
@@ -275,7 +350,7 @@ export default class MyTable extends HTMLElement {
         function onDragEnter(e) {
             var tt = e.target;
             if (tt === td || tt.tagName !== td.tagName || !tt.draggable || tt.parentElement !== td.parentElement) return;
-            console.log("dragEnter", e.target.textContent);
+            // console.log("dragEnter", e.target.textContent);
             removeDragIndicator(enterElement, dragIndicator);
             enterElement = tt;
             this.headRow.addEventListener("dragover", handlers["dragover"], true);
@@ -283,7 +358,7 @@ export default class MyTable extends HTMLElement {
         }
 
         function onDragOver(e) {
-            console.log("dragOver", e.target.textContent);
+            // console.log("dragOver", e.target.textContent);
             e.preventDefault();
             e.dataTransfer.dropEffect = "move";
             const newIndicator = getDragIndicator(enterElement, e);
@@ -297,13 +372,13 @@ export default class MyTable extends HTMLElement {
             if (enterElement !== e.target) return;
             removeDragIndicator(enterElement, dragIndicator);
             enterElement = null;
-            console.log("dragLeave", e.target.textContent);
+            // console.log("dragLeave", e.target.textContent);
             this.headRow.removeEventListener("dragover", handlers["dragover"], true);
             this.headRow.removeEventListener("dragleave", handlers["dragleave"], true);
         }
         function onDrop(e) {
             if (enterElement === null || dragIndicator === "") return;
-            console.log("drop ", enterElement.textContent, dragIndicator);
+            // console.log("drop ", enterElement.textContent, dragIndicator);
             moveToNewPlace.call(this, td, enterElement, dragIndicator);
         }
         function onDragEnd(e) {
@@ -313,7 +388,7 @@ export default class MyTable extends HTMLElement {
                 enterElement = null;
                 dragIndicator = "";
             }
-            console.log("dragEnd");
+            // console.log("dragEnd");
             for (var et in handlers) {
                 this.headRow.removeEventListener(et, handlers[et], true);
             }
@@ -344,11 +419,11 @@ export default class MyTable extends HTMLElement {
             var p = em.parentElement;
             if (p !== emDest.parentElement) return;
 
-            if (this.isTableInvalid(this.table)) {
+            if (this._isTableInvalid()) {
                 if (!confirm("表格部分行数据长度不一致！！！\n是否继续？")) return;
             }
 
-            var rs = this.table.rows;
+            var rs = this.getAllRows();
             for (var n = 0; n < rs.length; n++) {
                 var cs = rs[n].cells;
                 p = cs[i].parentElement;
@@ -384,7 +459,7 @@ export default class MyTable extends HTMLElement {
      * 设置排序时使用的排序函数，filterFunc回调函数必须返回一个排序函数，如果返回null就不会执行排序；\
      * 排序函数(a,b)=>return -1 || 0 || 1
      * 如果不设置，默认按文字排序
-     * @param {(td: HTMLTableCellElement)=>{func:(a:[string, HTMLTableRowElement], b:[string, HTMLTableRowElement])=>{num:number}}} filterFunc 
+     * @param {(td: HTMLTableCellElement)=>{func:(a:string, b:string)=>{num:number}}} filterFunc 
      */
     setSortFilter(filterFunc) {
         this._sortFilter = filterFunc;
@@ -396,7 +471,7 @@ export default class MyTable extends HTMLElement {
      * 否则如果列设置了sortby属性，则按该属性进行排序，否则按文字排序。\
      * 如果对同一列先后两次执行同一个排序函数，则第二次是逆转排序
      * @param {HTMLTableCellElement} td 要排序的列，必须是thead里面的td
-     * @param {(a:[string, HTMLTableRowElement], b:[string, HTMLTableRowElement])=>{num:number}} sortFunc 
+     * @param {(a:string, b:string)=>{num:number}} sortFunc 
      */
     sort(td, sortFunc = undefined) {
         if (!sortFunc) {
@@ -409,25 +484,21 @@ export default class MyTable extends HTMLElement {
         }
 
         if (this._sortedColumn === td && this._sortedFunc === sortFunc) {
-            this._reverseRows();
+            this.rows.reverse();
             console.log("_reverseRow");
         } else {
-            const rs = this.tbody.rows;
             const col = td.cellIndex;
-            const sortArr = [];
-            for (var i = 0; i < rs.length; i++) {
-                sortArr[i] = [rs[i].cells[col].textContent, rs[i]]
-            }
-
-            sortArr.sort(sortFunc);
-            for (var i = 0; i < rs.length; i++) {
-                this.tbody.appendChild(sortArr[i][1]);
-            }
+            this.rows.sort((a, b) => {
+                return sortFunc(a.cells[col].textContent, b.cells[col].textContent);
+            });
 
             this._sortedColumn = td;
             this._sortedFunc = sortFunc;
             console.log("sortby", sortFunc.name);
         }
+
+        this._updateRowsPosition();
+        this._updateRowsVisibility();
     }
 
     /**
@@ -445,51 +516,36 @@ export default class MyTable extends HTMLElement {
         this._sortedFunc = null;
     }
 
-    _reverseRows() {
-        const rs = this.tbody.rows;
-        for (var i = rs.length - 1; i >= 0; i--) {
-            this.tbody.appendChild(rs[i]);
-        }
-    }
 
     /**     
-     * @param {[string, HTMLTableRowElement]} a 
-     * @param {[string, HTMLTableRowElement]} b 
+     * @param {string} a 
+     * @param {string} b 
      */
     static FuncSortByNum(a, b) {
-        a = a[0].trim();
+        a = a.trim();
         if (a === "") return -1;
-        b = b[0].trim();
+        b = b.trim();
         if (b === "") return 1;
-        var ac = a.charAt(0), bc = b.charAt(0);
-        var st = (ac === "Φ" || ac === "∅" || ac === "φ") + (bc === "Φ" || bc === "∅" || bc === "φ") * 2;
-        switch (st) {
-            case 0:
-            case 3:
-                var aa = parseFloat(a.replace(/[^0-9.-]/g, ' ')) || 0;
-                var bb = parseFloat(b.replace(/[^0-9.-]/g, ' ')) || 0;
-                return aa - bb;
-            case 1:
-                return 1;
-            case 2:
-                return -1;
-        }
+
+        var ac = a.charCodeAt(0), bc = b.charCodeAt(0);
+        if ((ac != 46 && ac < 48) || ac > 57) a = a.substr(1);
+        if ((bc != 46 && bc < 48) || bc > 57) b = b.substr(1);
+
+        return parseFloat(a) - parseFloat(b);
     }
     /**     
-     * @param {[string, HTMLTableRowElement]} a 
-     * @param {[string, HTMLTableRowElement]} b 
+     * @param {string} a 
+     * @param {string} b 
      */
     static FuncSortByAlpha(a, b) {
-        if (a[0] == b[0]) return 0;
-        if (a[0] < b[0]) return -1;
-        return 1;
+        return a.localeCompare(b);
     }
     /**     
-     * @param {[string, HTMLTableRowElement]} a 
-     * @param {[string, HTMLTableRowElement]} b 
+     * @param {string} a 
+     * @param {string} b 
      */
     static FuncSortByZh(a, b) {
-        return a[0].localeCompare(b[0], "zh")
+        return a.localeCompare(b, "zh");
     }
 
     /*--------------------------选择行---------------------------------------------------*/
@@ -554,7 +610,7 @@ export default class MyTable extends HTMLElement {
     }
 
     _selectWithShift(/**@type{HTMLTableRowElement} */tr) {
-        const tr0 = this._lastSelected || this.tbody.rows[0];
+        const tr0 = this._lastSelected || this.rows[0];
         const rs0 = this.getSelectedRows();
         this.clearSelection();
         this.addSelectionRange(tr0, tr);
@@ -571,7 +627,7 @@ export default class MyTable extends HTMLElement {
         }
     }
     _selectWithCtrlShift(/**@type{HTMLTableRowElement} */tr) {
-        const tr0 = this._lastSelected || this.tbody.rows[0];
+        const tr0 = this._lastSelected || this.rows[0];
         const rs0 = this.getSelectedRows();
         // this.clearSelection();
         this.addSelectionRange(tr0, tr);
@@ -605,7 +661,7 @@ export default class MyTable extends HTMLElement {
     }
 
     getSelectedRows() {
-        const trs = this.tbody.rows;
+        const trs = this.rows;
         const rs = [];
         const n = trs.length;
         for (let i = 0; i < n; i++) {
@@ -619,7 +675,7 @@ export default class MyTable extends HTMLElement {
      * @param {HTMLTableRowElement[]} trs 赋值时，仅清除trs里面的选择
      */
     clearSelection(trs = undefined) {
-        trs = trs || this.tbody.rows;
+        trs = trs || this.rows;
         const n = trs.length;
         for (let i = 0; i < n; i++) {
             const tr = trs[i];
@@ -636,6 +692,13 @@ export default class MyTable extends HTMLElement {
     }
 
     /**     
+     * @param {HTMLTableRowElement} tr 
+     */
+    tbodyRowIndex(tr) {
+        return this.rows.indexOf(tr);
+    }
+
+    /**     
      * (注：该调用不会触发selectionChanged事件)
      * @param {HTMLTableRowElement} trFrom 
      * @param {HTMLTableRowElement} trTo       
@@ -645,11 +708,11 @@ export default class MyTable extends HTMLElement {
             this.addSelection(trFrom);
         }
 
-        let i = trFrom.rowIndex;
-        let j = trTo.rowIndex;
+        let i = this.tbodyRowIndex(trFrom);
+        let j = this.tbodyRowIndex(trTo);
 
         const k = i < j ? 1 : -1;
-        const trs = this.table.rows;
+        const trs = this.rows;
         for (; i !== j; i += k) {
             this.addSelection(trs[i]);
         }
@@ -657,7 +720,6 @@ export default class MyTable extends HTMLElement {
     }
 
     _raiseSelectionChangedEvent(/**@type{HTMLTableRowElement[]} */selectedRows) {
-        console.log("selection changed!");
         const n = this._selectionChangeEvents.length;
         for (let i = 0; i < n; i++) {
             this._selectionChangeEvents[i](selectedRows);
@@ -834,10 +896,12 @@ export default class MyTable extends HTMLElement {
                 style = this.insertStyleRule(`td:nth-of-type(${i + 1}){}`);
                 this._colStyles.push(style);
             }
-            this.setColumnWidth(i, dt.width);
+            this.setColumnWidth(i, dt.width, false);
         }
         map.forEach(v => v.remove());
         this.headRow.appendChild(this._tempDoc);
+
+        this._updatePlaceholderSize();
     }
 
 
@@ -910,7 +974,7 @@ export default class MyTable extends HTMLElement {
     static _copyTable(/**@type{HTMLTableRowElement} */tr, /**@type{HTMLTableCellElement} */td, obj) {
         /**@type{MyTable} */
         const mytable = tr.getRootNode().host;
-        const rs = mytable.table.rows
+        const rs = mytable.getAllRows();
         const trs = [];
         for (let i = 0; i < rs.length; i++) {
             trs[i] = `<tr>${rs[i].innerHTML}</tr>`;
@@ -946,7 +1010,7 @@ export default class MyTable extends HTMLElement {
         /**@type{MyTable} */
         const mytable = tr.getRootNode().host;
         const column = td.cellIndex;
-        const rs = mytable.tbody.rows;
+        const rs = mytable.rows;
         MyTable._calcShowSumResult(rs, column, mytable, "整列");
     }
 
@@ -1022,6 +1086,7 @@ export default class MyTable extends HTMLElement {
 
         let cs = this.headRow.cells;
         let n = cs.length;
+
         for (const dt of mtd.iterator(false)) {
             const tr = document.createElement("tr");
 
@@ -1035,10 +1100,13 @@ export default class MyTable extends HTMLElement {
             }
             if (callback) callback(tr, dt);
 
-            this._tempDoc.append(tr)
+            this.rows.push(tr);
         }
-        this.tbody.appendChild(this._tempDoc);
-        this._setTableScrollableWhenEmpty();
+
+        this._updateRowsPosition();
+        this._updatePlaceholderSize();
+        this._updateRowsVisibility();
+
     }
 
     /**
@@ -1070,23 +1138,91 @@ export default class MyTable extends HTMLElement {
 
     /**
      * @param {number} height px
+     * @param {boolean} update 是否立即更新滚动条、行位置及行可见性，默认true
      */
-    setRowHeight(height) {
+    setRowHeight(height, update = true) {
+        if (this._rowHeight === height) return;
+
+        this._rowHeight = height;
+
         if (!this._rowHeightRule) {
-            this._rowHeightRule = this.insertStyleRule(`tbody tr{height:${height}px;}`);
-            // this._tdNoWrapRule = this.insertStyleRule(`tbody td{white-space: normal;}`);
+            this._rowHeightRule = this.insertStyleRule(`#tbody tr{height:${height}px;}`);
+            this._rowTdTextLineHeight = this.insertStyleRule(`#tbody td{line-height:${height}px;}`);
         } else {
             this._rowHeightRule.style.height = `${height}px`;
+            this._rowTdTextLineHeight.style.lineHeight = `${height}px`;
+
+        }
+
+        if (update) {
+            this._updatePlaceholderSize();
+            this._updateRowsPosition();
+            this._updateRowsVisibility();
         }
     }
 
+    getHeadRowWidth() {
+        const n = this.headRow.cells.length;
+        let w = 0;
+        for (let i = 0; i < n; i++) {
+            w += this.getColumnWidth(i);
+        }
+        return w;
+    }
+
+    /**更新滚动条 */
+    _updatePlaceholderSize() {
+        if (!this._placeHolderRule) {
+            this._placeHolderRule = this.insertStyleRule(`#tbodyplaceholder{}`);
+        }
+        this._placeHolderRule.style.width = `${this.getHeadRowWidth()}px`;
+        const rs = this.rows;
+        if (rs.length > 0) {
+            this._placeHolderRule.style.height = `${this._rowHeight * rs.length + 1}px`;
+        } else {
+            this._placeHolderRule.style.height = getComputedStyle(this.tbody)["height"];
+        }
+    }
+
+    _updateRowsPosition() {
+        const rs = this.rows;
+        const n = rs.length;
+        if (n < 1) return;
+        const h = this._rowHeight;
+        for (let i = 0; i < n; i++) {
+            rs[i].style.top = `${h * i}px`;
+        }
+    }
+
+    _updateRowsVisibility() {
+        this._clearTbody();
+
+        const rs = this.rows;
+        const n = rs.length;
+        if (n < 1) return;
+
+        const si = Math.floor(this.tbody.scrollTop / this._rowHeight);
+        const ei = Math.min(n, Math.ceil((this.tbody.scrollTop + this.tbody.clientHeight) / this._rowHeight));
+
+        for (let i = si; i < ei; i++) {
+            this.tbody.appendChild(rs[i]);
+        }
+    }
+
+    _clearTbody() {
+        this.tbody.innerHTML = "";
+        this.tbody.appendChild(this.tbodyPlaceholder);
+    }
 
     clearTable() {
         this.lastClickCell = null;
         this._lastSelected = null;
+        this._unMarkSorted();
+        this.rows = [];
 
-        this.tbody.innerHTML = "";
-        this._setTableScrollableWhenEmpty();
+        this._clearTbody();
+
+        this._updatePlaceholderSize();
     }
 }
 

@@ -1,5 +1,5 @@
 <!doctype html>
-<html>
+<html style="user-select: none">
 
 <head>
 	<meta charset="utf-8">
@@ -13,7 +13,12 @@
 	<link rel="stylesheet" type="text/css" href="/css/animate.css">
 </head>
 
-<body style="display:flex;flex-flow: column nowrap;">
+<body style="display:flex;flex-flow: column nowrap;" oncontextmenu="{
+	const em=arguments[0].target;
+	if(em instanceof HTMLInputElement && ['email','number','search','tel','text','url'].includes(em.type)) 
+		return true;
+	return false;
+}">
 	<!--   -----------------------------查询区--------------------------------------- -->
 	<form name="searchBOM" autocomplete="off" autocapitalize="characters" style="flex-shrink:0;">
 		<fieldset id="searchBOMHead" style="position:relative;">
@@ -81,10 +86,12 @@
 	</form>
 
 	<!--   -----------------------------查询结果列表-------------------------------------- -->
-	<my-table id="tbSelectItems" title="物料明细" style="min-height:5em;flex-grow:1;">
+	<my-table id="tbSelectItems" title="物料明细" rowheight="100" style="min-height:5em;flex-grow:1;">
 		<table>
 			<thead>
-				<tr> </tr>
+				<tr>
+					<td sortby="num">尺寸规格</td>
+				</tr>
 			</thead>
 			<tbody></tbody>
 		</table>

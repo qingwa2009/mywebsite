@@ -4,7 +4,7 @@
 	--selected-color:#03A9F4;
 	
 	--backcolor-thead:#ffffff;
-	--border-color:#00000030;
+	--border-color:#aaaaaa;
 	
 }
 
@@ -18,7 +18,7 @@
 
 
 
-table{
+#table{
 	user-select: none;
 	table-layout: fixed;
 	border-collapse: collapse;
@@ -31,71 +31,86 @@ table{
 	/* border: 1px solid; */
 }
 
-tbody tr{
-	border-bottom: 1px solid var(--border-color);
+#table tr{
+	white-space: nowrap;
 }
 
-thead, thead tr{
+#tbody>tr{	
+	position: absolute;	
+	left: 0;
+}
+
+#thead, #thead>tr{
 	display: block;
 	position: relative;
 }
 
-tbody{
+#tbody{
 	display:block;
 	overflow: auto;
 	height: 100%;
 	width: 100%;
+	position: relative;
 }
 
-tbody tr:hover{
+#tbodyplaceholder{
+	display: block ; 
+	visibility: hidden;
+	pointer-events: none;
+}
+
+#tbody>tr:hover{
 	background-color:var(--preselect-color);
 }
 
 td{
 	max-width: 0em;
 	min-width: 5em;
-	border-left: 1px solid var(--border-color);
 	border-right: 1px solid var(--border-color);
+	border-bottom: 1px solid var(--border-color);
 	padding: 2px;
-	word-break: keep-all;
+	/* word-break: break-all; */
 	text-overflow: ellipsis;
-	overflow: hidden;	
+	overflow: hidden;
 	cursor: default;
+	display: inline-block;
+	box-sizing: border-box;
 }
 
-td:last-of-type{
-	/* min-width: auto !important; */
-	/* max-width: unset; */
-	/* width: 100%; */
-}
+/* td:last-of-type{
+	min-width: auto !important;
+	max-width: unset;
+	width: 100%;
+} */
 
-thead td{
+#thead td{
 	position: relative;
 	white-space: nowrap;
 }
 
-tbody td{
-	white-space: nowrap;
+#tbody td{
+	height: 100%;
+	/* line-height: 100px; */
 }
 
-thead td{
+#thead td{
 	/*标题样式*/
 	background-image:-webkit-linear-gradient(#FAFAFA00 20%,#C8C8C8AA);
 	background-image:linear-gradient(rgba(250,250,250,0) 20%,rgba(200,200,200,0.67));
 	background-color:var(--backcolor-thead);
 }
-thead td:hover{
+#thead td:hover{
 	/*标题悬浮样式*/
 	background-image:-webkit-linear-gradient(#03A9F420 10%,#FAFAFAFF 35%,#FAFAFAFF 38%,#03A9F470 40%,#03A9F450);
 	background-color:var(--preselect-color);
 }
-thead td:active{
+#thead td:active{
 	/*标题点击样式*/
 	background-color:var(--color-drag-indicator) !important;
 }
 
-/*调整列宽*/
-thead td:hover::after{
+/*调整列宽的标记*/
+#thead td:hover::after{
 	content:"";
 	cursor:e-resize !important;
 	display: block;
@@ -105,7 +120,7 @@ thead td:hover::after{
 	bottom:0;
 	right:0;
 	/* background-color: red; */
-	box-sizing: border-box;
+	/* box-sizing: border-box; */
 }
 
 /*拖放光标样式*/
