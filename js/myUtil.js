@@ -91,3 +91,16 @@ export function getElementByKeys(obj, doc = document) {
     return obj;
 }
 
+/**
+ * 枚举所有子元素
+ * @param {HTMLElement} parentEm 
+ * @returns {IterableIterator<HTMLElement>}
+ */
+export function* enumAllChildren(parentEm) {
+    let em = parentEm.firstElementChild;
+    while (em) {
+        yield em;
+        yield* enumAllChildren(em);
+        em = em.nextElementSibling;
+    }
+}

@@ -1,7 +1,7 @@
 "use strict"
 import { getParent, defineProperty } from './myUtil.js';
 import MyTableData from '../components/myTable/MyTableData.js';
-import MyTabPage from '../components/myTab/myTab.js';
+import MyTab from '../components/myTab/myTab.js';
 import MyMenu from '../components/myMenu/myMenu.js';
 
 
@@ -31,10 +31,10 @@ defineProperty(window, 'App', (() => {
 	function funcTabmenuFilter(e) {
 		/**@type{HTMLElement} */
 		const target = e.target;
-		return (target.classList.contains(MyTabPage.CLASSES.TITLE) && target.id.endsWith(MyTabPage.IDSURFIX.TITLE));
+		return (target.classList.contains(MyTab.CLASSES.TITLE) && target.id.endsWith(MyTab.IDSURFIX.TITLE));
 	}
 	function funcTabmenuReload(currentTarget, target, obj) {
-		/**@type{MyTabPage} */
+		/**@type{MyTab} */
 		const tpem = currentTarget.host;
 		const id = tpem.getTabId(target);
 		const page = tpem.getTabPageElement(id);
@@ -42,20 +42,20 @@ defineProperty(window, 'App', (() => {
 		tpem.setAnimate(id);
 	}
 	function funcTabmenuFavor(currentTarget, target, obj) {
-		/**@type{MyTabPage} */
+		/**@type{MyTab} */
 		const tpem = currentTarget.host;
 		alert("还没写!");
 	}
 
 	function funcTabmenuCloseOther(currentTarget, target, obj) {
-		/**@type{MyTabPage} */
+		/**@type{MyTab} */
 		const tpem = currentTarget.host;
 		const id = tpem.getTabId(target);
 		tpem.removeAllTabExcept(id);
 	}
 
 	function funcTabmenuCloseAll(currentTarget, target, obj) {
-		/**@type{MyTabPage} */
+		/**@type{MyTab} */
 		const tpem = currentTarget.host;
 		tpem.removeAllTab();
 	}
@@ -63,8 +63,8 @@ defineProperty(window, 'App', (() => {
 	var userId = "";
 	var replaceLinkPattern = /\b(src|href)\s*?=\s*?(["'])(.+?)\2/gi;
 	var isValidFilePath = /\.[^\//\?\*<>\|]+$/;
-	/**@type {MyTabPage} */
-	var myTabPage = null;
+	/**@type {MyTab} */
+	var myTab = null;
 	var btnExecuteInfo = null
 		, btnStatisticInfo = null
 		, btnUserInfo = null;
@@ -123,11 +123,13 @@ defineProperty(window, 'App', (() => {
 			const mtd = JSON.parse(req.responseText);
 			console.log(mtd);
 			if (mtd.error) {
+				showExecuteInfo("用户设置加载失败！", 1);
 				console.error("get user setting failed: ", mtd.error);
 				return;
 			}
 			_parseUserSettings(mtd);
 		}, error => {
+			showExecuteInfo("用户设置加载失败！", 1);
 			console.error("get user setting failed: ", error);
 		})
 	}
@@ -155,8 +157,10 @@ defineProperty(window, 'App', (() => {
 
 		myHttpRequest("POST", url_usersetting, mtd.toString()).then(
 			req => {
+				showExecuteInfo("设置保存成功！", 0);
 				console.log("setting saved: ", mtd);
 			}, error => {
+				showExecuteInfo("设置保存失败！", 1);
 				console.error("setting save failed: ", error);
 			}
 		);
@@ -253,18 +257,18 @@ defineProperty(window, 'App', (() => {
 		// 			alert("用户登录状态丢失，请重新登录！");
 		// 			return;
 		// 		}
-		// var iframe = myTabPage.createNewTab(name, path, true);
-		var iframe = myTabPage.createNewTab(name);
+		// var iframe = myTab.createNewTab(name, path, true);
+		var iframe = myTab.createNewTab(name);
 		if (iframe !== null) {
 			iframe.src = path;
-			let id = myTabPage.getTabId(iframe);
-			myTabPage.setAnimate(id);
+			let id = myTab.getTabId(iframe);
+			myTab.setAnimate(id);
 
 			iframe.addEventListener('load', e => {
 				if (document.documentElement.classList.contains(THEME_CLS_DARK)) {
 					iframe.contentDocument.documentElement.classList.add(THEME_CLS_DARK);
 				}
-				myTabPage.resetAnimate(id);
+				myTab.resetAnimate(id);
 				_handleNewPageLoaded(iframe, name, path, data);
 			});
 		} else {
@@ -275,7 +279,7 @@ defineProperty(window, 'App', (() => {
 	function _handleNewPageLoaded(iframe, name, path, data) {
 		myMenu.bindWindow(iframe.contentWindow);
 		if (iframe.contentDocument.title) {
-			myTabPage.renameTab(iframe.contentWindow, iframe.contentDocument.title);
+			myTab.renameTab(iframe.contentWindow, iframe.contentDocument.title);
 		}
 	}
 
@@ -295,7 +299,7 @@ defineProperty(window, 'App', (() => {
 				getFrames(f.window);
 			}
 		}
-		var fs = myTabPage.shadowRoot.querySelectorAll("iframe");
+		var fs = myTab.shadowRoot.querySelectorAll("iframe");
 		for (var i = 0; i < fs.length; i++) {
 			htmls.push(fs[i].contentDocument.documentElement);
 			getFrames(fs[i].contentWindow);
@@ -310,30 +314,50 @@ defineProperty(window, 'App', (() => {
 	}
 
 	//-----------------------------
-
 	/**
+	 * 显示在中间有动画效果的信息
 	 * @param {string} s 提示信息
-	 * @param {number} t 信息类型，undefined 默认不闪烁，0闪提示，1闪警告
+	 * @param {undefined | 0 | 1} t 信息类型，undefined 默认不闪烁，0闪提示，1闪警告
+	 * @param {Window} win 传入了这个值将绑定对应的win，在显示时，自动切换显示绑定的值
 	 */
-	function showExecuteInfo(s, t) {
+	function showExecuteInfo(s, t, win = undefined) {
 		btnExecuteInfo.textContent = s;
 		btnExecuteInfo.classList.remove("animate-shiningW");
 		btnExecuteInfo.classList.remove("animate-shiningI");
-		if (t === undefined)
-			return;
-		window.requestAnimationFrame(function (time) {
-			window.requestAnimationFrame(function (time) {
-				if (t)
-					btnExecuteInfo.classList.add("animate-shiningW");
-				else
-					btnExecuteInfo.classList.add("animate-shiningI");
-			});
-		});
+		if (win) win._executeInfo = s;
 
+		if (t !== undefined) {
+			window.requestAnimationFrame(function (time) {
+				window.requestAnimationFrame(function (time) {
+					if (t)
+						btnExecuteInfo.classList.add("animate-shiningW");
+					else
+						btnExecuteInfo.classList.add("animate-shiningI");
+				});
+			});
+		}
 	}
 
-	function showStatisticInfo(s) {
+	/**
+	 * 显示在左边固定长度的信息
+	 * @param {string} s 
+	 * @param {Window} win 传入了这个值将绑定对应的win，在显示时，自动切换显示绑定的值
+	 */
+	function showStatisticInfo(s, win = undefined) {
 		btnStatisticInfo.textContent = s;
+		if (win) win._statisticInfo = s;
+	}
+
+	//切换tab更新显示的信息
+	function _onShowingTab(tid) {
+		const win = myTab.getTabWin(tid);
+		if (!win) {
+			showExecuteInfo("", undefined);
+			showStatisticInfo("");
+			return;
+		}
+		showExecuteInfo(win._executeInfo ? win._executeInfo : "", undefined);
+		showStatisticInfo(win._statisticInfo ? win._statisticInfo : "");
 	}
 
 	/*--------------------------select元素相关----------------------------*/
@@ -360,15 +384,17 @@ defineProperty(window, 'App', (() => {
 		myMenu = document.createElement(MyMenu.TAG);
 		myMenu.init();
 
-		myTabPage = document.getElementById("myTabPage");
-		myTabPage.addCloseListener(_handleMyTabPageClose);
+		myTab = document.getElementById("myTab");
+		myTab.addCloseEvent(_handleMyTabPageClose);
+		myTab.addTabSwitchEvent(_onShowingTab);
+
 
 		btnExecuteInfo = document.getElementById("executeInfo");
 		btnStatisticInfo = document.getElementById("statisticInfo");
 		btnUserInfo = document.getElementById("userInfo");
 
 		myMenu.bindElementMenu(btnUserInfo, sysMenu, MyMenu.TYPES.MENU);
-		myMenu.bindElementMenu(myTabPage.shadowRoot, tabMenu, MyMenu.TYPES.CONTEXTMENU, funcTabmenuFilter);
+		myMenu.bindElementMenu(myTab.shadowRoot, tabMenu, MyMenu.TYPES.CONTEXTMENU, funcTabmenuFilter);
 
 		let btnTheme = document.getElementById("switchColor");
 		let theme = localStorage.getItem("theme");
@@ -397,8 +423,8 @@ defineProperty(window, 'App', (() => {
 		get myMenu() {
 			return myMenu;
 		},
-		get myTabPage() {
-			return myTabPage
+		get myTab() {
+			return myTab
 		},
 		myHttpRequest: myHttpRequest,
 		openNewPage: openNewPage,

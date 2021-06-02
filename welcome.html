@@ -29,14 +29,16 @@
 		<button>收藏栏</button>
 	</div>
 	<div id="content" style="position:relative;flex-grow:1;">
-		<my-tab-page id="myTabPage" style="position: absolute;left: 0;right: 0;top: 0;bottom: 0;"></my-tab-page>
+		<my-tab id="myTab" style="position: absolute;left: 0;right: 0;top: 0;bottom: 0;"></my-tab>
 	</div>
 	<div id="statusBar" class="menu-bar-item" style="flex-shrink:0;">
 		<!--     信息栏 -->
 		<div style="display:flex;flex-flow: row nowrap;">
-			<button style="flex-grow:1;" id="executeInfo">其他信息</button>
-			<button style="flex-grow:1;" id="statisticInfo">统计信息</button>
-			<button style="flex-grow:1;" id="userInfo">登陆信息</button>
+			<button style="width: 32em;text-align: left; overflow: hidden; text-overflow: ellipsis;"
+				id="statisticInfo">统计信息</button>
+			<button style="flex-grow:1;text-align: left; overflow: hidden; text-overflow: ellipsis;"
+				id="executeInfo">其他信息</button>
+			<button style="width:16em;" id="userInfo">登陆信息</button>
 			<input id="switchColor" type="checkbox" />
 		</div>
 	</div>

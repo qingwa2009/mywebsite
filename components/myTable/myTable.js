@@ -94,6 +94,7 @@ export default class MyTable extends HTMLElement {
             window.addEventListener("resize", this._handleResize.bind(this));
         }
 
+        this.tbody.addEventListener("dblclick", this._handleDbClick.bind(this));
 
 
         this._preScrollTop = 0;
@@ -157,11 +158,41 @@ export default class MyTable extends HTMLElement {
         if (!this._scrollBottomEvents) this._scrollBottomEvents = [];
         this._scrollBottomEvents.push(callback);
     }
+    removeScrollBottomEvent(callback) {
+        const i = this._scrollBottomEvents.indexOf(callback);
+        if (i > -1) this._scrollBottomEvents.splice(i, 1);
+    }
 
     _raiseScrollBottomEvent() {
         if (!this._scrollBottomEvents) return;
         for (let i = 0; i < this._scrollBottomEvents.length; i++) {
             this._scrollBottomEvents[i]();
+        }
+    }
+
+    _handleDbClick(/**@type{MouseEvent} */e) {
+        let tr = e.target;
+        if (tr instanceof HTMLTableCellElement) tr = tr.parentElement;
+        if (!(tr instanceof HTMLTableRowElement)) return;
+        this._raiseDbClickRowEvent(tr);
+    }
+
+    /**
+     * 添加双击行事件
+     * @param {(tr:HTMLTableRowElement)=>{}} callback 
+     */
+    addDbClickRowEvent(callback) {
+        if (!this._dbclickEvents) this._dbclickEvents = [];
+        this._dbclickEvents.push(callback);
+    }
+    removeDbClickRowEvent(callback) {
+        const i = this._dbclickEvents.indexOf(callback);
+        if (i > -1) this._dbclickEvents.splice(i, 1);
+    }
+
+    _raiseDbClickRowEvent(/**@type{HTMLTableRowElement} */tr) {
+        for (const cb of this._dbclickEvents) {
+            cb(tr);
         }
     }
 
@@ -236,10 +267,37 @@ export default class MyTable extends HTMLElement {
     }
 
     /**     
-     * @param {HTMLTableCellElement} td 
+     * @param {HTMLTableCellElement} td  
      */
     getColumnIndex(td) {
         return td.cellIndex;
+    }
+
+    /**
+     * @param {string} columnName 
+     */
+    getColumnIndexByName(columnName) {
+        const cs = this.headRow.cells;
+        const n = cs.length;
+        for (let i = 0; i < n; i++) {
+            const c = cs[i];
+            if (c.textContent === columnName) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * 获取单元格值
+     * @param {string} columnName 列名
+     * @param {HTMLTableRowElement} row 
+     * @returns {string|undefined} 返回string，不存在返回undefined
+     */
+    getCellValue(columnName, row) {
+        const i = this.getColumnIndexByName(columnName);
+        if (i === -1) return undefined;
+        return row.cells[i].textContent;
     }
 
     /**
@@ -456,9 +514,9 @@ export default class MyTable extends HTMLElement {
 
     /*-----------------------------------排序----------------------------------------*/
     /**
-     * 设置排序时使用的排序函数，filterFunc回调函数必须返回一个排序函数，如果返回null就不会执行排序；\
+     * 设置排序时使用的排序函数，filterFunc回调函数必须返回一个排序函数，如果返回null或者undefined终止排序\
      * 排序函数(a,b)=>return -1 || 0 || 1
-     * 如果不设置，默认按文字排序
+     * 可以返回getDefaultSortFunc获取的默认排序函数
      * @param {(td: HTMLTableCellElement)=>{func:(a:string, b:string)=>{num:number}}} filterFunc 
      */
     setSortFilter(filterFunc) {
@@ -694,7 +752,7 @@ export default class MyTable extends HTMLElement {
     /**     
      * @param {HTMLTableRowElement} tr 
      */
-    tbodyRowIndex(tr) {
+    getRowIndexInTbody(tr) {
         return this.rows.indexOf(tr);
     }
 
@@ -708,8 +766,8 @@ export default class MyTable extends HTMLElement {
             this.addSelection(trFrom);
         }
 
-        let i = this.tbodyRowIndex(trFrom);
-        let j = this.tbodyRowIndex(trTo);
+        let i = this.getRowIndexInTbody(trFrom);
+        let j = this.getRowIndexInTbody(trTo);
 
         const k = i < j ? 1 : -1;
         const trs = this.rows;
