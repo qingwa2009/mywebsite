@@ -1,7 +1,35 @@
-import { enumAllChildren } from "../js/myUtil.js";
-import MyDbCriteria from "../js/MyDbCriteria.js";
+import { enumAllChildren } from "./myUtil.js";
+import MyDbCriteria from "./MyDbCriteria.js";
 
-export class MyInput extends HTMLInputElement {
+export default class MyDbFieldComps {
+    /**
+     * 枚举paraentEm所有子控件，创建MyDbCriteria
+     * @param {HTMLElement} parentEm      
+     * @returns {MyDbCriteria}
+     */
+    static createCriteria(parentEm) {
+        const criteria = new MyDbCriteria();
+
+        for (const em of enumAllChildren(parentEm)) {
+            if (em instanceof MyDbFieldComps.MyInput) {
+                const c = em.getCriteriaWhere();
+                if (c) {
+                    if (c instanceof Array) {
+                        for (const cc of c) {
+                            criteria.addWhere(cc);
+                        }
+                    } else {
+                        criteria.addWhere(c);
+                    }
+                }
+            }
+        }
+
+        return criteria;
+    }
+}
+
+MyDbFieldComps.MyInput = class extends HTMLInputElement {
     static TAG = "my-input";
     /**用于查询时的字段名 */
     static ATTR_FIELD_NAME = "fieldname";
@@ -24,15 +52,15 @@ export class MyInput extends HTMLInputElement {
     constructor() {
         super();
         /**用于查询时的字段名 */
-        this.fieldName = this.getAttribute(MyInput.ATTR_FIELD_NAME);
+        this.fieldName = this.getAttribute(MyDbFieldComps.MyInput.ATTR_FIELD_NAME);
         /**模糊查询类型 [left, right, both]*/
-        this.fieldLike = this.getAttribute(MyInput.ATTR_FIELD_LIKE);
-        if (this.hasAttribute(MyInput.ATTR_FIELD_UPPERCASE)) {
+        this.fieldLike = this.getAttribute(MyDbFieldComps.MyInput.ATTR_FIELD_LIKE);
+        if (this.hasAttribute(MyDbFieldComps.MyInput.ATTR_FIELD_UPPERCASE)) {
             this.addEventListener("input", () => this.value = this.value.toUpperCase());
         }
 
-        if (this.hasAttribute(MyInput.ATTR_FIELD_COMPARE)) {
-            this.fieldCompare = this.getAttribute(MyInput.ATTR_FIELD_COMPARE);
+        if (this.hasAttribute(MyDbFieldComps.MyInput.ATTR_FIELD_COMPARE)) {
+            this.fieldCompare = this.getAttribute(MyDbFieldComps.MyInput.ATTR_FIELD_COMPARE);
         }
     }
 
@@ -69,13 +97,13 @@ export class MyInput extends HTMLInputElement {
         where.field = this.fieldName;
         where.op = "like";
         switch (this.fieldLike) {
-            case MyInput.FIELD_LIKE_TYPE.Left:
+            case MyDbFieldComps.MyInput.FIELD_LIKE_TYPE.Left:
                 where.rhs = `%${value}`;
                 break;
-            case MyInput.FIELD_LIKE_TYPE.Right:
+            case MyDbFieldComps.MyInput.FIELD_LIKE_TYPE.Right:
                 where.rhs = `${value}%`;
                 break;
-            case MyInput.FIELD_LIKE_TYPE.Both:
+            case MyDbFieldComps.MyInput.FIELD_LIKE_TYPE.Both:
                 where.rhs = `%${value}%`;
                 break;
             default:
@@ -94,8 +122,8 @@ export class MyInput extends HTMLInputElement {
         const date = this.value;
 
         if (!date) return null;
-        if (!MyInput.COMPARE_TYPES.includes(this.fieldCompare)) {
-            console.error(`date compare type '${this.fieldCompare}' must not in ${MyInput.COMPARE_TYPES}`);
+        if (!MyDbFieldComps.MyInput.COMPARE_TYPES.includes(this.fieldCompare)) {
+            console.error(`date compare type '${this.fieldCompare}' must not in ${MyDbFieldComps.MyInput.COMPARE_TYPES}`);
             return null;
         }
         const wheres = [new MyDbCriteria.CriteriaWhere(), new MyDbCriteria.CriteriaWhere()];
@@ -143,31 +171,5 @@ export class MyInput extends HTMLInputElement {
         }
     }
 
-    /**
-     * 枚举paraentEm所有子控件，创建MyDbCriteria
-     * @param {HTMLElement} parentEm      
-     * @returns {MyDbCriteria}
-     */
-    static createCriteria(parentEm) {
-        const criteria = new MyDbCriteria();
-
-        for (const em of enumAllChildren(parentEm)) {
-            if (em instanceof MyInput) {
-                const c = em.getCriteriaWhere();
-                if (c) {
-                    if (c instanceof Array) {
-                        for (const cc of c) {
-                            criteria.addWhere(cc);
-                        }
-                    } else {
-                        criteria.addWhere(c);
-                    }
-                }
-            }
-        }
-
-        return criteria;
-    }
-
 }
-customElements.define(MyInput.TAG, MyInput, { extends: "input" });
+customElements.define(MyDbFieldComps.MyInput.TAG, MyDbFieldComps.MyInput, { extends: "input" });

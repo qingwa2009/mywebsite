@@ -7,10 +7,17 @@ export default class MySplitter extends HTMLElement {
 
   constructor() {
     super();
-    this.addEventListener("mousedown", this._handleOnMouseDown, true);
+    this.addEventListener("mousedown", this._handleOnMouseDown);
+    this.addEventListener("touchstart", this._handleOnMouseDown);
+
+    const hm = this._handleOnMouseMove.bind(this);
+    const hu = this._handleOnMouseUp.bind(this);
     this.handlers = {
-      mousemove: this._handleOnMouseMove.bind(this),
-      mouseup: this._handleOnMouseUp.bind(this)
+      mousemove: hm,
+      mouseup: hu,
+      touchmove: hm,
+      touchend: hu,
+      touchcancel: hu,
     };
 
     this.attachShadow({ mode: "open" });
@@ -24,12 +31,12 @@ export default class MySplitter extends HTMLElement {
   }
   _handleOnMouseDown(e) {
     for (var k in this.handlers) {
-      document.addEventListener(k, this.handlers[k], true);
+      document.addEventListener(k, this.handlers[k], { passive: false });
     }
     console.log("Splitter down!");
   }
   _handleOnMouseMove(e) {
-    if (!e.buttons) {
+    if (!((e instanceof TouchEvent) || e.buttons)) {
       this._handleOnMouseUp(e);
       return false;
     }
@@ -42,10 +49,10 @@ export default class MySplitter extends HTMLElement {
     var t, offset;
     if (this.hasAttribute(MySplitter.TYPE.vertical)) {
       t = "width";
-      offset = e.clientX - rect1.right;
+      offset = (e instanceof TouchEvent ? e.touches[0].clientX : e.clientX) - rect1.right;
     } else {
       t = "height"
-      offset = e.clientY - rect1.bottom;
+      offset = (e instanceof TouchEvent ? e.touches[0].clientY : e.clientY) - rect1.bottom;
     }
 
     if (this.hasAttribute(MySplitter.EDIT.both)) {
@@ -62,7 +69,7 @@ export default class MySplitter extends HTMLElement {
   }
   _handleOnMouseUp(e) {
     for (var k in this.handlers) {
-      document.removeEventListener(k, this.handlers[k], true);
+      document.removeEventListener(k, this.handlers[k], { passive: false });
     }
     console.log("Splitter up!");
   }

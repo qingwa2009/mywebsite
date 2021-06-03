@@ -1,5 +1,5 @@
 "use strict";
-import { MyInput } from "../../components/myDbFieldComps.js";
+import MyDbFieldComps from "../../js/myDbFieldComps.js";
 import MyMemu from "../../components/myMenu/myMenu.js";
 import MyTable from "../../components/myTable/myTable.js"
 import MyTableData from "../../components/myTable/MyTableData.js"
@@ -80,7 +80,7 @@ window.addEventListener('DOMContentLoaded', () => {
 	function search(clear) {
 		ems.btnSearch.disabled = true;
 
-		const criteria = MyInput.createCriteria(ems.fields);
+		const criteria = MyDbFieldComps.createCriteria(ems.fields);
 
 		if (_orderby) {
 			criteria.addOrderBy(_orderby, _order);
@@ -88,6 +88,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 		if (clear) ems.tbSelectItems.clearTable();
 
+		const st = new Date().getTime();
 		App.myHttpRequest("post", cmdSelectItems + _offset, criteria.toString()).then((/**@type{XMLHttpRequest} */req) => {
 			/**@type{MyTableData} */
 			const mtd = JSON.parse(req.responseText);
@@ -98,9 +99,10 @@ window.addEventListener('DOMContentLoaded', () => {
 			_EOF = mtd.EOF;
 			_offset += mtd.data.length;
 
-			App.showStatisticInfo(`共查到${mtd.totalCount}条记录，已加载${_offset}条记录！`, window);
+			const s = mtd.totalCount <= _offset ? "已完全加载" : `已加载${_offset}条记录`;
+			App.showStatisticInfo(`共查到${mtd.totalCount}条记录，${s}，耗时${(new Date().getTime() - st) / 1000}s！`, window);
 		}).catch(err => {
-			alert(err.message);
+			// alert(err.message);
 		}).finally(() => {
 			ems.btnSearch.disabled = "";
 		});
