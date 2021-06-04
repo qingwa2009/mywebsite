@@ -1,5 +1,5 @@
 "use strict";
-import MyMemu from "../components/myMenu/myMenu.js";
+import MyMemu from "./components/myMenu/myMenu.js";
 
 window.addEventListener('DOMContentLoaded', () => {
 	const App = top.window.App;

@@ -1,5 +1,5 @@
 "use strict";
-import { getParent, getTopViewPortOffset } from "../../js/myUtil.js";
+import { getParent, getTopViewPortOffset } from "../../myUtil.js";
 // 使用方法
 // const myMenu = document.createElement(MyMenu.TAG);
 // myMenu.init();

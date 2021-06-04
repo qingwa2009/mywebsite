@@ -1,5 +1,5 @@
 'use strict';
-import MyTable from '../../components/myTable/myTable.js';
+import MyTable from '../../js/components/myTable/myTable.js';
 
 window.addEventListener("DOMContentLoaded", () => {
     const mymenu = document.getElementsByTagName("my-menu")[0];

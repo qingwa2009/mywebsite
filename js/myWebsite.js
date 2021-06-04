@@ -1,8 +1,8 @@
 "use strict"
 import { getParent, defineProperty } from './myUtil.js';
-import MyTableData from '../components/myTable/MyTableData.js';
-import MyTab from '../components/myTab/myTab.js';
-import MyMenu from '../components/myMenu/myMenu.js';
+import MyTableData from './myTableData.js';
+import MyTab from './components/myTab/myTab.js';
+import MyMenu from './components/myMenu/myMenu.js';
 
 
 defineProperty(window, 'App', (() => {
@@ -10,14 +10,13 @@ defineProperty(window, 'App', (() => {
 	const THEME_CLS_LIGHT = "light-color";
 
 	const userSettings = {};
-	const cmds = {};
 	/**@type{MyMenu} */
 	let myMenu = null;
 
 	const sysMenu = [
 		{ title: "修改密码", func: (currentTarget, target, obj) => alert("还没写"), disabled: false },
 		{ title: "刷新权限", func: refreshPermission, disabled: false },
-		{ title: "重新加载下拉列表", func: clearSelectLists, disabled: false },
+		{ title: "重新加载下拉列表", func: (currentTarget, target, obj) => alert("还没写"), disabled: false },
 	];
 
 	const tabMenu = [
@@ -75,9 +74,10 @@ defineProperty(window, 'App', (() => {
 	 * @param {string} method 
 	 * @param {string} url 
 	 * @param {string} data 
+	 * @param {boolean} alertWhenError 默认true
 	 * @return {Promise<XMLHttpRequest>}
 	 */
-	function myHttpRequest(method, url, data) {
+	function myHttpRequest(method, url, data, alertWhenError = true) {
 		return new Promise((resolve, reject) => {
 			const req = new XMLHttpRequest();
 			req.open(method, url, true);
@@ -88,12 +88,12 @@ defineProperty(window, 'App', (() => {
 				if (req.status == 200) {
 					resolve(req);
 				} else {
-					alert(`请求未完成：${req.status} ${req.statusText}\n${req.responseText}`);
+					if (alertWhenError) alert(`请求未完成：${req.status} ${req.statusText}\n${req.responseText}`);
 					reject(new Error(`${req.status}: ${req.responseText}`));
 				}
 			}
 			req.onerror = () => {
-				alert("请求错误！无法连接到服务器！");
+				if (alertWhenError) alert("请求错误！无法连接到服务器！");
 				reject(new Error("请求错误！无法连接到服务器！"));
 			}
 
@@ -321,10 +321,19 @@ defineProperty(window, 'App', (() => {
 	 * @param {Window} win 传入了这个值将绑定对应的win，在显示时，自动切换显示绑定的值
 	 */
 	function showExecuteInfo(s, t, win = undefined) {
+
+		if (win) {
+			win._executeInfo = s;
+			const tid = myTab.getTabIdByWin(win)
+			if (tid && !myTab.isTabVisible(tid)) {
+				myTab.setAlert(tid);
+				return;
+			}
+		}
+
 		btnExecuteInfo.textContent = s;
 		btnExecuteInfo.classList.remove("animate-shiningW");
 		btnExecuteInfo.classList.remove("animate-shiningI");
-		if (win) win._executeInfo = s;
 
 		if (t !== undefined) {
 			window.requestAnimationFrame(function (time) {
@@ -344,12 +353,21 @@ defineProperty(window, 'App', (() => {
 	 * @param {Window} win 传入了这个值将绑定对应的win，在显示时，自动切换显示绑定的值
 	 */
 	function showStatisticInfo(s, win = undefined) {
+		if (win) {
+			win._statisticInfo = s;
+			const tid = myTab.getTabIdByWin(win)
+			if (tid && !myTab.isTabVisible(tid)) {
+				myTab.setAlert(tid);
+				return;
+			}
+		}
+
 		btnStatisticInfo.textContent = s;
-		if (win) win._statisticInfo = s;
 	}
 
 	//切换tab更新显示的信息
 	function _onShowingTab(tid) {
+		myTab.resetAlert(tid);
 		const win = myTab.getTabWin(tid);
 		if (!win) {
 			showExecuteInfo("", undefined);
@@ -361,20 +379,29 @@ defineProperty(window, 'App', (() => {
 	}
 
 	/*--------------------------select元素相关----------------------------*/
-	const _selectLists = {};
-	//保存select元素的列表
-	function storeSelectList(cmd, arr) {
-		_selectLists[cmd] = arr;
-	}
-	//加载select元素的列表
-	function loadSelectList(cmd) {
-		return _selectLists[cmd]
-	}
-	//清空select元素的列表
-	function clearSelectLists() {
-		for (let k in _selectLists) {
-			delete _selectLists[k];
-		}
+	/**@type{Map<string, Promise<MyTableDatal>>} */
+	const _selectLists = new Map();
+	/**
+	 * 获取下拉列表
+	 * @param {string} url 
+	 * @returns {Promise<MyTableData>}
+	 */
+	function getSelectList(url) {
+		let p = _selectLists.get(url);
+		if (p) return p;
+
+		p = myHttpRequest("get", url, undefined, false).then(req => {
+			const mtd = JSON.parse(req.responseText);
+			if (mtd.error) throw mtd.error;
+			return mtd;
+		}).catch(error => {
+			console.error(error);
+			_selectLists.delete(url);
+			throw error;
+		});
+
+		_selectLists.set(url, p);
+		return p;
 	}
 	/*------------------------------------------------------*/
 	function onLoad(e) {
@@ -407,6 +434,10 @@ defineProperty(window, 'App', (() => {
 				break;
 		}
 		btnTheme.onchange = _onSwitchColor;
+
+		document.addEventListener("keydown", e => {
+			if (e.keyCode === 116) e.preventDefault();
+		})
 	}
 	window.addEventListener('DOMContentLoaded', onDomLoaded);
 	window.addEventListener("load", onLoad);
@@ -415,24 +446,24 @@ defineProperty(window, 'App', (() => {
 		get userId() {
 			return userId
 		},
-		get cmds() {
-			return cmds
-		},
-		saveTableSetting,
-		getTableSetting,
 		get myMenu() {
 			return myMenu;
 		},
 		get myTab() {
 			return myTab
 		},
-		myHttpRequest: myHttpRequest,
-		openNewPage: openNewPage,
+		saveTableSetting,
+		getTableSetting,
+		/**异步发送请求，如果响应的状态码不是200就弹出错误提示框*/
+		myHttpRequest,
+		/**打开新的tab窗口*/
+		openNewPage,
+		/**显示在中间有动画效果的信息*/
 		showExecuteInfo,
+		/**显示在左边固定长度的信息*/
 		showStatisticInfo,
-		storeSelectList,
-		loadSelectList,
-		clearSelectLists,
+		/**获取下拉列表*/
+		getSelectList,
 	}
 }
 )());

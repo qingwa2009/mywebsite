@@ -1,9 +1,10 @@
 "use strict";
 import MyDbFieldComps from "../../js/myDbFieldComps.js";
-import MyMemu from "../../components/myMenu/myMenu.js";
-import MyTable from "../../components/myTable/myTable.js"
-import MyTableData from "../../components/myTable/MyTableData.js"
+import MyMemu from "../../js/components/myMenu/myMenu.js";
+import MyTable from "../../js/components/myTable/myTable.js"
+import MyTableData from "../../js/myTableData.js"
 import { getElementByKeys } from "../../js/myUtil.js";
+
 window.addEventListener('DOMContentLoaded', () => {
 	const App = top.window.App;
 	/**@type{MyMemu} */
@@ -21,8 +22,41 @@ window.addEventListener('DOMContentLoaded', () => {
 		tbSelectItems: 0,
 		/**@type{HTMLElement} */
 		fields: 0,
+		/**@type{MyDbFieldComps.MySelect} */
+		t0: 0,
+		/**@type{MyDbFieldComps.MySelect} */
+		t1: 0,
+		/**@type{MyDbFieldComps.MySelect} */
+		t2: 0,
+		/**@type{MyDbFieldComps.MySelect} */
+		t3: 0,
 	};
 	getElementByKeys(ems);
+
+	ems.t0.addEventListener("change", () => {
+		const value = ems.t0.value;
+		if (!value) return;
+		ems.t1.fieldRowFilter = id => id.length === 2 && id.substr(0, 1) === value;
+		ems.t1.reloadList();
+		ems.t2.value = "";
+		ems.t3.value = "";
+	});
+
+	ems.t1.addEventListener("change", () => {
+		const value = ems.t1.value;
+		if (!value) return;
+		ems.t2.fieldRowFilter = id => id.length === 3 && id.substr(0, 2) === value;
+		ems.t2.reloadList();
+		ems.t3.value = "";
+	});
+
+	ems.t2.addEventListener("change", () => {
+		const value = ems.t2.value;
+		if (!value) return;
+		ems.t3.fieldRowFilter = id => id.length === 4 && id.substr(0, 3) === value;
+		ems.t3.reloadList();
+	});
+
 
 	const colors = {
 		"有效": "lightgreen",
@@ -34,9 +68,11 @@ window.addEventListener('DOMContentLoaded', () => {
 	let _EOF = true;
 	let _orderby = null;
 	let _order = null;
+	let _isSearching = false;
 
 	ems.btnSearch.addEventListener("click", ev => {
 		ev.preventDefault();
+		if (_isSearching) return;
 
 		ems.tbSelectItems.clearTable();
 
@@ -48,6 +84,8 @@ window.addEventListener('DOMContentLoaded', () => {
 	});
 
 	ems.tbSelectItems.setSortFilter((td) => {
+		if (_isSearching) return null;
+
 		if (_EOF) return ems.tbSelectItems.getDefaultSortFunc(td);
 
 		if (_orderby === td.textContent) {
@@ -64,6 +102,7 @@ window.addEventListener('DOMContentLoaded', () => {
 	})
 
 	ems.tbSelectItems.addScrollBottomEvent(() => {
+		if (_isSearching) return;
 		if (_EOF) return;
 		search(false);
 	});
@@ -77,7 +116,17 @@ window.addEventListener('DOMContentLoaded', () => {
 		console.log(tr, ems.tbSelectItems.getCellValue("物料编号", tr));
 	})
 
+	document.addEventListener("keydown", e => {
+		if (e.keyCode !== 116) return;
+		e.preventDefault();
+		ems.btnSearch.click();
+	});
+
 	function search(clear) {
+		if (_isSearching) console.error("is searching when request to search!");
+
+		_isSearching = true;
+
 		ems.btnSearch.disabled = true;
 
 		const criteria = MyDbFieldComps.createCriteria(ems.fields);
@@ -102,9 +151,10 @@ window.addEventListener('DOMContentLoaded', () => {
 			const s = mtd.totalCount <= _offset ? "已完全加载" : `已加载${_offset}条记录`;
 			App.showStatisticInfo(`共查到${mtd.totalCount}条记录，${s}，耗时${(new Date().getTime() - st) / 1000}s！`, window);
 		}).catch(err => {
-			// alert(err.message);
+			alert(err.message);
 		}).finally(() => {
 			ems.btnSearch.disabled = "";
+			_isSearching = false;
 		});
 	}
 

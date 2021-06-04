@@ -8,9 +8,9 @@
 	<title>物料查询</title>
 
 	<!--外部引用样式-->
-	<link rel="stylesheet" type="text/css" href="/css/cssVar.css">
-	<link rel="stylesheet" type="text/css" href="/css/commStyle.css">
-	<link rel="stylesheet" type="text/css" href="/css/animate.css">
+	<link rel="stylesheet" type="text/css" href="../../css/cssVar.css">
+	<link rel="stylesheet" type="text/css" href="../../css/commStyle.css">
+	<link rel="stylesheet" type="text/css" href="../../css/animate.css">
 </head>
 
 <body style="display:flex;flex-flow: column nowrap;" oncontextmenu="{
@@ -20,22 +20,26 @@
 	return false;
 }">
 	<!--   -----------------------------查询区--------------------------------------- -->
-	<form name="searchBOM" autocomplete="off" autocapitalize="characters" style="flex-shrink:0;">
-		<fieldset style="position:relative;">
+	<form name="searchBOM" autocomplete="off" autocapitalize="characters" style="flex-shrink:0; overflow-x: auto;">
+		<fieldset style="position:relative; min-width: 64em;">
 			<legend>查询条件</legend>
 			<div id="fields" class="grid" style="grid:repeat(3,auto)/repeat(6,auto 1fr);">
 				<!--1------------------------------------------ -->
 				<label>大类编号</label>
-				<select name=""></select>
+				<select id="t0" is="my-select" fieldname="it.TYPE_NO" fieldlike="right" fieldurl="/?itemtype"
+					fieldrowfilter="id=>id.length===1"></select>
 
 				<label>中类编号</label>
-				<select name=""></select>
+				<select id="t1" is="my-select" fieldname="it.TYPE_NO" fieldlike="right" fieldurl="/?itemtype"
+					fieldrowfilter="id=>id.length===2 && id.substr(0,1)==='1'"></select>
 
 				<label>小类编号</label>
-				<select name=""></select>
+				<select id="t2" is="my-select" fieldname="it.TYPE_NO" fieldlike="right" fieldurl="/?itemtype"
+					fieldrowfilter="id=>id.length===3 && id.substr(0,2)==='11'"></select>
 
 				<label>小小类编号</label>
-				<select name=""></select>
+				<select id="t3" is="my-select" fieldname="it.TYPE_NO" fieldurl="/?itemtype"
+					fieldrowfilter="id=>id.length===4 && id.substr(0,3)==='111'"></select>
 
 				<label>小小类名称</label>
 				<input type="search" is="my-input" fieldname="it.TYPE_NAME" fieldlike="both">
@@ -64,7 +68,7 @@
 
 				<!--3------------------------------------------- -->
 				<label>计价公式</label>
-				<select name=""></select>
+				<select is="my-select" fieldname="t.FORMULA" fieldurl="/?itemFormula"></select>
 
 				<label>工程图号</label>
 				<input type="search" is="my-input" fieldname="t.ENG_ITEM_NO" fieldlike="both">
@@ -79,12 +83,12 @@
 				<input type="date" is="my-input" fieldname="t.CREATE_TIME" fieldcompare="&lt;=">
 
 				<label>物料状态</label>
-				<select name=""></select>
+				<select contenteditable="true" is="my-select" fieldname="t.ROWSTATE" fieldurl="/?itemStatus"
+					defaultvalue="A"></select>
 			</div>
 		</fieldset>
-		<button id="btnSearch" type="submit">查询</button>
 	</form>
-
+	<button id="btnSearch" type="submit" style="width: 5em;">查询(F5)</button>
 	<!--   -----------------------------查询结果列表-------------------------------------- -->
 	<my-table id="tbSelectItems" title="物料明细" rowheight="100" style="min-height:5em;flex-grow:1;">
 		<table>
@@ -120,8 +124,7 @@
 		</div>
 	</div>
 
-	<script type="module" src="/components/mySplitter/mySplitter.js"></script>
-	<script type="module" src="/components/myTable/myTable.js"></script>
+	<script type="module" src="../../js/components/mySplitter/mySplitter.js"></script>
 	<script type="module" src="searchItem.js"></script>
 
 </body>

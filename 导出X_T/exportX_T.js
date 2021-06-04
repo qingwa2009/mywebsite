@@ -1,6 +1,6 @@
 'use strict';
 import { createWebSocket } from '../js/myUtil.js';
-import MyMenu from "../components/myMenu/myMenu.js";
+import MyMenu from "../js/components/myMenu/myMenu.js";
 
 window.addEventListener('DOMContentLoaded', () => {
 	const App = top.window.App;

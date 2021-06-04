@@ -1,6 +1,6 @@
 "use strict";
 
-import MyMenu from "../../components/myMenu/myMenu.js";
+import MyMenu from "../../js/components/myMenu/myMenu.js";
 
 /**@type{MyMenu} */
 const myMenu = document.createElement(MyMenu.TAG);//new MyMenu();

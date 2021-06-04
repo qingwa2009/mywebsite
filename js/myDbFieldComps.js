@@ -1,5 +1,5 @@
 import { enumAllChildren } from "./myUtil.js";
-import MyDbCriteria from "./MyDbCriteria.js";
+import MyDbCriteria from "./myDbCriteria.js";
 
 export default class MyDbFieldComps {
     /**
@@ -11,7 +11,7 @@ export default class MyDbFieldComps {
         const criteria = new MyDbCriteria();
 
         for (const em of enumAllChildren(parentEm)) {
-            if (em instanceof MyDbFieldComps.MyInput) {
+            if (em instanceof MyDbFieldComps.MyInput || em instanceof MyDbFieldComps.MySelect) {
                 const c = em.getCriteriaWhere();
                 if (c) {
                     if (c instanceof Array) {
@@ -107,6 +107,7 @@ MyDbFieldComps.MyInput = class extends HTMLInputElement {
                 where.rhs = `%${value}%`;
                 break;
             default:
+                where.rhs = value;
                 where.op = "=";
                 break;
         }
@@ -173,3 +174,133 @@ MyDbFieldComps.MyInput = class extends HTMLInputElement {
 
 }
 customElements.define(MyDbFieldComps.MyInput.TAG, MyDbFieldComps.MyInput, { extends: "input" });
+
+
+const URL_GET_LIST_ITEMS = "/getlistitems";
+MyDbFieldComps.MySelect = class extends HTMLSelectElement {
+    static TAG = "my-select";
+    /**用于查询时的字段名 */
+    static ATTR_FIELD_NAME = "fieldname";
+    /**自动请求加载列表的url*/
+    static ATTR_FIELD_URL = "fieldurl";
+    /**显示的行过滤 */
+    static ATTR_FIELD_ROWFILTER = "fieldrowfilter";
+    /**模糊查询类型 [left, right, both]*/
+    static ATTR_FIELD_LIKE = "fieldlike";
+    /**默认值 */
+    static ATTR_FIELD_DEFAULT_VALUE = "defaultvalue";
+
+    constructor() {
+        super();
+        /**用于查询时的字段名 */
+        this.fieldName = this.getAttribute(MyDbFieldComps.MySelect.ATTR_FIELD_NAME);
+        /**自动请求加载列表的url*/
+        this.fieldUrl = this.getAttribute(MyDbFieldComps.MySelect.ATTR_FIELD_URL);
+        /**模糊查询类型 [left, right, both]*/
+        this.fieldLike = this.getAttribute(MyDbFieldComps.MySelect.ATTR_FIELD_LIKE);
+        /**显示的行过滤 */
+        this.fieldRowFilter = this.getAttribute(MyDbFieldComps.MySelect.ATTR_FIELD_ROWFILTER);
+        /**默认值 */
+        this.fieldDefaultValue = this.getAttribute(MyDbFieldComps.MySelect.ATTR_FIELD_DEFAULT_VALUE);
+
+        if (this.fieldRowFilter) {
+            try {
+                this.fieldRowFilter = new Function(`return (${this.fieldRowFilter})(...arguments)`);
+            } catch (error) {
+                console.error("field row filter invalid: ", error);
+            }
+        }
+
+        this.addEventListener("contextmenu", () => this.value = "");
+        this.reloadList();
+    }
+
+    reloadList() {
+        if (!this.fieldUrl) return;
+        const url = `${URL_GET_LIST_ITEMS}${this.fieldUrl}`;
+
+        if (top.App) {
+            top.App.getSelectList(url).then(mtd => {
+                const data = mtd.data;
+                const n = data.length;
+                this.innerHTML = "";
+                if (!MyDbFieldComps.MySelect._tempDoc) MyDbFieldComps.MySelect._tempDoc = document.createDocumentFragment();
+                MyDbFieldComps.MySelect._tempDoc.appendChild(document.createElement("option"));
+                for (let i = 0; i < n; i++) {
+                    const dt = data[i];
+                    if (this.fieldRowFilter && !this.fieldRowFilter(...dt)) continue;
+                    const em = document.createElement("option");
+                    em.value = dt[0];
+                    em.textContent = `${dt[0]} ${dt[1]}`;
+                    if (this.fieldDefaultValue == dt[0]) em.setAttribute("selected", "true");
+                    MyDbFieldComps.MySelect._tempDoc.appendChild(em);
+                }
+                this.append(MyDbFieldComps.MySelect._tempDoc);
+            }, error => { });
+        } else {
+
+        }
+
+        // let arr = sessionStorage.getItem(this.fieldUrl);
+        // if (arr) return Promise.resolve(JSON.parse(arr));
+
+
+        // /**@type{Promise<XMLHttpRequest>} */
+        // let p;
+        // if (top.App) {
+        //     p = top.App.myHttpRequest(method, url, undefined, false);
+        // } else {
+        //     p = new Promise((res, rej) => {
+        //         const req = new XMLHttpRequest();
+        //         req.open(method, url);
+        //         req.onload = () => {
+        //             if (req.status == 200) res(req);
+        //             else rej(new Error(`${req.status}: ${req.responseText}`));
+        //         }
+        //         req.onerror = () => rej(new Error("请求错误！无法连接到服务器！"));
+        //         req.send();
+        //     })
+        // }
+
+        // return p.then((req) => {
+        //     /**@type{MyTableData} */
+        //     const mtd = JSON.parse(req.responseText);
+        //     if (mtd.error) throw new Error(mtd.error);
+        //     sessionStorage.setItem(this.fieldUrl, JSON.stringify(mtd.data));
+        //     return mtd.data;
+        //     // console.log(mtd);
+        // });
+    }
+
+    /**
+     * @returns {MyDbCriteria.CriteriaWhere | null}
+     */
+    getCriteriaWhere() {
+        if (!this.fieldName) return null;
+        const value = this.value;
+        if (!value) return null;
+
+        const where = new MyDbCriteria.CriteriaWhere();
+
+        where.field = this.fieldName;
+        where.op = "like";
+        switch (this.fieldLike) {
+            case MyDbFieldComps.MyInput.FIELD_LIKE_TYPE.Left:
+                where.rhs = `%${value}`;
+                break;
+            case MyDbFieldComps.MyInput.FIELD_LIKE_TYPE.Right:
+                where.rhs = `${value}%`;
+                break;
+            case MyDbFieldComps.MyInput.FIELD_LIKE_TYPE.Both:
+                where.rhs = `%${value}%`;
+                break;
+            default:
+                where.rhs = value;
+                where.op = "=";
+                break;
+        }
+
+        return where;
+    }
+}
+customElements.define(MyDbFieldComps.MySelect.TAG, MyDbFieldComps.MySelect, { extends: "select" });

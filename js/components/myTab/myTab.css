@@ -18,6 +18,11 @@
   border-right: 1px solid var(--border-color);
   border-radius: 0 0.5em;
 }
+
+.alert{
+  animation: alert .5s 5 alternate both;
+}
+
 .title:hover{
   border: 1px solid var(--border-color);
   border-bottom: 0;
@@ -108,4 +113,11 @@
     left:100%;
     right:0;
   }
+}
+
+@keyframes alert{
+  100%{
+    background-color: orange;
+    color:white;
+  }  
 }

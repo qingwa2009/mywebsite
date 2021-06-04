@@ -1,5 +1,5 @@
 "use strict";
-import { createWebSocket } from '/js/myUtil.js';
+import { createWebSocket } from '../../js/myUtil.js';
 
 window.addEventListener('DOMContentLoaded', () => {
 	const App = top.window.App;

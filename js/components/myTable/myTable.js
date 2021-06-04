@@ -1,6 +1,6 @@
 "use strict";
-import { round } from "../../js/myUtil.js";
-import MyTableData from "./MyTableData.js";
+import { round } from "../../myUtil.js";
+import MyTableData from "../../myTableData.js";
 import MyMenu from "../myMenu/myMenu.js";
 /**@type{MyMenu} */
 const myMenu = top.App ? top.App.myMenu : document.createElement(MyMenu.TAG);

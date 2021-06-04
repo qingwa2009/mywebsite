@@ -5,7 +5,7 @@ export default class MyTab extends HTMLElement {
 
 	static IDPREFIX = "tab";
 	static IDSURFIX = { TITLE: "_ttl", CLS: "_cls", PAGE: "_pge" };
-	static CLASSES = { TAB: "tab", TITLE: "title", CLS: "cls", PAGE: "page" };
+	static CLASSES = { TAB: "tab", TITLE: "title", CLS: "cls", PAGE: "page", alert: "alert" };
 	static CLOSETYPE = { ALL: 0, ME: 2, OTHERS: 1 };
 	static MAX_TAB_PAGE = 50;
 
@@ -202,6 +202,8 @@ export default class MyTab extends HTMLElement {
 	 */
 	isTabVisible(tid) {
 		const tab = this.getTabElement(tid);
+		if (!tab) return false;
+		return tab.checked;
 	}
 
 	/**
@@ -378,6 +380,25 @@ export default class MyTab extends HTMLElement {
 		var title = this.getTabTitleElement(tid);
 		if (!title) return;
 		title.classList.remove(animName);
+	}
+
+	/**
+	 * 设置tab标签高亮提示
+	 * @param {string} tid 
+	 */
+	setAlert(tid) {
+		const title = this.getTabTitleElement(tid);
+		if (!title) return;
+		title.classList.add(MyTab.CLASSES.alert);
+	}
+	/**
+	 * 移除tab标签高亮提示
+	 * @param {string} tid 
+	 */
+	resetAlert(tid) {
+		const title = this.getTabTitleElement(tid);
+		if (!title) return;
+		title.classList.remove(MyTab.CLASSES.alert);
 	}
 }
 
