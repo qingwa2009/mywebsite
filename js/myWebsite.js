@@ -12,6 +12,8 @@ defineProperty(window, 'App', (() => {
 	const userSettings = {};
 	/**@type{MyMenu} */
 	let myMenu = null;
+	/**@type{IDBDatabase} */
+	let myplmDb = null;
 
 	const sysMenu = [
 		{ title: "修改密码", func: (currentTarget, target, obj) => alert("还没写"), disabled: false },
@@ -75,9 +77,10 @@ defineProperty(window, 'App', (() => {
 	 * @param {string} url 
 	 * @param {string} data 
 	 * @param {boolean} alertWhenError 默认true
+	 * @param {"" | "arraybuffer" | "blob" | "document" | "json" | "text"} responseType 默认 ""
 	 * @return {Promise<XMLHttpRequest>}
 	 */
-	function myHttpRequest(method, url, data, alertWhenError = true) {
+	function myHttpRequest(method, url, data, alertWhenError = true, responseType = "") {
 		return new Promise((resolve, reject) => {
 			const req = new XMLHttpRequest();
 			req.open(method, url, true);
@@ -88,8 +91,12 @@ defineProperty(window, 'App', (() => {
 				if (req.status == 200) {
 					resolve(req);
 				} else {
-					if (alertWhenError) alert(`请求未完成：${req.status} ${req.statusText}\n${req.responseText}`);
-					reject(new Error(`${req.status}: ${req.responseText}`));
+					const respText = responseType === "" || responseType === "text" ? req.responseText : "";
+
+					if (alertWhenError) alert(`请求未完成：${req.status} ${req.statusText}\n${respText}`);
+					const err = new Error(`${req.status}: ${respText}`);
+					err.reqStatusCode = req.status;
+					reject(err);
 				}
 			}
 			req.onerror = () => {
@@ -97,11 +104,11 @@ defineProperty(window, 'App', (() => {
 				reject(new Error("请求错误！无法连接到服务器！"));
 			}
 
-			if (data) {
-				req.send(data);
-			} else {
-				req.send();
-			}
+			req.responseType = responseType;
+
+			if (data) req.send(data);
+			else req.send();
+
 		});
 	}
 
@@ -390,8 +397,8 @@ defineProperty(window, 'App', (() => {
 		let p = _selectLists.get(url);
 		if (p) return p;
 
-		p = myHttpRequest("get", url, undefined, false).then(req => {
-			const mtd = JSON.parse(req.responseText);
+		p = myHttpRequest("get", url, undefined, false, "json").then(req => {
+			const mtd = req.response;
 			if (mtd.error) throw mtd.error;
 			return mtd;
 		}).catch(error => {
@@ -403,11 +410,125 @@ defineProperty(window, 'App', (() => {
 		_selectLists.set(url, p);
 		return p;
 	}
-	/*------------------------------------------------------*/
+	/*------------------------IndexdeDB---------------------------*/
+	const DB_VERSION = 1;
+	const DB_NAME = "myplm";
+	const DB_STORE_ITEMIMGS = "itemimgs";
+	function openDb() {
+		const req = indexedDB.open(DB_NAME, DB_VERSION);
+		req.onupgradeneeded = (e) => {
+			/**@type{IDBDatabase} */
+			const db = e.target.result;
+			db.createObjectStore(DB_STORE_ITEMIMGS);
+		}
+		return new Promise((res, rej) => {
+			req.onsuccess = (e) => {
+				res(e.target.result);
+			}
+			req.onerror = (e) => {
+				rej(e.target.error);
+			}
+		});
+	}
+
+	/**
+	 * @param {string} name
+	 * @param {Blob|""} blob 
+	 * @param {Date} lastUpdateTime 
+	 */
+	function putItemImgIntoDb(name, blob, lastUpdateTime) {
+		const tran = myplmDb.transaction(DB_STORE_ITEMIMGS, "readwrite");
+		const store = tran.objectStore(DB_STORE_ITEMIMGS);
+		const req = store.put([blob, lastUpdateTime], name);
+
+		req.onsuccess = (e) => { };
+		req.onerror = e => {
+			console.log("put into db failed: ", e.target.error);
+		};
+	}
+
+	/**
+	 * @param {string} name 
+	 * @returns {Promise<[Blob | "", Date]>}
+	 * 有就返回值，没有就报错
+	 */
+	function getItemImgFromDb(name) {
+		if (!myplmDb) return Promise.reject(new TypeError("myplmDb is null!"));
+		const tran = myplmDb.transaction(DB_STORE_ITEMIMGS);
+		const store = tran.objectStore(DB_STORE_ITEMIMGS);
+		const req = store.get(name);
+		return new Promise((res, rej) => {
+			req.onsuccess = (e) => res(e.target.result);
+			req.onerror = (e) => rej(e.target.error);
+		});
+	}
+
+	/*------------------------物料图片---------------------------*/
+	/**
+	 * {Map<string, Promise<[URL, Date]>>}
+	 */
+	const itemImgsMap = new Map();
+
+	/**
+	 * @param {string} name 
+	 * @param {Date} lastUpdateTime 
+	 * @returns {Promise<URL|"">}
+	 */
+	function getItemImg(name, lastUpdateTime) {
+		if (!name) return Promise.resolve("");
+
+		if (!itemImgsMap.has(name)) {
+			itemImgsMap.set(name,
+				getItemImgFromDb(name).then(([blob, date]) => {
+					if (date >= lastUpdateTime) {
+						return [blob ? URL.createObjectURL(blob) : blob, date];
+					} else {
+						throw "";
+					}
+				}).catch(error => {
+					return getItemImgFromServer(name).then(blob => {
+						putItemImgIntoDb(name, blob, lastUpdateTime);
+						return [blob ? URL.createObjectURL(blob) : blob, lastUpdateTime];
+					}, err => {
+						itemImgsMap.delete(name);
+					});
+				})
+			);
+		}
+
+		if (itemImgsMap.has(name)) {
+			return itemImgsMap.get(name).then(([url, date]) => {
+				if (date >= lastUpdateTime) return url;
+				itemImgsMap.delete(name);
+				return getItemImg(name, lastUpdateTime);
+			});
+		} else {
+			return Promise.resolve("");
+		}
+
+	}
+
+	/**
+	 * 从服务器加载图片，如果文件不存在则返回""，其他错误将抛出错误
+	 * @param {string} name 
+	 * @returns {Promise<Blob|"">}
+	 * @throws {Error}	  
+	 */
+	function getItemImgFromServer(name) {
+		return myHttpRequest("get", `/myplm/itemimg?img=${name}`, undefined, false, "blob").then(xhr => {
+			return xhr.response;
+		}, error => {
+			if (error.reqStatusCode === 404) return ""
+			throw error;
+		});
+	}
+
+	/*----------------------------------------------------------*/
 	function onLoad(e) {
 		loadUserSetting();
 	}
-	function onDomLoaded(e) {
+
+	async function onDomLoaded(e) {
 		myMenu = document.createElement(MyMenu.TAG);
 		myMenu.init();
 
@@ -435,10 +556,17 @@ defineProperty(window, 'App', (() => {
 		}
 		btnTheme.onchange = _onSwitchColor;
 
+		try {
+			myplmDb = await openDb();
+		} catch (error) {
+			console.error(error);
+		}
+
 		document.addEventListener("keydown", e => {
 			if (e.keyCode === 116) e.preventDefault();
 		})
 	}
+
 	window.addEventListener('DOMContentLoaded', onDomLoaded);
 	window.addEventListener("load", onLoad);
 
@@ -464,6 +592,8 @@ defineProperty(window, 'App', (() => {
 		showStatisticInfo,
 		/**获取下拉列表*/
 		getSelectList,
+		/**获取物料图片*/
+		getItemImg,
 	}
 }
 )());

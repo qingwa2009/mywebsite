@@ -148,3 +148,33 @@ tr[selected]{
 	background-color:var(--selected-color) !important;
 	color:white;
 }
+
+td img{
+	object-fit: scale-down;
+	pointer-events: none;
+}
+
+
+.loading{
+	position: relative;
+}
+
+.loading::after{
+	content: "○○○";
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	left: 0;
+	top: 0;
+	animation: anim-loading 0.5s infinite;
+}
+
+@keyframes anim-loading{
+	0%{content: '○○○'}
+	25%{content: '●○○'}
+	50%{content: '○●○'}
+	75%{content: '○○●'}
+}

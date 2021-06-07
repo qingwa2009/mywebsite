@@ -171,8 +171,26 @@ window.addEventListener('DOMContentLoaded', () => {
 		const ct = dt["创建时间"];
 		const ut = dt["更新时间"];
 
-		ct.textContent = new Date(ct.textContent + "Z").toLocaleString();
-		ut.textContent = new Date(ut.textContent + "Z").toLocaleString();
+		const createTime = new Date(ct.textContent + "Z");
+		const lastUpdateTime = new Date(ut.textContent + "Z");
+		ct.textContent = createTime.toLocaleString();
+		ut.textContent = lastUpdateTime.toLocaleString();
+
+		const pt = dt["图片"];
+		const img = document.createElement("img");
+		img.width = 100;
+		img.height = 100;
+		pt.classList.add("loading");
+		pt.insertBefore(img, pt.firstChild);
+
+		let s = pt.textContent;
+		if (s) s = s.trim().toUpperCase();
+		if (s) {
+			App.getItemImg(s, lastUpdateTime).then((blobUrl) => {
+				pt.classList.remove("loading");
+				if (blobUrl) img.src = blobUrl;
+			});
+		}
 	}
 
 });
