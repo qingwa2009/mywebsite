@@ -34,12 +34,15 @@ body>div:nth-of-type(4){
 	flex-direction: column;
 }
 body>div:nth-of-type(5){
+	flex-basis: auto;
+}
+body>div:nth-of-type(6){
 	flex-basis: 20%;
 	overflow: hidden;
 	display: flex;
 	flex-direction: column;
 }
-body>div:nth-of-type(6){
+body>div:nth-of-type(7){
 	flex-basis: 20%;
 }
 
@@ -115,13 +118,16 @@ tr[selected]{
 
 
 
-.logview, .readingview, .writingview, .wsview{
+.logview, .readingview, .writingview, .wsview,.dbview{
 	overflow:auto;
 	/* max-height:8em; */
 	/* min-height:4em; */
 	border: 1px dashed black;
 	flex-grow: 1;
 }
+
+
+
 
 input[type='checkbox']{
 	display:none;

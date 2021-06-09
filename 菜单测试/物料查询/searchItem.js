@@ -180,12 +180,12 @@ window.addEventListener('DOMContentLoaded', () => {
 		const img = document.createElement("img");
 		img.width = 100;
 		img.height = 100;
-		pt.classList.add("loading");
 		pt.insertBefore(img, pt.firstChild);
 
 		let s = pt.textContent;
 		if (s) s = s.trim().toUpperCase();
 		if (s) {
+			pt.classList.add("loading");
 			App.getItemImg(s, lastUpdateTime).then((blobUrl) => {
 				pt.classList.remove("loading");
 				if (blobUrl) img.src = blobUrl;

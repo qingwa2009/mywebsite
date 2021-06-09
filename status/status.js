@@ -42,6 +42,7 @@ window.addEventListener('DOMContentLoaded', () => {
 	const writinglist = $('writinglist');
 	const wslist = $('wslist');
 	const loglist = $('loglist');
+	const dblist = $('dblist');
 	const state = $('state');
 	const updateWebsite = $('updateWebsite');
 	const updateServer = $('updateServer');
@@ -97,6 +98,13 @@ window.addEventListener('DOMContentLoaded', () => {
 		enableerror.checked = status.debug.error;
 		enableweblog.checked = status.debug.weblog;
 
+		const db = status.db;
+		loadlisthead(dblist, ["db", "thread and jobs"]);
+		let data = [];
+		Object.keys(db).forEach(v => {
+			data.push([v, db[v]]);
+		})
+		loadlistbody(dblist, data);
 	}
 
 	const ws = new WebSocket(`ws${origin.substr(4)}/status`, 'json');
