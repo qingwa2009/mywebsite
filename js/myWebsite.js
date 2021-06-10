@@ -394,6 +394,7 @@ defineProperty(window, 'App', (() => {
 	 * @returns {Promise<MyTableData>}
 	 */
 	function getSelectList(url) {
+		if (url instanceof URL) url = url.toString();
 		let p = _selectLists.get(url);
 		if (p) return p;
 

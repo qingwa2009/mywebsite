@@ -28,7 +28,7 @@ window.websiteMenu = [
 				"",
 				{ title: "子菜单4", url: "菜单测试/研发BOM选件查询/研发BOM选件查询.html", disabled: false },
 				{ title: "子菜单5", url: "菜单测试/物料查询/物料查询.html", disabled: false },
-
+				{ title: "子菜单6", url: "菜单测试/物料建档/物料建档.html", disabled: false },
 			],
 			"",
 			{ title: "实时通讯", url: "菜单测试/实时通讯/实时通讯.html", disabled: false }

@@ -176,13 +176,13 @@ MyDbFieldComps.MyInput = class extends HTMLInputElement {
 customElements.define(MyDbFieldComps.MyInput.TAG, MyDbFieldComps.MyInput, { extends: "input" });
 
 
-const URL_GET_LIST_ITEMS = "/getlistitems";
+const URL_GET_LIST_ITEMS = "/myplm/getlistitems";
 MyDbFieldComps.MySelect = class extends HTMLSelectElement {
     static TAG = "my-select";
     /**用于查询时的字段名 */
     static ATTR_FIELD_NAME = "fieldname";
     /**自动请求加载列表的url*/
-    static ATTR_FIELD_URL = "fieldurl";
+    static ATTR_FIELD_QUERY = "fieldquery";
     /**显示的行过滤 */
     static ATTR_FIELD_ROWFILTER = "fieldrowfilter";
     /**模糊查询类型 [left, right, both]*/
@@ -195,7 +195,7 @@ MyDbFieldComps.MySelect = class extends HTMLSelectElement {
         /**用于查询时的字段名 */
         this.fieldName = this.getAttribute(MyDbFieldComps.MySelect.ATTR_FIELD_NAME);
         /**自动请求加载列表的url*/
-        this.fieldUrl = this.getAttribute(MyDbFieldComps.MySelect.ATTR_FIELD_URL);
+        this.fieldQuery = this.getAttribute(MyDbFieldComps.MySelect.ATTR_FIELD_QUERY);
         /**模糊查询类型 [left, right, both]*/
         this.fieldLike = this.getAttribute(MyDbFieldComps.MySelect.ATTR_FIELD_LIKE);
         /**显示的行过滤 */
@@ -216,11 +216,12 @@ MyDbFieldComps.MySelect = class extends HTMLSelectElement {
     }
 
     reloadList() {
-        if (!this.fieldUrl) return;
-        const url = `${URL_GET_LIST_ITEMS}${this.fieldUrl}`;
+        if (!this.fieldQuery) return;
+        const url = new URL(URL_GET_LIST_ITEMS, location);
+        url.searchParams.append(this.fieldQuery, "");
 
         if (top.App) {
-            top.App.getSelectList(url).then(mtd => {
+            top.App.getSelectList(url.toString()).then(mtd => {
                 const data = mtd.data;
                 const n = data.length;
                 this.innerHTML = "";
@@ -238,38 +239,8 @@ MyDbFieldComps.MySelect = class extends HTMLSelectElement {
                 this.append(MyDbFieldComps.MySelect._tempDoc);
             }, error => { });
         } else {
-
+            console.error("auto load select list failed: top.App is undefined!");
         }
-
-        // let arr = sessionStorage.getItem(this.fieldUrl);
-        // if (arr) return Promise.resolve(JSON.parse(arr));
-
-
-        // /**@type{Promise<XMLHttpRequest>} */
-        // let p;
-        // if (top.App) {
-        //     p = top.App.myHttpRequest(method, url, undefined, false);
-        // } else {
-        //     p = new Promise((res, rej) => {
-        //         const req = new XMLHttpRequest();
-        //         req.open(method, url);
-        //         req.onload = () => {
-        //             if (req.status == 200) res(req);
-        //             else rej(new Error(`${req.status}: ${req.responseText}`));
-        //         }
-        //         req.onerror = () => rej(new Error("请求错误！无法连接到服务器！"));
-        //         req.send();
-        //     })
-        // }
-
-        // return p.then((req) => {
-        //     /**@type{MyTableData} */
-        //     const mtd = JSON.parse(req.responseText);
-        //     if (mtd.error) throw new Error(mtd.error);
-        //     sessionStorage.setItem(this.fieldUrl, JSON.stringify(mtd.data));
-        //     return mtd.data;
-        //     // console.log(mtd);
-        // });
     }
 
     /**
