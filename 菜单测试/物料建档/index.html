@@ -1,0 +1,204 @@
+<!doctype html>
+<html style="user-select: none">
+
+<head>
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+
+  <title>物料建档</title>
+  <!--外部引用样式-->
+  <link rel="stylesheet" type="text/css" href="../../css/cssVar.css">
+  <link rel="stylesheet" type="text/css" href="../../css/commStyle.css">
+  <link rel="stylesheet" type="text/css" href="../../css/animate.css">
+  <link rel="stylesheet" type="text/css" href="index.css">
+</head>
+
+<body oncontextmenu="{
+	const em=arguments[0].target;
+	if(em instanceof HTMLInputElement && ['email','number','search','tel','text','url'].includes(em.type)) 
+		return true;
+	return false;
+}">
+  <form class="p0">
+    <div class="grid" style="grid:repeat(11,auto)/repeat(3,auto 1fr);">
+      <label required>大类编号</label>
+      <select id="t0" is="my-select" fieldname="it.TYPE_NO" fieldlike="right" fieldquery="itemtype"
+        fieldrowfilter="id=>id.length===1"></select>
+
+      <label required>中类编号</label>
+      <select id="t1" is="my-select" fieldname="it.TYPE_NO" fieldlike="right" fieldquery="itemtype"
+        fieldrowfilter="id=>id.length===2 && id.substr(0,1)==='1'"></select>
+
+      <label required>小类编号</label>
+      <select id="t2" is="my-select" fieldname="it.TYPE_NO" fieldlike="right" fieldquery="itemtype"
+        fieldrowfilter="id=>id.length===3 && id.substr(0,2)==='11'"></select>
+
+      <label required>小小类编号</label>
+      <select id="t3" is="my-select" fieldname="it.TYPE_NO" fieldquery="itemtype"
+        fieldrowfilter="id=>id.length===4 && id.substr(0,3)==='111'"></select>
+
+      <label>物料编号</label>
+      <input type="search" is="my-input" fieldname="t.ITEM_NO" fieldlike="both" uppercase>
+
+      <label>材质</label>
+      <input type="search" is="my-input" fieldname="t.STUFF" fieldlike="both">
+
+      <label>颜色</label>
+      <input type="search" is="my-input" fieldname="" fieldlike="both">
+
+      <label required>物料名称</label>
+      <input type="search" is="my-input" fieldname="t.ITEM_NAME" fieldlike="both">
+
+      <label>物料描述</label>
+      <input type="search" is="my-input" fieldname="t.ITEM_REMARK" fieldlike="both">
+
+      <label>尺寸规格</label>
+      <input type="search" is="my-input" fieldname="t.ITEM_SPEC" fieldlike="both">
+
+      <label>备注说明</label>
+      <input type="search" is="my-input" fieldname="t.REMARK_SM" fieldlike="both">
+
+
+      <label>计量单位</label>
+      <div class="grid-nopadding" style="grid:auto/1fr auto 1fr;">
+        <select style="flex-grow: 1;" is="my-select" fieldname="" fieldquery="itemFormula"></select>
+
+        <label>计价单位</label>
+        <select style="flex-grow: 1;" is="my-select" fieldname="" fieldquery="itemFormula"></select>
+      </div>
+
+      <label required>计价公式</label>
+      <select is="my-select" fieldname="t.FORMULA" fieldquery="itemFormula"></select>
+
+      <label required>费用标志</label>
+      <select is="my-select" fieldname="" fieldquery=""></select>
+
+      <label required>加工费物料</label>
+      <input type="search" is="my-input" fieldname="" fieldlike="both">
+
+      <label>表面焊缝长</label>
+      <div class="grid-nopadding" style="grid:auto/1fr auto 1fr;">
+        <input type="number" is="my-input" fieldname="" fieldlike="both">
+
+        <label>单重kg/m</label>
+        <input type="number" is="my-input" fieldname="" fieldlike="both">
+      </div>
+
+      <label>长</label>
+      <div class="grid-nopadding" style="grid:auto/1fr auto 1fr auto 1fr;">
+        <input type="number" is="my-input" fieldname="" fieldlike="both">
+
+        <label>宽</label>
+        <input type="number" is="my-input" fieldname="" fieldlike="both">
+
+        <label>高</label>
+        <input type="number" is="my-input" fieldname="" fieldlike="both">
+      </div>
+
+      <label>直径</label>
+      <div class="grid-nopadding" style="grid:auto/1fr auto 1fr auto 1fr;">
+        <input type="number" is="my-input" fieldname="" fieldlike="both">
+
+        <label>厚度</label>
+        <input type="number" is="my-input" fieldname="" fieldlike="both">
+
+        <label>周长</label>
+        <input type="number" is="my-input" fieldname="" fieldlike="both">
+      </div>
+
+      <label>比重(加工)</label>
+      <div class="grid-nopadding" style="grid:auto/1fr auto 1fr;">
+        <input type="number" is="my-input" fieldname="" fieldlike="both">
+
+        <label>表面积</label>
+        <input type="number" is="my-input" fieldname="" fieldlike="both">
+      </div>
+
+      <label>预计单重</label>
+      <div class="grid-nopadding" style="grid:auto/1fr auto 1fr;">
+        <input type="number" is="my-input" fieldname="" fieldlike="both">
+
+        <label>实际单重</label>
+        <input type="number" is="my-input" fieldname="" fieldlike="both">
+      </div>
+
+      <label required>模具1</label>
+      <select is="my-select" fieldname="" fieldquery=""></select>
+
+      <label>椭圆长边</label>
+      <div class="grid-nopadding" style="grid:auto/1fr auto 1fr;">
+        <input type="number" is="my-input" fieldname="" fieldlike="both">
+
+        <label>椭圆短边</label>
+        <input type="number" is="my-input" fieldname="" fieldlike="both">
+      </div>
+
+      <label>上传图片</label>
+      <select is="my-select" fieldname="" fieldquery=""></select>
+
+      <label required>模具2</label>
+      <select is="my-select" fieldname="" fieldquery=""></select>
+
+      <label>顺德供应商</label>
+      <input type="search" is="my-input" fieldname="" fieldlike="both">
+
+      <label>配套序列号</label>
+      <input type="search" is="my-input" fieldname="" fieldlike="both">
+
+      <label>研发编号</label>
+      <input type="search" is="my-input" fieldname="t.RD_NO" fieldlike="both" uppercase>
+
+      <label>开模信息</label>
+      <select is="my-select" fieldname="" fieldquery="" defaultvalue=""></select>
+
+      <label>物料状态</label>
+      <select is="my-select" fieldname="t.ROWSTATE" fieldquery="itemStatus" defaultvalue=""></select>
+
+      <label>工程图号</label>
+      <input type="search" is="my-input" fieldname="t.ENG_ITEM_NO" fieldlike="both">
+
+      <label>图号关联</label>
+      <div class="grid-nopadding" style="grid:auto/1fr auto 1fr;">
+        <input type="checkbox" is="my-input" fieldname="" fieldlike="both">
+
+        <label>通用部件</label>
+        <input type="checkbox" is="my-input" fieldname="" fieldlike="both">
+      </div>
+    </div>
+    <div>
+      <img id="img" src="../../img/itemImgs/1/111/1111000001.jpeg">
+      <my-table id="tbItemFile" title="物料图档" rowheight="24">
+      </my-table>
+    </div>
+  </form>
+  <div class="p1">
+    <button id="btnSearch" style="width: 5em;">查询</button>
+    <button id="btnAdd" style="width: 5em;">添加</button>
+    <button id="btnUpdate" style="width: 5em;">修改</button>
+    <button id="btnDel" style="width: 5em;">删除</button>
+    <button id="btnCancel" style="width: 5em;">取消</button>
+    <button id="btnConfirm" style="width: 5em;">确定</button>
+    <button id="btnCopy" style="width: 5em;">复制对象</button>
+    <button id="btnPaste" style="width: 5em;">粘贴对象</button>
+    <input id="cbClear" type="checkbox" name="" checked>
+    <label for="cbClear">添加数据不清空</label>
+    <button id="btnImportFromExcel" style="width: 10em;">EXCEL导入</button>
+  </div>
+
+  <my-table class="p2" id="tbSelectItems" title="物料明细" rowheight="24">
+    <table>
+      <thead>
+        <tr>
+          <td sortby="num">尺寸规格</td>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </my-table>
+
+  <!--module类型的脚本可以调用import引用模块-->
+  <script type="module" src="index.js"></script>
+</body>
+
+</html>

@@ -113,7 +113,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 	ems.tbSelectItems.addDbClickRowEvent((tr) => {
 		const itemno = ems.tbSelectItems.getCellValue("物料编号", tr)
-		const url = new URL("../物料建档/物料建档.html", location.href);
+		const url = new URL("../物料建档/index.html", location.href);
 		url.searchParams.append("itemno", itemno);
 		App.openNewPage("物料建档", url);
 	})

@@ -1,0 +1,80 @@
+@charset "utf-8";
+
+body{
+    display:flex;
+    flex-flow: column nowrap;
+}
+
+.p0{
+    flex-shrink:0; 
+    overflow-x: auto;  
+    display: flex;
+    flex-flow: row nowrap;
+    max-height: 19.5em;
+}
+
+.p1{
+    flex-shrink: 0; 
+    overflow: auto;
+    white-space: nowrap; 
+}
+
+.p2{
+    flex-grow:1;
+    min-height:5em;
+}
+
+.grid label{
+    white-space: nowrap;
+}
+
+.p0>div:nth-of-type(1){
+    overflow: auto;    
+    flex-basis: 70%;
+	
+}
+
+.p0>div:nth-of-type(2){
+    flex-basis: 30%;
+    display: flex;
+    flex-flow: column nowrap;
+    overflow: auto;
+}
+
+#img{
+    object-fit: scale-down;
+    height: 50%;
+}
+#tbItemFile{
+    height: 50%;
+}
+
+@media (max-width : 40em){
+    body{
+        /* background-color: gray; */
+    }
+    .p0{
+        flex-flow: column nowrap;
+        max-height: unset;
+    }
+    .p0>div:nth-of-type(1){
+        overflow: auto;    
+        height: 22em;
+        flex-basis: unset;
+    }
+    .p0>div:nth-of-type(2){
+        flex-flow: row nowrap;
+        height: 10em;
+        flex-basis: unset;
+        overflow: hidden;
+        /* width: 50%; */
+    }
+    #img{
+        height: unset;
+        width: 50%;
+    }
+    #tbItemFile{
+        height: unset;
+        width: 50%;
+    }
+}

@@ -51,6 +51,13 @@ td select{
   align-items: center;
 }
 
+.grid-nopadding{
+  display:grid;
+  grid-gap:3px;
+  justify-items: stretch;
+  align-items: center;
+}
+
 [style*="grid"]>label{
   -ms-grid-row-align: center;
   -ms-text-overflow: ellipsis;
