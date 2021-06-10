@@ -17,22 +17,22 @@ input,select{
 
 
 tr{
-  white-space:nowrap;
-  margin:0px;
-  padding:0px;
+  /* white-space:nowrap; */
+  /* margin:0px; */
+  /* padding:0px; */
   /* display: block; */
 }
 
 td{
-  padding:0px .2em;
+  /* padding:0px .2em; */
 }
 
 td input{
-  width:100%;
+  /* width:100%; */
 }
 
 td select{
-  width:100%;
+  /* width:100%; */
 }
 
 .must-input,label[required]{

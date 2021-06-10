@@ -54,7 +54,6 @@ body {
 ::-webkit-scrollbar {
   width: 1em;
   height: 1em;
-  /* padding: 40px; */
 }
 ::-webkit-scrollbar-button {
   /*   background-color: var(--border-color); */
@@ -132,14 +131,17 @@ input[type="date"] {
 input[type="checkbox"] {
   -webkit-appearance: none;
   border: 1px solid var(--border-color);
-  border-radius: .2em;
+  border-radius: .2em;  
+  position: relative;
 }
 
-input[type="checkbox"]:checked:before {
+input[type="checkbox"]:checked:before {  
   content: "✔";
   color: red;
   vertical-align: bottom;
   font-size: 1.5em;
+  position: absolute;
+  top:-0.55em;
 }
 
 /*去除数字框上下箭头*/
