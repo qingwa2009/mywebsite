@@ -30,6 +30,9 @@ window.addEventListener('DOMContentLoaded', () => {
 		t2: 0,
 		/**@type{MyDbFieldComps.MySelect} */
 		t3: 0,
+		ITEM_NO: 0,
+		RD_NO: 0,
+		ENG_ITEM_NO: 0,
 	};
 	getElementByKeys(ems);
 
@@ -131,7 +134,19 @@ window.addEventListener('DOMContentLoaded', () => {
 
 		ems.btnSearch.disabled = true;
 
-		const criteria = MyDbFieldComps.createCriteria(ems.fields);
+		const ignoreEms = [];
+		if (ems.ITEM_NO.value.trim() || ems.RD_NO.value.trim()) {
+			ignoreEms.push(...[ems.t0, ems.t1, ems.t2, ems.t3,]);
+		} else {
+			if (ems.t3.value) {
+				ignoreEms.push(...[ems.t0, ems.t1, ems.t2]);
+			} else if (ems.t2.value) {
+				ignoreEms.push(...[ems.t0, ems.t1]);
+			} else if (ems.t1.value) {
+				ignoreEms.push(ems.t0);
+			}
+		}
+		const criteria = MyDbFieldComps.createCriteria(ems.fields, ignoreEms);
 
 		if (_orderby) {
 			criteria.addOrderBy(_orderby, _order);

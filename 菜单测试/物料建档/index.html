@@ -21,152 +21,152 @@
 	return false;
 }">
   <form class="p0">
-    <div class="grid" style="grid:repeat(11,auto)/repeat(3,auto 1fr);">
+    <div class="grid">
       <label required>大类编号</label>
-      <select id="t0" is="my-select" fieldname="it.TYPE_NO" fieldlike="right" fieldquery="itemtype"
+      <select id="t0" is="my-select" fieldname="t.TYPE_NO" fieldlike="right" fieldquery="itemtype"
         fieldrowfilter="id=>id.length===1"></select>
 
       <label required>中类编号</label>
-      <select id="t1" is="my-select" fieldname="it.TYPE_NO" fieldlike="right" fieldquery="itemtype"
+      <select id="t1" is="my-select" fieldname="t.TYPE_NO" fieldlike="right" fieldquery="itemtype"
         fieldrowfilter="id=>id.length===2 && id.substr(0,1)==='1'"></select>
 
       <label required>小类编号</label>
-      <select id="t2" is="my-select" fieldname="it.TYPE_NO" fieldlike="right" fieldquery="itemtype"
+      <select id="TYPE_NO" is="my-select" fieldname="t.TYPE_NO" fieldlike="right" fieldquery="itemtype"
         fieldrowfilter="id=>id.length===3 && id.substr(0,2)==='11'"></select>
 
       <label required>小小类编号</label>
-      <select id="t3" is="my-select" fieldname="it.TYPE_NO" fieldquery="itemtype"
+      <select id="TYPE_NO" is="my-select" fieldname="t.TYPE_NO" fieldquery="itemtype"
         fieldrowfilter="id=>id.length===4 && id.substr(0,3)==='111'"></select>
 
       <label>物料编号</label>
-      <input type="search" is="my-input" fieldname="t.ITEM_NO" fieldlike="both" uppercase>
+      <input id="ITEM_NO" type="search" is="my-input" fieldname="t.ITEM_NO" fieldlike="both" uppercase>
 
       <label>材质</label>
-      <input type="search" is="my-input" fieldname="t.STUFF" fieldlike="both">
+      <input id="STUFF" type="search" is="my-input" fieldname="t.STUFF" fieldlike="both">
 
       <label>颜色</label>
-      <input type="search" is="my-input" fieldname="" fieldlike="both">
+      <input id="ITEM_COLOR" type="search" is="my-input" fieldname="t.ITEM_COLOR" fieldlike="both">
 
       <label required>物料名称</label>
-      <input type="search" is="my-input" fieldname="t.ITEM_NAME" fieldlike="both">
+      <input id="ITEM_NAME" type="search" is="my-input" fieldname="t.ITEM_NAME" fieldlike="both">
 
       <label>物料描述</label>
-      <input type="search" is="my-input" fieldname="t.ITEM_REMARK" fieldlike="both">
+      <input id="ITEM_REMARK" type="search" is="my-input" fieldname="t.ITEM_REMARK" fieldlike="both">
 
       <label>尺寸规格</label>
-      <input type="search" is="my-input" fieldname="t.ITEM_SPEC" fieldlike="both">
+      <input id="ITEM_SPEC" type="search" is="my-input" fieldname="t.ITEM_SPEC" fieldlike="both">
 
       <label>备注说明</label>
-      <input type="search" is="my-input" fieldname="t.REMARK_SM" fieldlike="both">
+      <input id="REMARK_SM" type="search" is="my-input" fieldname="t.REMARK_SM" fieldlike="both">
 
 
       <label>计量单位</label>
       <div class="grid-nopadding" style="grid:auto/1fr auto 1fr;">
-        <select style="flex-grow: 1;" is="my-select" fieldname="" fieldquery="itemFormula"></select>
+        <select id="MEASURE_UNIT" is="my-select" fieldname="t.MEASURE_UNIT" fieldquery="itemFormula"></select>
 
         <label>计价单位</label>
-        <select style="flex-grow: 1;" is="my-select" fieldname="" fieldquery="itemFormula"></select>
+        <select id="PRICE_UNIT" is="my-select" fieldname="t.PRICE_UNIT" fieldquery="itemFormula"></select>
       </div>
 
       <label required>计价公式</label>
-      <select is="my-select" fieldname="t.FORMULA" fieldquery="itemFormula"></select>
+      <select id="FORMULA" is="my-select" fieldname="t.FORMULA" fieldquery="itemFormula"></select>
 
       <label required>费用标志</label>
-      <select is="my-select" fieldname="" fieldquery=""></select>
+      <select id="FLAG_FEE" is="my-select" fieldname="t.FLAG_FEE" fieldquery=""></select>
 
       <label required>加工费物料</label>
-      <input type="search" is="my-input" fieldname="" fieldlike="both">
+      <input id="ITEM_NO_FEE" type="search" is="my-input" fieldname="t.ITEM_NO_FEE" fieldlike="both">
 
       <label>表面焊缝长</label>
       <div class="grid-nopadding" style="grid:auto/1fr auto 1fr;">
-        <input type="number" is="my-input" fieldname="" fieldlike="both">
+        <input id="LENGTH_WELD" type="number" is="my-input" fieldname="t.LENGTH_WELD" fieldlike="">
 
         <label>单重kg/m</label>
-        <input type="number" is="my-input" fieldname="" fieldlike="both">
+        <input id="P_SECTIONAL" type="number" is="my-input" fieldname="t.P_SECTIONAL" fieldlike="">
       </div>
 
       <label>长</label>
       <div class="grid-nopadding" style="grid:auto/1fr auto 1fr auto 1fr;">
-        <input type="number" is="my-input" fieldname="" fieldlike="both">
+        <input id="P_LONG" type="number" is="my-input" fieldname="t.P_LONG" fieldlike="">
 
         <label>宽</label>
-        <input type="number" is="my-input" fieldname="" fieldlike="both">
+        <input id="P_WIDTH" type="number" is="my-input" fieldname="t.P_WIDTH" fieldlike="">
 
         <label>高</label>
-        <input type="number" is="my-input" fieldname="" fieldlike="both">
+        <input id="P_HEIGHT" type="number" is="my-input" fieldname="t.P_HEIGHT" fieldlike="">
       </div>
 
       <label>直径</label>
       <div class="grid-nopadding" style="grid:auto/1fr auto 1fr auto 1fr;">
-        <input type="number" is="my-input" fieldname="" fieldlike="both">
+        <input id="P_DIAMETER" type="number" is="my-input" fieldname="t.P_DIAMETER" fieldlike="">
 
         <label>厚度</label>
-        <input type="number" is="my-input" fieldname="" fieldlike="both">
+        <input id="P_THICK" type="number" is="my-input" fieldname="t.P_THICK" fieldlike="">
 
         <label>周长</label>
-        <input type="number" is="my-input" fieldname="" fieldlike="both">
+        <input id="P_DENSITY" type="number" is="my-input" fieldname="t.P_DENSITY" fieldlike="">
       </div>
 
       <label>比重(加工)</label>
       <div class="grid-nopadding" style="grid:auto/1fr auto 1fr;">
-        <input type="number" is="my-input" fieldname="" fieldlike="both">
+        <input id="P_PROPORTION" type="number" is="my-input" fieldname="t.P_PROPORTION" fieldlike="">
 
         <label>表面积</label>
-        <input type="number" is="my-input" fieldname="" fieldlike="both">
+        <input id="SURFACE_AREA" type="number" is="my-input" fieldname="t.SURFACE_AREA" fieldlike="">
       </div>
 
       <label>预计单重</label>
       <div class="grid-nopadding" style="grid:auto/1fr auto 1fr;">
-        <input type="number" is="my-input" fieldname="" fieldlike="both">
+        <input id="WEIGHT_PRE" type="number" is="my-input" fieldname="t.WEIGHT_PRE" fieldlike="">
 
         <label>实际单重</label>
-        <input type="number" is="my-input" fieldname="" fieldlike="both">
+        <input id="WEIGHT_MACHINING" type="number" is="my-input" fieldname="t.WEIGHT_MACHINING" fieldlike="">
       </div>
 
       <label required>模具1</label>
-      <select is="my-select" fieldname="" fieldquery=""></select>
+      <select id="ITEM_MJ1" is="my-select" fieldname="t.ITEM_MJ1" fieldquery=""></select>
 
       <label>椭圆长边</label>
       <div class="grid-nopadding" style="grid:auto/1fr auto 1fr;">
-        <input type="number" is="my-input" fieldname="" fieldlike="both">
+        <input id="P_LONGRADIUS" type="number" is="my-input" fieldname="t.P_LONGRADIUS" fieldlike="">
 
         <label>椭圆短边</label>
-        <input type="number" is="my-input" fieldname="" fieldlike="both">
+        <input id="P_SHORTRADIUS" type="number" is="my-input" fieldname="t.P_SHORTRADIUS" fieldlike="">
       </div>
 
       <label>上传图片</label>
-      <select is="my-select" fieldname="" fieldquery=""></select>
+      <input id="UPLOAD_IMG" type="file" is="my-input" fieldname="t.UPLOAD_IMG" fieldlike="">
 
       <label required>模具2</label>
-      <select is="my-select" fieldname="" fieldquery=""></select>
+      <select id="ITEM_MJ2" is="my-select" fieldname="t.ITEM_MJ2" fieldquery=""></select>
 
       <label>顺德供应商</label>
-      <input type="search" is="my-input" fieldname="" fieldlike="both">
+      <input id="SD_PROVIDER" type="search" is="my-input" fieldname="t.SD_PROVIDER" fieldlike="both">
 
       <label>配套序列号</label>
-      <input type="search" is="my-input" fieldname="" fieldlike="both">
+      <input id="RELEVANCE_NO" type="search" is="my-input" fieldname="t.RELEVANCE_NO" fieldlike="both">
 
       <label>研发编号</label>
-      <input type="search" is="my-input" fieldname="t.RD_NO" fieldlike="both" uppercase>
+      <input id="RD_NO" type="search" is="my-input" fieldname="t.RD_NO" fieldlike="both" uppercase>
 
       <label>开模信息</label>
-      <select is="my-select" fieldname="" fieldquery="" defaultvalue=""></select>
+      <select id="MOLD_INFO" is="my-select" fieldname="t.MOLD_INFO" fieldquery="" defaultvalue=""></select>
 
       <label>物料状态</label>
-      <select is="my-select" fieldname="t.ROWSTATE" fieldquery="itemStatus" defaultvalue=""></select>
+      <select id="ROWSTATE" is="my-select" fieldname="t.ROWSTATE" fieldquery="itemStatus" defaultvalue=""></select>
 
       <label>工程图号</label>
-      <input type="search" is="my-input" fieldname="t.ENG_ITEM_NO" fieldlike="both">
+      <input id="ENG_ITEM_NO" type="search" is="my-input" fieldname="t.ENG_ITEM_NO" fieldlike="both">
 
       <label>图号关联</label>
       <div class="grid-nopadding" style="grid:auto/1fr auto 1fr;">
-        <input type="checkbox" is="my-input" fieldname="" fieldlike="both">
+        <input id="FLAG_RELATE_DOC" type="checkbox" is="my-input" fieldname="t.FLAG_RELATE_DOC" fieldlike="">
 
         <label>通用部件</label>
-        <input type="checkbox" is="my-input" fieldname="" fieldlike="both">
+        <input id="FLAG_COMMON" type="checkbox" is="my-input" fieldname="t.FLAG_COMMON" fieldlike="">
       </div>
     </div>
-    <div>
+    <div class="imgview">
       <img id="img" src="../../img/itemImgs/1/111/1111000001.jpeg">
       <my-table id="tbItemFile" title="物料图档" rowheight="24">
       </my-table>

@@ -24,17 +24,17 @@ body{
     min-height:5em;
 }
 
+.grid{
+    grid:repeat(11,auto)/repeat(3,auto 1fr);
+    overflow: auto;    
+    flex-basis: 70%;
+}
+
 .grid label{
     white-space: nowrap;
 }
 
-.p0>div:nth-of-type(1){
-    overflow: auto;    
-    flex-basis: 70%;
-	
-}
-
-.p0>div:nth-of-type(2){
+.imgview{
     flex-basis: 30%;
     display: flex;
     flex-flow: column nowrap;
@@ -50,19 +50,16 @@ body{
 }
 
 @media (max-width : 40em){
-    body{
-        /* background-color: gray; */
-    }
     .p0{
         flex-flow: column nowrap;
         max-height: unset;
     }
-    .p0>div:nth-of-type(1){
+    .grid{
         overflow: auto;    
         height: 22em;
         flex-basis: unset;
     }
-    .p0>div:nth-of-type(2){
+    .imgview{
         flex-flow: row nowrap;
         height: 10em;
         flex-basis: unset;
@@ -71,10 +68,10 @@ body{
     }
     #img{
         height: unset;
-        width: 50%;
+        width: 35%;
     }
     #tbItemFile{
         height: unset;
-        width: 50%;
+        width: 75%;
     }
 }

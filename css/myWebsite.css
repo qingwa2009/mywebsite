@@ -78,6 +78,8 @@ hr{
   color:orange;
   font-size: 1.5em;
   position: absolute;
+  top:0;
+  left: 0;
   line-height: 1;
 }
 #switchColor:checked:before{
@@ -87,5 +89,5 @@ hr{
 #switchColor:hover:before{
   box-shadow: 0px 0px 8px 8px lightgoldenrodyellow;
   border-radius: 1em;
-  background-color: lightgoldenrodyellow;
+  background-color: white;
 }

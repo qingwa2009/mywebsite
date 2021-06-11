@@ -3,15 +3,18 @@ import MyDbCriteria from "./myDbCriteria.js";
 
 export default class MyDbFieldComps {
     /**
-     * 枚举paraentEm所有子控件，创建MyDbCriteria
+     * 枚举paraentEm所有继承MyDbFieldComps的子控件，创建MyDbCriteria
      * @param {HTMLElement} parentEm      
+     * @param {HTMLElement[]} ignoreEms 忽略部分元素
      * @returns {MyDbCriteria}
      */
-    static createCriteria(parentEm) {
+    static createCriteria(parentEm, ignoreEms) {
         const criteria = new MyDbCriteria();
 
         for (const em of enumAllChildren(parentEm)) {
             if (em instanceof MyDbFieldComps.MyInput || em instanceof MyDbFieldComps.MySelect) {
+                if (ignoreEms && ignoreEms.includes(em)) continue;
+
                 const c = em.getCriteriaWhere();
                 if (c) {
                     if (c instanceof Array) {
@@ -27,6 +30,8 @@ export default class MyDbFieldComps {
 
         return criteria;
     }
+
+
 }
 
 MyDbFieldComps.MyInput = class extends HTMLInputElement {
