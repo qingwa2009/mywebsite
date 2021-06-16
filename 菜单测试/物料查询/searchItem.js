@@ -12,14 +12,14 @@ window.addEventListener('DOMContentLoaded', () => {
 	const origin = top.location.origin;				// http://127.0.0.1
 	const host = top.location.host;					// 127.0.0.1
 	const hostp = top.location.origin.substr(4);	// ://127.0.0.1或者s://127.0.0.1
-	const cmdSelectItems = "/myplm/selectItems?offset=";
+	const cmdSearchItems = "/myplm/item/search?offset=";
 
 
 	const ems = {
 		/**@type{HTMLElement} */
 		btnSearch: 0,
 		/**@type{MyTable} */
-		tbSelectItems: 0,
+		tbSearchItems: 0,
 		/**@type{HTMLElement} */
 		fields: 0,
 		/**@type{MyDbFieldComps.MySelect} */
@@ -77,7 +77,7 @@ window.addEventListener('DOMContentLoaded', () => {
 		ev.preventDefault();
 		if (_isSearching) return;
 
-		ems.tbSelectItems.clearTable();
+		ems.tbSearchItems.clearTable();
 
 		_offset = 0;
 		_orderby = null;
@@ -86,10 +86,10 @@ window.addEventListener('DOMContentLoaded', () => {
 		search(true);
 	});
 
-	ems.tbSelectItems.setSortFilter((td) => {
+	ems.tbSearchItems.setSortFilter((td) => {
 		if (_isSearching) return null;
 
-		if (_EOF) return ems.tbSelectItems.getDefaultSortFunc(td);
+		if (_EOF) return ems.tbSearchItems.getDefaultSortFunc(td);
 
 		if (_orderby === td.textContent) {
 			_order = _order === "ASC" ? "DESC" : "ASC";
@@ -104,18 +104,18 @@ window.addEventListener('DOMContentLoaded', () => {
 		return null;
 	})
 
-	ems.tbSelectItems.addScrollBottomEvent(() => {
+	ems.tbSearchItems.addScrollBottomEvent(() => {
 		if (_isSearching) return;
 		if (_EOF) return;
 		search(false);
 	});
 
-	ems.tbSelectItems.addSelectionChangedEvent((rs) => {
+	ems.tbSearchItems.addSelectionChangedEvent((rs) => {
 		App.showExecuteInfo(`选中${rs.length}条记录`, undefined, window);
 	});
 
-	ems.tbSelectItems.addDbClickRowEvent((tr) => {
-		const itemno = ems.tbSelectItems.getCellValue("物料编号", tr)
+	ems.tbSearchItems.addDbClickRowEvent((tr) => {
+		const itemno = ems.tbSearchItems.getCellValue("物料编号", tr)
 		const url = new URL("../物料建档/index.html", location.href);
 		url.searchParams.append("itemno", itemno);
 		App.openNewPage("物料建档", url);
@@ -152,16 +152,16 @@ window.addEventListener('DOMContentLoaded', () => {
 			criteria.addOrderBy(_orderby, _order);
 		}
 
-		if (clear) ems.tbSelectItems.clearTable();
+		if (clear) ems.tbSearchItems.clearTable();
 
 		const st = new Date().getTime();
-		App.myHttpRequest("post", cmdSelectItems + _offset, criteria.toString()).then((/**@type{XMLHttpRequest} */req) => {
+		App.myHttpRequest("post", cmdSearchItems + _offset, criteria.toString()).then((/**@type{XMLHttpRequest} */req) => {
 			/**@type{MyTableData} */
 			const mtd = JSON.parse(req.responseText);
 			MyTableData.decorate(mtd);
 			if (mtd.error) throw new Error(mtd.error);
 
-			ems.tbSelectItems.setTableData(mtd, clear, eachAddRow);
+			ems.tbSearchItems.setTableData(mtd, clear, eachAddRow);
 			_EOF = mtd.EOF;
 			_offset += mtd.data.length;
 

@@ -750,6 +750,19 @@ export default class MyTable extends HTMLElement {
     }
 
     /**     
+     * 选中指定行，并触发selectionChanged事件
+     * @param {HTMLTableRowElement} tr 
+     * @param {boolean} clearSelect 是否清空原有的选中项
+     */
+    performSelectRow(tr, clearSelect) {
+        if (clearSelect) {
+            this.clearSelection();
+        }
+        this.addSelection(tr);
+        this._raiseSelectionChangedEvent(this.getSelectedRows());
+    }
+
+    /**     
      * @param {HTMLTableRowElement} tr 
      */
     getRowIndexInTbody(tr) {
@@ -1096,7 +1109,7 @@ export default class MyTable extends HTMLElement {
             }
             arr[i] = a;
         }
-        return parseFloat(round(sum(arr), 4));
+        return round(sum(arr), 4);
     }
 
     /*--------------------------加载数据-----------------------------------------------*/

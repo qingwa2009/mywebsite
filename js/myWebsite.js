@@ -516,7 +516,7 @@ defineProperty(window, 'App', (() => {
 	 * @throws {Error}	  
 	 */
 	function getItemImgFromServer(name) {
-		return myHttpRequest("get", `/myplm/itemimg?img=${name}`, undefined, false, "blob").then(xhr => {
+		return myHttpRequest("get", `/myplm/item/img?img=${name}`, undefined, false, "blob").then(xhr => {
 			return xhr.response;
 		}, error => {
 			if (error.reqStatusCode === 404) return ""

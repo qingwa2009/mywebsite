@@ -3,7 +3,8 @@ import MyDbCriteria from "./myDbCriteria.js";
 
 export default class MyDbFieldComps {
     /**
-     * 枚举paraentEm所有继承MyDbFieldComps的子控件，创建MyDbCriteria
+     * 枚举paraentEm所有继承MyDbFieldComps的子控件，创建MyDbCriteria，\
+     * 只有写了fieldname属性的元素会取值
      * @param {HTMLElement} parentEm      
      * @param {HTMLElement[]} ignoreEms 忽略部分元素
      * @returns {MyDbCriteria}
@@ -31,7 +32,44 @@ export default class MyDbFieldComps {
         return criteria;
     }
 
+    /**
+     * 枚举paraentEm所有继承MyDbFieldComps的子控件获取值，\
+     * 只有写了id的元素会取值
+     * @param {HTMLElement} parentEm      
+     * @param {HTMLElement[]} ignoreEms 忽略部分元素
+     * @returns {Object<string, number|string|boolean>} 
+     * 返回{id: value,...}
+     */
+    static createJSON(parentEm, ignoreEms) {
+        const obj = {};
 
+        for (const em of enumAllChildren(parentEm)) {
+            if (em instanceof MyDbFieldComps.MyInput || em instanceof MyDbFieldComps.MySelect) {
+                if (ignoreEms && ignoreEms.includes(em)) continue;
+                const id = em.id;
+                if (!id) continue;
+                const v = em.getJSONValue();
+                if (v === null) continue;
+                obj[id] = v;
+            }
+        }
+
+        return obj;
+    }
+
+    /**
+     * 枚举paraentEm所有继承MyDbFieldComps的子控件设置disable状态
+     * @param {HTMLElement} parentEm     
+     * @param {boolean} disable 
+     */
+    static setAllDisable(parentEm, disable) {
+        parentEm.setAttribute("disabled", disable);
+        for (const em of enumAllChildren(parentEm)) {
+            if (em instanceof MyDbFieldComps.MyInput || em instanceof MyDbFieldComps.MySelect) {
+                em.setAttribute("disabled", disable);
+            }
+        }
+    }
 }
 
 MyDbFieldComps.MyInput = class extends HTMLInputElement {
@@ -85,7 +123,8 @@ MyDbFieldComps.MyInput = class extends HTMLInputElement {
             case "date":
                 return this._getDateCriteria();
             default:
-                break;
+                console.warn(`this type of input '${this.type}' can not getCriteriaWhere!`);
+                return null;
         }
     }
 
@@ -177,11 +216,72 @@ MyDbFieldComps.MyInput = class extends HTMLInputElement {
         }
     }
 
+    /**返回元素的值，或者null */
+    getJSONValue() {
+        switch (this.type) {
+            case "text":
+            case "search":
+            case "tel":
+            case "url":
+            case "email":
+                return this._getJSONText();
+            case "number":
+                return this._getJSONNumber();
+            case "checkbox":
+                return this._getJSONCheckbox();
+            case "date":
+                return this._getJSONDate();
+            default:
+                console.warn(`this type of input '${this.type}' can not getJSONValue!`);
+                return null;
+        }
+    }
+
+    _getJSONNumber() {
+        if (this.value === "") return null;
+        return Number(this.value);
+    }
+
+    _getJSONText() {
+        const value = this.value.trim();
+        if (!value) return null;
+        return value;
+    }
+
+    _getJSONDate() {
+        if (!this.value) return null;
+        return Math.round(new Date(this.value).getTime() / 1000);
+    }
+
+    _getJSONCheckbox() {
+        if (!this.checked) return null;
+        return this.value;
+    }
+
+    setValue(v) {
+        switch (this.type) {
+            case "text":
+            case "search":
+            case "tel":
+            case "url":
+            case "email":
+            case "number":
+            case "date":
+                this.value = v;
+                return;
+            case "checkbox":
+                this.checked = this.value == v;
+                return;
+            default:
+                throw new Error(`this type of input '${this.type}' can not setValue!`);
+        }
+    }
+
 }
 customElements.define(MyDbFieldComps.MyInput.TAG, MyDbFieldComps.MyInput, { extends: "input" });
 
 
-const URL_GET_LIST_ITEMS = "/myplm/getlistitems";
+const URL_GET_LIST_ITEMS = "/myplm/getlist";
 MyDbFieldComps.MySelect = class extends HTMLSelectElement {
     static TAG = "my-select";
     /**用于查询时的字段名 */
@@ -220,13 +320,16 @@ MyDbFieldComps.MySelect = class extends HTMLSelectElement {
         this.reloadList();
     }
 
+    /**
+     * @returns {Promise<void>}
+     */
     reloadList() {
         if (!this.fieldQuery) return;
         const url = new URL(URL_GET_LIST_ITEMS, location);
         url.searchParams.append(this.fieldQuery, "");
 
         if (top.App) {
-            top.App.getSelectList(url.toString()).then(mtd => {
+            return top.App.getSelectList(url.toString()).then(mtd => {
                 const data = mtd.data;
                 const n = data.length;
                 this.innerHTML = "";
@@ -244,7 +347,9 @@ MyDbFieldComps.MySelect = class extends HTMLSelectElement {
                 this.append(MyDbFieldComps.MySelect._tempDoc);
             }, error => { });
         } else {
-            console.error("auto load select list failed: top.App is undefined!");
+            const msg = "auto load select list failed: top.App is undefined!";
+            console.error(msg);
+            return Promise.reject(new Error(msg));
         }
     }
 
@@ -277,6 +382,15 @@ MyDbFieldComps.MySelect = class extends HTMLSelectElement {
         }
 
         return where;
+    }
+
+    getJSONValue() {
+        if (this.value === "") return null;
+        return this.value;
+    }
+
+    setValue(v) {
+        this.value = v;
     }
 }
 customElements.define(MyDbFieldComps.MySelect.TAG, MyDbFieldComps.MySelect, { extends: "select" });

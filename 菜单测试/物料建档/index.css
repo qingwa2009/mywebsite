@@ -34,7 +34,7 @@ body{
     white-space: nowrap;
 }
 
-.imgview{
+.docview{
     flex-basis: 30%;
     display: flex;
     flex-flow: column nowrap;
@@ -43,9 +43,21 @@ body{
 
 #img{
     object-fit: scale-down;
-    height: 50%;
+    height: 100%;
+    width:100%;
+    position: absolute;
 }
-#tbItemFile{
+
+#img[src=""]{
+    display: none;
+}
+
+.imgview{
+    height: 50%;
+    position: relative;
+}
+
+#tbItemDoc{
     height: 50%;
 }
 
@@ -59,18 +71,18 @@ body{
         height: 22em;
         flex-basis: unset;
     }
-    .imgview{
+    .docview{
         flex-flow: row nowrap;
         height: 10em;
         flex-basis: unset;
         overflow: hidden;
         /* width: 50%; */
     }
-    #img{
+    .imgview{
         height: unset;
         width: 35%;
     }
-    #tbItemFile{
+    #tbItemDoc{
         height: unset;
         width: 75%;
     }

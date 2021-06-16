@@ -267,7 +267,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 	function playSwapAnim(b0, b1) {
 		swapping = true;
-		const t = Math.max(Math.random(), 0.1).toFixed(2) + "s";//".15s";
+		const t = Math.round(Math.max(Math.random(), 0.1) * 100) / 100 + "s";//".15s";
 		const u_d0 = Math.random() > 0.5 ? "down" : "up";
 		const u_d1 = u_d0 === "down" ? "up" : "down";
 		const b0c = b0.firstChild;

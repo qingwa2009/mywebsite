@@ -98,8 +98,7 @@ window.addEventListener('DOMContentLoaded', () => {
 			worker = new Worker("./uploadFileWorker.js");
 			worker.onmessage = (e) => {
 				console.log(e.data);
-				pg.value = e.data.value.toFixed(0);
-				// 				pg.dataset.percent = pg.value.toFixed(0) + "%";				
+				pg.value = Math.round(e.data.value);
 				if (e.data.error) {
 					alert(e.data.error);
 				} else if (e.data.EOF) {

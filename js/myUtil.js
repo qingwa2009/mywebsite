@@ -61,11 +61,17 @@ export function getTopViewPortOffset(win, topWin) {
 }
 
 /**四舍五入 */
+/**
+ * @param {number} s 
+ * @param {number} i 
+ */
 export function round(s, i) {
-    var s = "" + s;
-    var re = new RegExp("^(\\d*\\.\\d{" + i + "})(\\d)");
-    var ns = s.replace(re, (m, p0, p1, o, ss) => p1 >= 5 ? p0 + 8 : p0 + 2);
-    return parseFloat(ns).toFixed(i);
+    // var s = "" + s;
+    // var re = new RegExp("^(\\d*\\.\\d{" + i + "})(\\d)");
+    // var ns = s.replace(re, (m, p0, p1, o, ss) => p1 >= 5 ? p0 + 8 : p0 + 2);
+    // return parseFloat(ns).toFixed(i);
+    const n = Math.pow(10, i);
+    return Math.round(s * n) / n;
 }
 
 /**
@@ -104,3 +110,4 @@ export function* enumAllChildren(parentEm) {
         em = em.nextElementSibling;
     }
 }
+
