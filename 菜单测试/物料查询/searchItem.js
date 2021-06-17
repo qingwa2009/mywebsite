@@ -155,10 +155,8 @@ window.addEventListener('DOMContentLoaded', () => {
 		if (clear) ems.tbSearchItems.clearTable();
 
 		const st = new Date().getTime();
-		App.myHttpRequest("post", cmdSearchItems + _offset, criteria.toString()).then((/**@type{XMLHttpRequest} */req) => {
-			/**@type{MyTableData} */
-			const mtd = JSON.parse(req.responseText);
-			MyTableData.decorate(mtd);
+		App.myHttpRequest("post", cmdSearchItems + _offset, criteria.toString(), true, "json").then((/**@type{XMLHttpRequest} */req) => {
+			const mtd = MyTableData.decorate(req.response);
 			if (mtd.error) throw new Error(mtd.error);
 
 			ems.tbSearchItems.setTableData(mtd, clear, eachAddRow);

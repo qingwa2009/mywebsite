@@ -2,8 +2,9 @@
 import MyDbFieldComps from "../../js/myDbFieldComps.js";
 import { enumAllChildren } from "../../js/myUtil.js";
 // import MyMemu from "../../js/components/myMenu/myMenu.js";
-import MyTable from "../../js/components/myTable/myTable.js"
-import MyTableData from "../../js/myTableData.js"
+import MyTable from "../../js/components/myTable/myTable.js";
+import MyTableData from "../../js/myTableData.js";
+import MyInputFile from "../../js/components/myInputFile/myInputFile.js";
 import { getElementByKeys } from "../../js/myUtil.js";
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -25,6 +26,10 @@ window.addEventListener('DOMContentLoaded', () => {
 		delete: 5,
 	}
 	let currentState = undefined;
+	/**@type{Object<string, any>} */
+	let currentItem = null;
+	/**@type{HTMLTableRowElement} */
+	let currentRow = null;
 
 	const ems = {
 		/**@type{MyDbFieldComps.MySelect} */
@@ -48,12 +53,18 @@ window.addEventListener('DOMContentLoaded', () => {
 		img: 0,
 		/**@type{HTMLDivElement} */
 		imgView: 0,
+		/**@type{MyInputFile} */
+		imgFile: 0,
 		/**@type{HTMLButtonElement} */
 		btnSearch: 0, btnAdd: 0, btnUpdate: 0, btnDel: 0,
 		btnCancel: 0, btnConfirm: 0,
 		btnCopy: 0, btnPaste: 0, btnImportFromExcel: 0,
 	};
 	getElementByKeys(ems);
+
+	ems.imgFile.addOnChangeListener(fs => {
+		ems.UPLOAD_IMG.value = fs.length > 0 ? fs[0].name : "";
+	});
 
 	ems.t0.addEventListener("change", () => {
 		const value = ems.t0.value;
@@ -86,13 +97,16 @@ window.addEventListener('DOMContentLoaded', () => {
 	});
 
 	ems.tbSearchItems.addSelectionChangedEvent(rs => {
-		const tr = rs[rs.length - 1];
-		const itemno = ems.tbSearchItems.getCellValue("物料编号", tr);
-		loadItem(itemno);
-	})
-
-	ems.btnSearch.addEventListener("click", () => {
-		setStateSearch();
+		if (rs.length > 0) {
+			const tr = rs[rs.length - 1];
+			const itemno = ems.tbSearchItems.getCellValue("物料编号", tr);
+			currentRow = tr;
+			loadItem(itemno);
+		} else {
+			currentRow = null;
+			currentItem = null;
+			setDisabled(ems.btnUpdate, ems.btnDel);
+		}
 	});
 
 	ems.btnCancel.addEventListener("click", () => {
@@ -103,88 +117,52 @@ window.addEventListener('DOMContentLoaded', () => {
 		}
 	});
 
-	ems.btnAdd.addEventListener("click", () => {
-		alert("还没写！");
-	});
-
-	ems.btnUpdate.addEventListener("click", () => {
-		alert("还没写！");
-	});
-
-	ems.btnDel.addEventListener("click", () => {
-		alert("还没写！");
-	});
-
 	ems.btnConfirm.addEventListener("click", () => {
 		switch (currentState) {
 			case states.search:
 				searchItem();
+				break;
+			case states.update:
+				updateItem();
 				break;
 			default:
 				break;
 		}
 	});
 
-	function loadItem(itemno) {
-		setStateFetching();
 
-		const url = new URL(cmdSelectItem, location);
-		url.searchParams.append("itemno", itemno);
-		App.myHttpRequest("get", url, undefined, true, "json").then(req => {
-			const json = req.response;
-			console.log(json);
+	/**-----------search-------------- */
+	ems.btnSearch.addEventListener("click", () => {
+		setStateSearch();
+	});
 
-			const evchange = new Event("change");
-			ems.t0.value = json.TYPE_NO.substr(0, 1);
-			ems.t1._value = json.TYPE_NO.substr(0, 2);
-			ems.t2._value = json.TYPE_NO.substr(0, 3);
-			ems.TYPE_NO._value = json.TYPE_NO;
+	function setStateSearch() {
+		currentState = states.search;
 
-			ems.t0.dispatchEvent(evchange);
-			ems.t1.dispatchEvent(evchange);
-			ems.t2.dispatchEvent(evchange);
+		setFormDisabled(false);
+		setDisabled(ems.btnSearch, ems.btnAdd, ems.btnUpdate, ems.btnDel);
+		setEnabled(ems.btnCancel, ems.btnConfirm);
+		setDisabled(ems.btnCopy, ems.btnPaste, ems.btnImportFromExcel);
 
-			const ks = Object.keys(json);
-			for (let i = 0; i < ks.length; i++) {
-				const k = ks[i];
-				const em = document.forms[0][k];
-				if (!em) continue;
-				try {
-					em.setValue(json[k]);
-				} catch (error) {
-					console.error(error);
-				}
+		const ignoreEms = [ems.t0, ems.t1, ems.t2, ems.TYPE_NO];
+		for (const em of enumAllChildren(document.forms[0])) {
+			if ((em instanceof HTMLInputElement || em instanceof HTMLSelectElement) && (!ignoreEms.includes(em))) {
+				if (em.setValue) em.setValue("");
 			}
-
-			loadImg(json.UPLOAD_IMG, new Date(json.UPDATE_TIME + "Z"));
-		}).finally(() => {
-			setStateNormal();
-		});
-	}
-
-	function loadImg(imgName, lastUpdateTime) {
-		ems.img.src = "";
-
-		let s = imgName;
-		if (s) s = s.trim().toUpperCase();
-		if (s) {
-			ems.imgView.classList.add("loading");
-			App.getItemImg(s, lastUpdateTime).then((blobUrl) => {
-				ems.imgView.classList.remove("loading");
-				if (blobUrl) ems.img.src = blobUrl;
-			});
 		}
 	}
 
 	let _isSearching = false;
 	function searchItem() {
-		if (_isSearching) console.error("is searching when request to search!");
+		if (_isSearching) return;
 		_isSearching = true;
 
 		setStateFetching();
 		let clear = true;
 		let _offset = 0;
 		let _EOF = true;
+		currentItem = null;
+		currentRow = null;
 
 		const ignoreEms = [];
 		if (ems.ITEM_NO.value.trim() || ems.RD_NO.value.trim()) {
@@ -203,10 +181,9 @@ window.addEventListener('DOMContentLoaded', () => {
 		ems.tbSearchItems.clearTable();
 
 		const st = new Date().getTime();
-		return App.myHttpRequest("post", cmdSearchItems + _offset, criteria.toString()).then((/**@type{XMLHttpRequest} */req) => {
-			/**@type{MyTableData} */
-			const mtd = JSON.parse(req.responseText);
-			MyTableData.decorate(mtd);
+		return App.myHttpRequest("post", cmdSearchItems + _offset, criteria.toString(), true, "json").then((/**@type{XMLHttpRequest} */req) => {
+
+			const mtd = MyTableData.decorate(req.response);
 			if (mtd.error) throw new Error(mtd.error);
 
 			ems.tbSearchItems.setTableData(mtd, clear, eachAddRow);
@@ -222,7 +199,6 @@ window.addEventListener('DOMContentLoaded', () => {
 			_isSearching = false;
 		});
 	}
-
 	const colors = {
 		"有效": "lightgreen",
 		"失效": "pink",
@@ -248,6 +224,110 @@ window.addEventListener('DOMContentLoaded', () => {
 	}
 
 
+	/**-----------insert-------------- */
+	ems.btnAdd.addEventListener("click", () => {
+		alert("还没写！");
+	});
+
+	/**-----------update-------------- */
+	ems.btnUpdate.addEventListener("click", () => {
+		if (!currentItem || !currentRow) return;
+		if (ems.tbSearchItems.getSelectedRows().length < 1) return;
+
+		setStateUpdate();
+	});
+
+	function setStateUpdate() {
+		currentState = states.update;
+
+		setFormDisabled(false);
+		setDisabled(ems.t0, ems.t1, ems.t2, ems.TYPE_NO, ems.ITEM_NO);
+		setDisabled(ems.btnSearch, ems.btnAdd, ems.btnUpdate, ems.btnDel, ems.tbSearchItems);
+		setEnabled(ems.btnCancel, ems.btnConfirm);
+		setDisabled(ems.btnCopy, ems.btnPaste, ems.btnImportFromExcel);
+	}
+
+	function updateItem() {
+		const obj = MyDbFieldComps.createJSON(document.forms[0]);
+		if (obj.ITEM_NO !== currentItem.ITEM_NO || obj.TYPE_NO !== currentItem.TYPE_NO) {
+			alert("不能修改物料编号！");
+			return;
+		}
+		delete obj.t0;
+		delete obj.t1;
+		delete obj.t2;
+
+		console.log(obj);
+		setStateNormal();
+	}
+
+
+
+	/**-----------delete-------------- */
+	ems.btnDel.addEventListener("click", () => {
+		alert("还没写！");
+	});
+
+
+
+
+
+
+	function loadItem(itemno) {
+		setStateFetching();
+
+		const url = new URL(cmdSelectItem, location);
+		url.searchParams.append("itemno", itemno);
+		App.myHttpRequest("get", url, undefined, true, "json").then(req => {
+			currentItem = req.response;
+
+			const evchange = new Event("change");
+			ems.t0.value = currentItem.TYPE_NO.substr(0, 1);
+			ems.t1._value = currentItem.TYPE_NO.substr(0, 2);
+			ems.t2._value = currentItem.TYPE_NO.substr(0, 3);
+			ems.TYPE_NO._value = currentItem.TYPE_NO;
+
+			ems.t0.dispatchEvent(evchange);
+			ems.t1.dispatchEvent(evchange);
+			ems.t2.dispatchEvent(evchange);
+
+			const ks = Object.keys(currentItem);
+			for (let i = 0; i < ks.length; i++) {
+				const k = ks[i];
+				const em = document.forms[0][k];
+				if (!em) continue;
+				try {
+					em.setValue(currentItem[k]);
+				} catch (error) {
+					console.error(error);
+				}
+			}
+
+			loadImg(currentItem.UPLOAD_IMG, new Date(currentItem.UPDATE_TIME + "Z"));
+		}).finally(() => {
+			setStateNormal();
+		});
+	}
+
+	function loadImg(imgName, lastUpdateTime) {
+		ems.img.src = "";
+
+		let s = imgName;
+		if (s) s = s.trim().toUpperCase();
+		if (s) {
+			ems.imgView.classList.add("loading");
+			App.getItemImg(s, lastUpdateTime).then((blobUrl) => {
+				ems.imgView.classList.remove("loading");
+				if (blobUrl) ems.img.src = blobUrl;
+			});
+		}
+	}
+
+
+
+
+
+
 
 	function setFormDisabled(b) {
 		if (b)
@@ -258,17 +338,18 @@ window.addEventListener('DOMContentLoaded', () => {
 			for (const em of enumAllChildren(document.forms[0])) {
 				em.disabled = false;
 			}
+		ems.UPLOAD_IMG.disabled = true;
 	}
 
 	function setEnabled(...ems) {
 		for (const em of ems) {
-			em.disabled = false;
+			em.removeAttribute("disabled");
 		}
 	}
 
 	function setDisabled(...ems) {
 		for (const em of ems) {
-			em.disabled = true;
+			em.setAttribute("disabled", true);
 		}
 	}
 
@@ -276,26 +357,20 @@ window.addEventListener('DOMContentLoaded', () => {
 		currentState = states.normal;
 
 		setFormDisabled(true);
-		setEnabled(ems.btnSearch, ems.btnAdd, ems.btnUpdate, ems.btnDel);
+
+		setEnabled(ems.btnSearch, ems.btnAdd, ems.tbSearchItems);
+		if (ems.tbSearchItems.getSelectedRows().length > 0) {
+			setEnabled(ems.btnUpdate, ems.btnDel);
+		} else {
+			setDisabled(ems.btnUpdate, ems.btnDel);
+		}
 		setDisabled(ems.btnCancel, ems.btnConfirm);
 		setDisabled(ems.btnCopy, ems.btnPaste, ems.btnImportFromExcel);
 	}
 
-	function setStateSearch() {
-		currentState = states.search;
 
-		setFormDisabled(false);
-		setDisabled(ems.btnSearch, ems.btnAdd, ems.btnUpdate, ems.btnDel);
-		setEnabled(ems.btnCancel, ems.btnConfirm);
-		setDisabled(ems.btnCopy, ems.btnPaste, ems.btnImportFromExcel);
 
-		const ignoreEms = [ems.t0, ems.t1, ems.t2, ems.TYPE_NO];
-		for (const em of enumAllChildren(document.forms[0])) {
-			if ((em instanceof HTMLInputElement || em instanceof HTMLSelectElement) && (!ignoreEms.includes(em))) {
-				if (em.setValue) em.setValue("");
-			}
-		}
-	}
+
 
 	function setStateFetching() {
 		currentState = states.fetching;
@@ -312,7 +387,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
 	let itemno = new URLSearchParams(location.search).get("itemno");
 	if (itemno) {
-		// loadItem(itemno);
 		ems.ITEM_NO.value = itemno;
 		searchItem().then(() => {
 			const n = ems.tbSearchItems.rows.length;

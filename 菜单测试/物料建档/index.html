@@ -134,7 +134,11 @@
       </div>
 
       <label>上传图片</label>
-      <input id="UPLOAD_IMG" type="file" accept="image/*" is="" fieldname="" fieldlike="">
+      <div class="grid-nopadding" style="grid:auto/1fr 2em;">
+        <input id="UPLOAD_IMG" type="search" is="my-input" fieldname="" fieldlike="both">
+
+        <my-input-file id="imgFile" accept="image/*"></my-input-file>
+      </div>
 
       <label required>模具2</label>
       <select id="ITEM_MJ2" is="my-select" fieldname="" fieldquery="itemmold"></select>

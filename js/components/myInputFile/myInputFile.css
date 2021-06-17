@@ -1,0 +1,29 @@
+@charset "utf-8";
+
+#uploadicon+label{
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid var(--border-color);
+}
+
+#uploadicon+label::before{
+    content: "\1F4C1";
+}
+
+#uploadicon:enabled+label:active::before, #uploadicon:enabled+label:hover::before{
+    content: "\1F4C2";
+}
+
+#uploadicon:enabled+label:active::before{
+    color: var(--selected-color);
+}
+
+#uploadicon:disabled+label{
+    color: var(--font-color-disabled);;
+    background-color: var(--back-color-disabled);;
+}
+
+#uploadicon{
+    display: none;
+}

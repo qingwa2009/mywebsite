@@ -13,6 +13,7 @@ export default class MyTableData {
         return JSON.stringify(this);
     }
 
+    /**@returns{MyTableData} */
     static decorate(mtd) {
         if (!mtd.hasOwnProperty("ID")) mtd.ID = "";
         if (!mtd.hasOwnProperty("EOF")) mtd.EOF = true;
@@ -20,6 +21,7 @@ export default class MyTableData {
         if (!mtd.hasOwnProperty("data")) throw new TypeError("Its not MyTableData!");
 
         Object.setPrototypeOf(mtd, MyTableData.prototype);
+        return mtd;
     }
 
     createTitleIndex() {

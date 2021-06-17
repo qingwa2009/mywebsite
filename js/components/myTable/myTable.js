@@ -762,10 +762,12 @@ export default class MyTable extends HTMLElement {
         this._raiseSelectionChangedEvent(this.getSelectedRows());
     }
 
+
+
     /**     
      * @param {HTMLTableRowElement} tr 
      */
-    getRowIndexInTbody(tr) {
+    getRowIndex(tr) {
         return this.rows.indexOf(tr);
     }
 
@@ -779,8 +781,8 @@ export default class MyTable extends HTMLElement {
             this.addSelection(trFrom);
         }
 
-        let i = this.getRowIndexInTbody(trFrom);
-        let j = this.getRowIndexInTbody(trTo);
+        let i = this.getRowIndex(trFrom);
+        let j = this.getRowIndex(trTo);
 
         const k = i < j ? 1 : -1;
         const trs = this.rows;
@@ -1295,6 +1297,35 @@ export default class MyTable extends HTMLElement {
 
         this._updatePlaceholderSize();
     }
+
+    /**
+     * @param {HTMLTableRowElement[]} rs
+     * @param {MyTableData} mtd 
+     */
+    updateRows(rs, mtd) {
+
+    }
+
+    /**     
+     * 移除行，如果不存在，返回false，否则返回true；\
+     * 如果行被选中，则会触发选中改变事件
+     * @param {HTMLTableRowElement} tr 
+     * @returns {boolean}
+     */
+    removeRow(tr) {
+        const ind = this.getRowIndex(tr);
+        if (ind < 0) return false;
+        this.rows.splice(ind, 1);
+
+        this._updatePlaceholderSize();
+        this._updateRowsPosition();
+        this._updateRowsVisibility();
+
+        if (this.isRowSelected(tr)) {
+            this._raiseSelectionChangedEvent(this.getSelectedRows());
+        }
+    }
+
 }
 
 customElements.define(MyTable.TAG, MyTable);
