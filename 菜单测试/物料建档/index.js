@@ -156,7 +156,7 @@ window.addEventListener('DOMContentLoaded', () => {
 				}
 			}
 
-			loadImg(json.UPLOAD_IMG, json.UPDATE_TIME);
+			loadImg(json.UPLOAD_IMG, new Date(json.UPDATE_TIME + "Z"));
 		}).finally(() => {
 			setStateNormal();
 		});

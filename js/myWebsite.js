@@ -435,12 +435,12 @@ defineProperty(window, 'App', (() => {
 	/**
 	 * @param {string} name
 	 * @param {Blob|""} blob 
-	 * @param {Date} lastUpdateTime 
+	 * @param {Date} lastFetchTime 
 	 */
-	function putItemImgIntoDb(name, blob, lastUpdateTime) {
+	function putItemImgIntoDb(name, blob, lastFetchTime) {
 		const tran = myplmDb.transaction(DB_STORE_ITEMIMGS, "readwrite");
 		const store = tran.objectStore(DB_STORE_ITEMIMGS);
-		const req = store.put([blob, lastUpdateTime], name);
+		const req = store.put([blob, lastFetchTime], name);
 
 		req.onsuccess = (e) => { };
 		req.onerror = e => {
@@ -471,25 +471,35 @@ defineProperty(window, 'App', (() => {
 	const itemImgsMap = new Map();
 
 	/**
+	 * 根据lastUpdateTime判断加载本地图片还是服务器图片，\
+	 * 本地db保存的图片以最后一次读取服务器图片的时间为基准，\
+	 * 如果lastUpdateTime比db的时间要新，就加载服务器图片，\
+	 * 并更新本地db图片和时间
 	 * @param {string} name 
-	 * @param {Date} lastUpdateTime 
+	 * @param {Date} lastUpdateTime 必须是本地时间 如果是无效的时间将使用最小时间作为判定依据
 	 * @returns {Promise<URL|"">}
 	 */
 	function getItemImg(name, lastUpdateTime) {
 		if (!name) return Promise.resolve("");
 
+		lastUpdateTime = new Date(lastUpdateTime);
+		if (lastUpdateTime.getTime() === NaN) {
+			lastUpdateTime = new Date(0);
+		}
+
 		if (!itemImgsMap.has(name)) {
 			itemImgsMap.set(name,
-				getItemImgFromDb(name).then(([blob, date]) => {
-					if (date >= lastUpdateTime) {
-						return [blob ? URL.createObjectURL(blob) : blob, date];
+				getItemImgFromDb(name).then(([blob, lastFetchTime]) => {
+					if (lastFetchTime >= lastUpdateTime) {
+						return [blob ? URL.createObjectURL(blob) : blob, lastFetchTime];
 					} else {
 						throw "";
 					}
 				}).catch(error => {
+					const lastFetchTime = new Date();
 					return getItemImgFromServer(name).then(blob => {
-						putItemImgIntoDb(name, blob, lastUpdateTime);
-						return [blob ? URL.createObjectURL(blob) : blob, lastUpdateTime];
+						putItemImgIntoDb(name, blob, lastFetchTime);
+						return [blob ? URL.createObjectURL(blob) : blob, lastFetchTime];
 					}, err => {
 						itemImgsMap.delete(name);
 					});
@@ -498,8 +508,8 @@ defineProperty(window, 'App', (() => {
 		}
 
 		if (itemImgsMap.has(name)) {
-			return itemImgsMap.get(name).then(([url, date]) => {
-				if (date >= lastUpdateTime) return url;
+			return itemImgsMap.get(name).then(([url, lastFetchTime]) => {
+				if (lastFetchTime >= lastUpdateTime) return url;
 				itemImgsMap.delete(name);
 				return getItemImg(name, lastUpdateTime);
 			});
