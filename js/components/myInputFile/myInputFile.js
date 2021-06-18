@@ -48,6 +48,10 @@ export default class MyInputFile extends HTMLElement {
     this.input.disabled = value;
   }
 
+  clear() {
+    this.input.value = "";
+  }
+
   get files() {
     return this.input.files;
   }

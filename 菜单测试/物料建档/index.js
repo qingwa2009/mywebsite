@@ -346,6 +346,8 @@ window.addEventListener('DOMContentLoaded', () => {
 		ems.t1.dispatchEvent(evchange);
 		ems.t2.dispatchEvent(evchange);
 
+		ems.imgFile.clear();
+
 		const ks = Object.keys(currentItem);
 		for (let i = 0; i < ks.length; i++) {
 			const k = ks[i];
