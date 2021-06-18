@@ -273,6 +273,21 @@ export default class MyTable extends HTMLElement {
         return td.cellIndex;
     }
 
+
+    /**
+     * 获取所有列标题索引
+     * @returns {Object<string, number>}
+     */
+    getAllColumnIndex() {
+        const obj = {};
+        const cs = this.headRow.cells;
+        const n = cs.length;
+        for (let i = 0; i < n; i++) {
+            obj[cs[i].textContent] = i;
+        }
+        return obj;
+    }
+
     /**
      * @param {string} columnName 
      */
@@ -288,6 +303,8 @@ export default class MyTable extends HTMLElement {
         return -1;
     }
 
+
+
     /**
      * 获取单元格值
      * @param {string} columnName 列名
@@ -298,6 +315,20 @@ export default class MyTable extends HTMLElement {
         const i = this.getColumnIndexByName(columnName);
         if (i === -1) return undefined;
         return row.cells[i].textContent;
+    }
+
+    /**
+     * 设置单元格值
+     * @param {string} columnName 列名
+     * @param {HTMLTableRowElement} row 
+     * @param {string} value
+     * @returns {boolean}
+     */
+    setCellValue(columnName, row, value) {
+        const i = this.getColumnIndexByName(columnName);
+        if (i === -1) return false;
+        row.cells[i].textContent = value;
+        return true;
     }
 
     /**
@@ -1299,11 +1330,26 @@ export default class MyTable extends HTMLElement {
     }
 
     /**
-     * @param {HTMLTableRowElement[]} rs
+     * 更新行，仅使用mtd的第一条数据更新tr
+     * @param {HTMLTableRowElement} tr
      * @param {MyTableData} mtd 
+     * @return {boolean}
      */
-    updateRows(rs, mtd) {
+    updateRow(tr, mtd) {
+        if (this.getRowIndex(tr) < 0) return false;
+        if (mtd.data.length < 1) return false;
 
+
+        const dt = mtd.data[0];
+        const n = mtd.title.length;
+        const dic = this.getAllColumnIndex();
+
+        for (let i = 0; i < n; i++) {
+            const title = mtd.title[i];
+            const value = dt[i];
+            tr.cells[dic[title]].textContent = value;
+        }
+        return true;
     }
 
     /**     
