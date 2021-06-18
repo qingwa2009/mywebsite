@@ -1,5 +1,6 @@
 "use strict";
 import MyDbFieldComps from "../../js/myDbFieldComps.js";
+import MyDbCriteria from "../../js/myDbCriteria.js";
 import { enumAllChildren } from "../../js/myUtil.js";
 // import MyMemu from "../../js/components/myMenu/myMenu.js";
 import MyTable from "../../js/components/myTable/myTable.js";
@@ -17,6 +18,11 @@ window.addEventListener('DOMContentLoaded', () => {
 
 	const cmdSearchItems = "/myplm/item/search?offset=";
 	const cmdSelectItem = "/myplm/item/select";
+	const cmdUpdateItem = "/myplm/item/update";
+	const cmdInsertItem = "/myplm/item/insert";
+	const cmdDeleteItem = "/myplm/item/delete";
+	const cmdItemImg = "/myplm/item/img";
+
 	const states = {
 		normal: 0,
 		fetching: 1,
@@ -111,10 +117,13 @@ window.addEventListener('DOMContentLoaded', () => {
 
 	ems.btnCancel.addEventListener("click", () => {
 		setStateNormal();
-		const rs = ems.tbSearchItems.getSelectedRows();
-		if (rs.length > 0) {
-			ems.tbSearchItems.performSelectRow(rs[rs.length - 1], true);
+		if (currentItem) {
+			setCurrentItem(currentItem);
 		}
+		// const rs = ems.tbSearchItems.getSelectedRows();
+		// if (rs.length > 0) {
+		// 	ems.tbSearchItems.performSelectRow(rs[rs.length - 1], true);
+		// }
 	});
 
 	ems.btnConfirm.addEventListener("click", () => {
@@ -199,10 +208,32 @@ window.addEventListener('DOMContentLoaded', () => {
 			_isSearching = false;
 		});
 	}
+
+	/**
+	 * 精确查找物料
+	 * @param {string} itemno 
+	 * @returns {Promise<MyTableData | void>}
+	 */
+	function searchItemNo(itemno) {
+		let _offset = 0;
+
+		const criteria = new MyDbCriteria();
+		criteria.addWhere("ITEM_NO", "=", itemno);
+
+		return App.myHttpRequest("post", cmdSearchItems + _offset, criteria.toString(), false, "json").then((/**@type{XMLHttpRequest} */req) => {
+			const mtd = MyTableData.decorate(req.response);
+			if (mtd.error) throw new Error(mtd.error);
+			return mtd;
+		}).catch(err => {
+			console.log(err);
+		});
+	}
+
 	const colors = {
 		"有效": "lightgreen",
 		"失效": "pink",
 		"待定": "yellow",
+		"临时": "lightgray",
 	}
 	function eachAddRow(/**@type{HTMLTableRowElement} */tr, /**@type{Object<string, HTMLTableCellElement>} */dt) {
 		const cell = dt["状态"];
@@ -249,7 +280,8 @@ window.addEventListener('DOMContentLoaded', () => {
 
 	function updateItem() {
 		const obj = MyDbFieldComps.createJSON(document.forms[0]);
-		if (obj.ITEM_NO !== currentItem.ITEM_NO || obj.TYPE_NO !== currentItem.TYPE_NO) {
+		const itemno = obj.ITEM_NO;
+		if (itemno !== currentItem.ITEM_NO || obj.TYPE_NO !== currentItem.TYPE_NO) {
 			alert("不能修改物料编号！");
 			return;
 		}
@@ -257,8 +289,29 @@ window.addEventListener('DOMContentLoaded', () => {
 		delete obj.t1;
 		delete obj.t2;
 
-		console.log(obj);
-		setStateNormal();
+		let p = Promise.resolve();
+
+		if (ems.imgFile.files.length > 0) {
+			const url = new URL(cmdItemImg, location);
+			url.searchParams.append("itemno", itemno);
+			url.searchParams.append("img", ems.imgFile.files[0].name);
+			p = App.myHttpRequest("post", url, ems.imgFile.files[0], true);
+		}
+
+		p.then(() => {
+
+			App.myHttpRequest("post", cmdUpdateItem, JSON.stringify(obj), true, "json").then(req => {
+				setCurrentItem(req.response);
+				searchItemNo(itemno).then(mtd => {
+					ems.tbSearchItems.updateRow(currentRow, mtd, eachAddRow);
+					setStateNormal();
+				});
+			}, error => {
+				console.log(error);
+			});
+		}, error => {
+			App.showExecuteInfo("图片上传失败！", 1);
+		});
 	}
 
 
@@ -268,45 +321,44 @@ window.addEventListener('DOMContentLoaded', () => {
 		alert("还没写！");
 	});
 
-
-
-
-
-
 	function loadItem(itemno) {
 		setStateFetching();
 
 		const url = new URL(cmdSelectItem, location);
 		url.searchParams.append("itemno", itemno);
 		App.myHttpRequest("get", url, undefined, true, "json").then(req => {
-			currentItem = req.response;
-
-			const evchange = new Event("change");
-			ems.t0.value = currentItem.TYPE_NO.substr(0, 1);
-			ems.t1._value = currentItem.TYPE_NO.substr(0, 2);
-			ems.t2._value = currentItem.TYPE_NO.substr(0, 3);
-			ems.TYPE_NO._value = currentItem.TYPE_NO;
-
-			ems.t0.dispatchEvent(evchange);
-			ems.t1.dispatchEvent(evchange);
-			ems.t2.dispatchEvent(evchange);
-
-			const ks = Object.keys(currentItem);
-			for (let i = 0; i < ks.length; i++) {
-				const k = ks[i];
-				const em = document.forms[0][k];
-				if (!em) continue;
-				try {
-					em.setValue(currentItem[k]);
-				} catch (error) {
-					console.error(error);
-				}
-			}
-
-			loadImg(currentItem.UPLOAD_IMG, new Date(currentItem.UPDATE_TIME + "Z"));
+			setCurrentItem(req.response);
 		}).finally(() => {
 			setStateNormal();
 		});
+	}
+
+	function setCurrentItem(json) {
+		currentItem = json;
+
+		const evchange = new Event("change");
+		ems.t0.value = currentItem.TYPE_NO.substr(0, 1);
+		ems.t1._value = currentItem.TYPE_NO.substr(0, 2);
+		ems.t2._value = currentItem.TYPE_NO.substr(0, 3);
+		ems.TYPE_NO._value = currentItem.TYPE_NO;
+
+		ems.t0.dispatchEvent(evchange);
+		ems.t1.dispatchEvent(evchange);
+		ems.t2.dispatchEvent(evchange);
+
+		const ks = Object.keys(currentItem);
+		for (let i = 0; i < ks.length; i++) {
+			const k = ks[i];
+			const em = document.forms[0][k];
+			if (!em) continue;
+			try {
+				em.setValue(currentItem[k]);
+			} catch (error) {
+				console.error(error);
+			}
+		}
+
+		loadImg(currentItem.UPLOAD_IMG, new Date(currentItem.UPDATE_TIME + "Z"));
 	}
 
 	function loadImg(imgName, lastUpdateTime) {
@@ -322,12 +374,6 @@ window.addEventListener('DOMContentLoaded', () => {
 			});
 		}
 	}
-
-
-
-
-
-
 
 	function setFormDisabled(b) {
 		if (b)

@@ -1150,7 +1150,8 @@ export default class MyTable extends HTMLElement {
      * 加载表格数据
      * @param {MyTableData} mtd 
      * @param {boolean} clear 是否清除原有数据，默认true
-     * @param {(tr:HTMLTableRowElement, dt:Object<string, HTMLTableCellElement>)} callback 每添加一行就调用一次
+     * @param {(tr:HTMLTableRowElement, dt:Object<string, HTMLTableCellElement>)} callback 每添加一行就调用一次\
+     * 主要用于添加数据后更新单元格样式等操作。tr是新添加的行；dt是每个单元格，用标题索引对应单元格
      * @throws new TypeError("新添加的数据title与原有的数据不匹配！") | new TypeError("Its not MyTableData!")
      */
     setTableData(mtd, clear = true, callback = undefined) {
@@ -1333,9 +1334,11 @@ export default class MyTable extends HTMLElement {
      * 更新行，仅使用mtd的第一条数据更新tr
      * @param {HTMLTableRowElement} tr
      * @param {MyTableData} mtd 
+     * @param {(tr:HTMLTableRowElement, dt:Object<string, HTMLTableCellElement>)} callback 
+     * 与setTableData类似，主要用于更新数据后重新更新样式。tr是新添加的行；dt是每个单元格，用标题索引对应单元格
      * @return {boolean}
      */
-    updateRow(tr, mtd) {
+    updateRow(tr, mtd, callback = undefined) {
         if (this.getRowIndex(tr) < 0) return false;
         if (mtd.data.length < 1) return false;
 
@@ -1347,8 +1350,13 @@ export default class MyTable extends HTMLElement {
         for (let i = 0; i < n; i++) {
             const title = mtd.title[i];
             const value = dt[i];
-            tr.cells[dic[title]].textContent = value;
+            const cell = tr.cells[dic[title]];
+            cell.textContent = value;
+            dic[title] = cell;
         }
+
+        if (callback) callback(tr, dic);
+
         return true;
     }
 

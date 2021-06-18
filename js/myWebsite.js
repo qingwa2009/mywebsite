@@ -77,7 +77,8 @@ defineProperty(window, 'App', (() => {
 	 * @param {string} url 
 	 * @param {string} data 
 	 * @param {boolean} alertWhenError 默认true
-	 * @param {"" | "arraybuffer" | "blob" | "document" | "json" | "text"} responseType 默认 ""
+	 * @param {"" | "arraybuffer" | "blob" | "document" | "json" | "text"} responseType 默认 ""\
+	 * 设置了除"","text"的时候如果响应的是文本信息将无法获取该信息
 	 * @return {Promise<XMLHttpRequest>}
 	 */
 	function myHttpRequest(method, url, data, alertWhenError = true, responseType = "") {
@@ -91,7 +92,7 @@ defineProperty(window, 'App', (() => {
 				if (req.status == 200) {
 					resolve(req);
 				} else {
-					const respText = responseType === "" || responseType === "text" ? req.responseText : "";
+					const respText = responseType === "" || responseType === "text" ? req.response : "详细错误信息请查看开发者工具Network->Response！";
 
 					if (alertWhenError) alert(`请求未完成：${req.status} ${req.statusText}\n${respText}`);
 					const err = new Error(`${req.status}: ${respText}`);
