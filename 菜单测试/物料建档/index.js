@@ -22,6 +22,7 @@ window.addEventListener('DOMContentLoaded', () => {
 	const cmdInsertItem = "/myplm/item/insert";
 	const cmdDeleteItem = "/myplm/item/delete";
 	const cmdItemImg = "/myplm/item/img";
+	const cmdItemDoc = "/myplm/item/doc";
 
 	const states = {
 		normal: 0,
@@ -55,6 +56,8 @@ window.addEventListener('DOMContentLoaded', () => {
 		ITEM_NO: 0,
 		/**@type{MyTable} */
 		tbSearchItems: 0,
+		/**@type{MyTable} */
+		tbItemDoc: 0,
 		/**@type{HTMLImageElement} */
 		img: 0,
 		/**@type{HTMLDivElement} */
@@ -234,24 +237,28 @@ window.addEventListener('DOMContentLoaded', () => {
 		"失效": "pink",
 		"待定": "yellow",
 		"临时": "lightgray",
+		"0": "pink",
+		"1": "lightgreen",
 	}
+
 	function eachAddRow(/**@type{HTMLTableRowElement} */tr, /**@type{Object<string, HTMLTableCellElement>} */dt) {
-		const cell = dt["状态"];
-		const cell2 = dt["研发编号"];
+		const colorCells = ["状态", "研发编号"];
+
 		const st = dt["状态"].textContent;
 		const bk = colors[st] ? colors[st] : "";
-		cell.style.backgroundColor = bk;
-		cell2.style.backgroundColor = bk;
-		cell.style.color = "black";
-		cell2.style.color = "black";
 
-		const ct = dt["创建时间"];
-		const ut = dt["更新时间"];
+		for (const name of colorCells) {
+			const cell = dt[name];
+			cell.style.backgroundColor = bk;
+			cell.style.color = "black";
+		}
 
-		const createTime = new Date(ct.textContent + "Z");
-		const lastUpdateTime = new Date(ut.textContent + "Z");
-		ct.textContent = createTime.toLocaleString();
-		ut.textContent = lastUpdateTime.toLocaleString();
+		const localTimeCells = ["创建时间", "更新时间"];
+		for (const name of localTimeCells) {
+			const cell = dt[name];
+			const date = new Date(cell.textContent + "Z");
+			cell.textContent = date.toLocaleString();
+		}
 	}
 
 
@@ -361,6 +368,7 @@ window.addEventListener('DOMContentLoaded', () => {
 		}
 
 		loadImg(currentItem.UPLOAD_IMG, new Date(currentItem.UPDATE_TIME + "Z"));
+		loadItemDoc(json.ITEM_NO);
 	}
 
 	function loadImg(imgName, lastUpdateTime) {
@@ -374,6 +382,38 @@ window.addEventListener('DOMContentLoaded', () => {
 				ems.imgView.classList.remove("loading");
 				if (blobUrl) ems.img.src = blobUrl;
 			});
+		}
+	}
+
+	function loadItemDoc(itemno) {
+		const url = new URL(cmdItemDoc, location);
+		url.searchParams.append("itemno", itemno);
+		App.myHttpRequest("get", url, undefined, true, "json").then((/**@type{XMLHttpRequest} */req) => {
+			const mtd = MyTableData.decorate(req.response);
+			if (mtd.error) throw new Error(mtd.error);
+			ems.tbItemDoc.setTableData(mtd, true, eachItemDocRow);
+		}).catch(err => {
+			console.log(err);
+		});
+	}
+
+	function eachItemDocRow(/**@type{HTMLTableRowElement} */tr, /**@type{Object<string, HTMLTableCellElement>} */dt) {
+		const colorCells = ["状态"];
+
+		const st = dt["状态"].textContent;
+		const bk = colors[st] ? colors[st] : "";
+
+		for (const name of colorCells) {
+			const cell = dt[name];
+			cell.style.backgroundColor = bk;
+			cell.style.color = "black";
+		}
+
+		const localTimeCells = ["创建时间", "更新时间"];
+		for (const name of localTimeCells) {
+			const cell = dt[name];
+			const date = new Date(cell.textContent + "Z");
+			cell.textContent = date.toLocaleString();
 		}
 	}
 
