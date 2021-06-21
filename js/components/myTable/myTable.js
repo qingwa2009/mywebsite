@@ -10,24 +10,6 @@ myMenu.init();
 const sum = (arr) => arr.reduce((s, a) => s + (parseFloat(a) || 0), 0);
 
 export default class MyTable extends HTMLElement {
-    static TAG = "my-table";
-    static SPLITTER_WIDTH = 8;
-    static CLASS_DRAGLINDICATOR = "column-drag-left";
-    static CLASS_DRAGRINDICATOR = "column-drag-right";
-    /**可以给thead里面的td设置排序方式 */
-    static ATTR_SORT_BY = "sortby";
-    static ATTR_SORT_BY_NUM = "num";
-    static ATTR_SORT_BY_ALPHA = "alpha";
-    static ATTR_SORT_BY_ZH = "zh";
-    static ATTR_ROW_HEIGHT = "rowheight";
-
-    static SORT_FUNC_MAP = {
-        [MyTable.ATTR_SORT_BY_ALPHA]: MyTable.FuncSortByAlpha,
-        [MyTable.ATTR_SORT_BY_NUM]: MyTable.FuncSortByNum,
-        [MyTable.ATTR_SORT_BY_ZH]: MyTable.FuncSortByZh,
-    };
-    static ATTR_SELECTED = "selected";
-    static DEFAULT_ROW_HEIGHT = 24;
 
     constructor() {
         super();
@@ -889,15 +871,7 @@ export default class MyTable extends HTMLElement {
         this._extendMenuPos = position;
     }
 
-    static HeadRow_MenuItems = [
-        { title: "自动调整列宽", func: MyTable._headRowAutoWidth, disabled: false },
-        "",
-        { title: "按字母排序", func: MyTable._headRowSortByAlpha, disabled: false },
-        { title: "按数字排序", func: MyTable._headRowSortByNum, disabled: false },
-        { title: "按拼音排序", func: MyTable._headRowSortByZh, disabled: false },
-        "",
-        { title: "保存列表设置", func: MyTable._headRowSaveSetting, disabled: false },
-    ];
+
     static _ContextMenuFilter(/**@type{MouseEvent} */e) {
         const td = e.target;
         if (!(td instanceof HTMLTableCellElement)) return false;
@@ -1009,7 +983,7 @@ export default class MyTable extends HTMLElement {
     }
 
 
-    static LOCAL_SETTING_NAME = "tableSettings"
+
     /**
 	 * @param {{title:string, data:{col:string, width:number}[]}} setting 
 	 */
@@ -1032,15 +1006,7 @@ export default class MyTable extends HTMLElement {
         return setting;
     }
 
-    static TBody_MenuItems = [
-        { title: "复制单元格内容", func: MyTable._copyCell, disabled: false },
-        { title: "复制选中行内容", func: MyTable._copySelectedRows, disabled: false },
-        { title: "复制选中行列内容", func: MyTable._copySelectedColumn, disabled: false },
-        { title: "复制整个表格", func: MyTable._copyTable, disabled: false },
-        "",
-        { title: "所在列求和", func: MyTable._sumColumn, disabled: false },
-        { title: "选中行所在列求和", func: MyTable._sumSelectedColumn, disabled: false },
-    ];
+
     static _copyCell(/**@type{HTMLTableRowElement} */tr, /**@type{HTMLTableCellElement} */td, obj) {
         const ps = td.style.userSelect;
         td.style.userSelect = "auto";
@@ -1389,5 +1355,43 @@ export default class MyTable extends HTMLElement {
     }
 
 }
+MyTable.TAG = "my-table";
+MyTable.SPLITTER_WIDTH = 8;
+MyTable.CLASS_DRAGLINDICATOR = "column-drag-left";
+MyTable.CLASS_DRAGRINDICATOR = "column-drag-right";
+/**可以给thead里面的td设置排序方式 */
+MyTable.ATTR_SORT_BY = "sortby";
+MyTable.ATTR_SORT_BY_NUM = "num";
+MyTable.ATTR_SORT_BY_ALPHA = "alpha";
+MyTable.ATTR_SORT_BY_ZH = "zh";
+MyTable.ATTR_ROW_HEIGHT = "rowheight";
+
+MyTable.SORT_FUNC_MAP = {
+    [MyTable.ATTR_SORT_BY_ALPHA]: MyTable.FuncSortByAlpha,
+    [MyTable.ATTR_SORT_BY_NUM]: MyTable.FuncSortByNum,
+    [MyTable.ATTR_SORT_BY_ZH]: MyTable.FuncSortByZh,
+};
+MyTable.ATTR_SELECTED = "selected";
+MyTable.DEFAULT_ROW_HEIGHT = 24;
+
+MyTable.HeadRow_MenuItems = [
+    { title: "自动调整列宽", func: MyTable._headRowAutoWidth, disabled: false },
+    "",
+    { title: "按字母排序", func: MyTable._headRowSortByAlpha, disabled: false },
+    { title: "按数字排序", func: MyTable._headRowSortByNum, disabled: false },
+    { title: "按拼音排序", func: MyTable._headRowSortByZh, disabled: false },
+    "",
+    { title: "保存列表设置", func: MyTable._headRowSaveSetting, disabled: false },
+];
+MyTable.TBody_MenuItems = [
+    { title: "复制单元格内容", func: MyTable._copyCell, disabled: false },
+    { title: "复制选中行内容", func: MyTable._copySelectedRows, disabled: false },
+    { title: "复制选中行列内容", func: MyTable._copySelectedColumn, disabled: false },
+    { title: "复制整个表格", func: MyTable._copyTable, disabled: false },
+    "",
+    { title: "所在列求和", func: MyTable._sumColumn, disabled: false },
+    { title: "选中行所在列求和", func: MyTable._sumSelectedColumn, disabled: false },
+];
+MyTable.LOCAL_SETTING_NAME = "tableSettings"
 
 customElements.define(MyTable.TAG, MyTable);

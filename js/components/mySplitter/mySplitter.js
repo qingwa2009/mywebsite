@@ -1,9 +1,6 @@
 "use strict";
 
 export default class MySplitter extends HTMLElement {
-  static TAG = "my-splitter";
-  static TYPE = { horizontal: "horizontal", vertical: "vertical" }
-  static EDIT = { prev: "editprev", next: "editnext", both: "editboth" }
 
   constructor() {
     super();
@@ -74,5 +71,8 @@ export default class MySplitter extends HTMLElement {
     console.log("Splitter up!");
   }
 }
+MySplitter.TAG = "my-splitter";
+MySplitter.TYPE = { horizontal: "horizontal", vertical: "vertical" }
+MySplitter.EDIT = { prev: "editprev", next: "editnext", both: "editboth" }
 
 customElements.define(MySplitter.TAG, MySplitter);

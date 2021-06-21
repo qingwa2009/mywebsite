@@ -2,7 +2,7 @@
 const pe = /\b(src|href)\s*?=\s*?(["'])(.+?)\2/gi;
 
 class MyComp extends HTMLElement {
-    static ATTR_TEMPLATE_ID = "templateid";
+
     constructor() {
         super();
         const tempid = this.getAttribute(MyComp.ATTR_TEMPLATE_ID);
@@ -13,6 +13,7 @@ class MyComp extends HTMLElement {
         }
     }
 }
+MyComp.ATTR_TEMPLATE_ID = "templateid";
 
 customElements.define("my-template", class extends HTMLTemplateElement {
     constructor() {

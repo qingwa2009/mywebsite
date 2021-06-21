@@ -1,13 +1,6 @@
 "use strict";
 
 export default class MyTab extends HTMLElement {
-	static TAG = "my-tab";
-
-	static IDPREFIX = "tab";
-	static IDSURFIX = { TITLE: "_ttl", CLS: "_cls", PAGE: "_pge" };
-	static CLASSES = { TAB: "tab", TITLE: "title", CLS: "cls", PAGE: "page", alert: "alert" };
-	static CLOSETYPE = { ALL: 0, ME: 2, OTHERS: 1 };
-	static MAX_TAB_PAGE = 50;
 
 	constructor() {
 		super();
@@ -402,6 +395,12 @@ export default class MyTab extends HTMLElement {
 	}
 }
 
+MyTab.TAG = "my-tab";
+MyTab.IDPREFIX = "tab";
+MyTab.IDSURFIX = { TITLE: "_ttl", CLS: "_cls", PAGE: "_pge" };
+MyTab.CLASSES = { TAB: "tab", TITLE: "title", CLS: "cls", PAGE: "page", alert: "alert" };
+MyTab.CLOSETYPE = { ALL: 0, ME: 2, OTHERS: 1 };
+MyTab.MAX_TAB_PAGE = 50;
 
 customElements.define(MyTab.TAG, MyTab);
 

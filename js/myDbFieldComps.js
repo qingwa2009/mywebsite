@@ -73,24 +73,7 @@ export default class MyDbFieldComps {
 }
 
 MyDbFieldComps.MyInput = class extends HTMLInputElement {
-    static TAG = "my-input";
-    /**用于查询时的字段名 */
-    static ATTR_FIELD_NAME = "fieldname";
-    /**模糊查询类型 [left, right, both]*/
-    static ATTR_FIELD_LIKE = "fieldlike";
-    /**自动大写 */
-    static ATTR_FIELD_UPPERCASE = "uppercase";
-    /**比较类型 = < <= > >= \
-     */
-    static ATTR_FIELD_COMPARE = "fieldcompare";
 
-    static FIELD_LIKE_TYPE = {
-        Left: "left",
-        Right: "right",
-        Both: "both",
-    }
-
-    static COMPARE_TYPES = ["=", "<=", "<", ">=", ">"];
 
     constructor() {
         super();
@@ -278,22 +261,30 @@ MyDbFieldComps.MyInput = class extends HTMLInputElement {
     }
 
 }
+
+MyDbFieldComps.MyInput.TAG = "my-input";
+/**用于查询时的字段名 */
+MyDbFieldComps.MyInput.ATTR_FIELD_NAME = "fieldname";
+/**模糊查询类型 [left, right, both]*/
+MyDbFieldComps.MyInput.ATTR_FIELD_LIKE = "fieldlike";
+/**自动大写 */
+MyDbFieldComps.MyInput.ATTR_FIELD_UPPERCASE = "uppercase";
+/**比较类型 = < <= > >= \
+ */
+MyDbFieldComps.MyInput.ATTR_FIELD_COMPARE = "fieldcompare";
+
+MyDbFieldComps.MyInput.FIELD_LIKE_TYPE = {
+    Left: "left",
+    Right: "right",
+    Both: "both",
+}
+MyDbFieldComps.MyInput.COMPARE_TYPES = ["=", "<=", "<", ">=", ">"];
+
 customElements.define(MyDbFieldComps.MyInput.TAG, MyDbFieldComps.MyInput, { extends: "input" });
 
 
 const URL_GET_LIST_ITEMS = "/myplm/getlist";
 MyDbFieldComps.MySelect = class extends HTMLSelectElement {
-    static TAG = "my-select";
-    /**用于查询时的字段名 */
-    static ATTR_FIELD_NAME = "fieldname";
-    /**自动请求加载列表的url*/
-    static ATTR_FIELD_QUERY = "fieldquery";
-    /**显示的行过滤 */
-    static ATTR_FIELD_ROWFILTER = "fieldrowfilter";
-    /**模糊查询类型 [left, right, both]*/
-    static ATTR_FIELD_LIKE = "fieldlike";
-    /**默认值 */
-    static ATTR_FIELD_DEFAULT_VALUE = "defaultvalue";
 
     constructor() {
         super();
@@ -393,4 +384,17 @@ MyDbFieldComps.MySelect = class extends HTMLSelectElement {
         this.value = v;
     }
 }
+
+MyDbFieldComps.MySelect.TAG = "my-select";
+/**用于查询时的字段名 */
+MyDbFieldComps.MySelect.ATTR_FIELD_NAME = "fieldname";
+/**自动请求加载列表的url*/
+MyDbFieldComps.MySelect.ATTR_FIELD_QUERY = "fieldquery";
+/**显示的行过滤 */
+MyDbFieldComps.MySelect.ATTR_FIELD_ROWFILTER = "fieldrowfilter";
+/**模糊查询类型 [left, right, both]*/
+MyDbFieldComps.MySelect.ATTR_FIELD_LIKE = "fieldlike";
+/**默认值 */
+MyDbFieldComps.MySelect.ATTR_FIELD_DEFAULT_VALUE = "defaultvalue";
+
 customElements.define(MyDbFieldComps.MySelect.TAG, MyDbFieldComps.MySelect, { extends: "select" });

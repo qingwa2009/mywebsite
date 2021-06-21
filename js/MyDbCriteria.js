@@ -54,11 +54,12 @@ function parseFieldName(field) {
 }
 
 export default class MyDbCriteria {
-
-    /**@type{MyDbCriteria.CriteriaWhere[]} */
-    where = [];
-    /**@type{MyDbCriteria.CriteriaOrderby[]} */
-    orderby = [];
+    constructor() {
+        /**@type{MyDbCriteria.CriteriaWhere[]} */
+        this.where = [];
+        /**@type{MyDbCriteria.CriteriaOrderby[]} */
+        this.orderby = [];
+    }
 
     /**
      * @param {string | MyDbCriteria.CriteriaWhere} field 

@@ -23,17 +23,7 @@ import { getParent, getTopViewPortOffset } from "../../myUtil.js";
  * myMenu.init();
  */
 export default class MyMenu extends HTMLElement {
-    static TAG = "my-menu";
-    static CLASS_MENU = "menu"
-    static CLASS_SUB_MENU = "submenu"
-    static CLASS_HASSUBMENU = "hassubmenu";
 
-    static TYPES = {
-        /**右键菜单 0*/
-        CONTEXTMENU: 0,
-        /**菜单栏下拉菜单 1*/
-        MENU: 1,
-    };
 
     constructor() {
         super();
@@ -319,4 +309,15 @@ export default class MyMenu extends HTMLElement {
     }
 
 }
+MyMenu.TAG = "my-menu";
+MyMenu.CLASS_MENU = "menu"
+MyMenu.CLASS_SUB_MENU = "submenu"
+MyMenu.CLASS_HASSUBMENU = "hassubmenu";
+
+MyMenu.TYPES = {
+    /**右键菜单 0*/
+    CONTEXTMENU: 0,
+    /**菜单栏下拉菜单 1*/
+    MENU: 1,
+};
 customElements.define(MyMenu.TAG, MyMenu);

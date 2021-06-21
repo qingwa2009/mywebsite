@@ -1,8 +1,7 @@
 "use strict";
 
 export default class MyInputFile extends HTMLElement {
-  static TAG = "my-input-file";
-  static ID = "uploadicon";
+
 
   constructor() {
     super();
@@ -64,5 +63,6 @@ export default class MyInputFile extends HTMLElement {
   }
 
 }
-
+MyInputFile.TAG = "my-input-file";
+MyInputFile.ID = "uploadicon";
 customElements.define(MyInputFile.TAG, MyInputFile);

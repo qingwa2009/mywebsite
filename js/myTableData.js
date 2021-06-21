@@ -1,14 +1,17 @@
 export default class MyTableData {
-    /**用于分页查找，加载下一页 */
-    ID = "";
-    count = 0;
-    /**对于分页查询可以用来显示查询到的总记录数，默认值-1 */
-    totalCount = -1;
-    EOF = true;
-    title = [];
-    type = [];
-    data = [];
-    error = "";
+
+    constructor() {
+        /**用于分页查找，加载下一页 */
+        this.ID = "";
+        this.count = 0;
+        /**对于分页查询可以用来显示查询到的总记录数，默认值-1 */
+        this.totalCount = -1;
+        this.EOF = true;
+        this.title = [];
+        this.type = [];
+        this.data = [];
+        this.error = "";
+    }
     toString() {
         return JSON.stringify(this);
     }
