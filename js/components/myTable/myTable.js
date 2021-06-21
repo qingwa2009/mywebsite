@@ -1380,6 +1380,14 @@ export default class MyTable extends HTMLElement {
         }
     }
 
+    setLoadingAnim() {
+        this.table.setAttribute("loading", "");
+    }
+
+    removeLoadingAnim() {
+        this.table.removeAttribute("loading");
+    }
+
 }
 
 customElements.define(MyTable.TAG, MyTable);

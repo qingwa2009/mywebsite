@@ -217,7 +217,7 @@ window.addEventListener('DOMContentLoaded', () => {
 	 * @param {string} itemno 
 	 * @returns {Promise<MyTableData | void>}
 	 */
-	function searchItemNo(itemno) {
+	function searchByItemNo(itemno) {
 		let _offset = 0;
 
 		const criteria = new MyDbCriteria();
@@ -309,7 +309,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 			App.myHttpRequest("post", cmdUpdateItem, JSON.stringify(obj), true, "json").then(req => {
 				setCurrentItem(req.response);
-				searchItemNo(itemno).then(mtd => {
+				searchByItemNo(itemno).then(mtd => {
 					ems.tbSearchItems.updateRow(currentRow, mtd, eachAddRow);
 					setStateNormal();
 				});
@@ -388,12 +388,16 @@ window.addEventListener('DOMContentLoaded', () => {
 	function loadItemDoc(itemno) {
 		const url = new URL(cmdItemDoc, location);
 		url.searchParams.append("itemno", itemno);
-		App.myHttpRequest("get", url, undefined, true, "json").then((/**@type{XMLHttpRequest} */req) => {
+		ems.tbItemDoc.setLoadingAnim();
+		App.myHttpRequest("get", url, undefined, false, "json").then((/**@type{XMLHttpRequest} */req) => {
 			const mtd = MyTableData.decorate(req.response);
 			if (mtd.error) throw new Error(mtd.error);
 			ems.tbItemDoc.setTableData(mtd, true, eachItemDocRow);
+			ems.tbItemDoc.removeLoadingAnim();
 		}).catch(err => {
+			alert("图档加载失败！");
 			console.log(err);
+			ems.tbItemDoc.removeLoadingAnim();
 		});
 	}
 

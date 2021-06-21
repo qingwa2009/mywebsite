@@ -28,6 +28,7 @@
 	display: flex;
 	flex-direction: column;
 	overflow: hidden;
+	position: relative;
 	/* border: 1px solid; */
 }
 
@@ -177,4 +178,29 @@ td img{
 	25%{content: '●○○'}
 	50%{content: '○●○'}
 	75%{content: '○○●'}
+}
+
+#table[loading]::after{
+	content: "";
+	display: block;
+	position: absolute;
+	bottom: 1em;
+	right: 1em;
+	width: 2em;
+	height: 2em;
+	border-radius: 50%;
+	border: 3px solid var(--border-color);
+	clip-path: polygon(0% 0%, 50% 0%, 50% 50%, 100% 50%, 100% 100%, 0% 100%);
+	animation: loading 1s infinite linear;
+	pointer-events: none;
+	transform-origin: 50% 50%;
+}
+
+@keyframes loading{
+	0%{
+		transform: rotate(0);
+	}
+	100%{
+		transform: rotate(360deg);
+	}
 }
