@@ -35,4 +35,9 @@ window.websiteMenu = [
 		], disabled: false
 	},
 	{ title: "子菜单5", url: "", disabled: false },
+	{
+		title: "菜单测试", url: [
+			{ title: "GL", url: "WebGL/index.html", disabled: false }
+		], disabled: false
+	},
 ];
