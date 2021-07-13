@@ -10,3 +10,4 @@ log/**
 img/itemImgs/**
 img/*.rar
 **/node_modules/**
+**/es5/**
