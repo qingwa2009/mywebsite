@@ -1,6 +1,6 @@
 'use strict';
-import MyMatrix from "./js/MyMatrix.js";
-import { MyVector3 } from "./js/MyVector.js";
+import MyMatrix from "../js/MyMatrix.js";
+import { MyVector3 } from "../js/MyVector.js";
 
 (() => {
 	const ID_CANVAS = "glCanvas";

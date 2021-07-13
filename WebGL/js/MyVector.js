@@ -1,70 +1,118 @@
 'use strict';
-export const MyVector3 = (function () {
-    function f(value = 3) {
-        if (this instanceof MyVector3) {
-            let v = new Float32Array(value);
-            f.fromArray(v);
-            return v
-        }
-    }
+export class MyVector3 extends Float32Array {
     /**
-     * @param {Float32Array} f32Arr
-     * @returns {MyVector3} self
+     * @param {number[]} arr 
      */
-    f.fromArray = function (f32Arr) {
-        if (this instanceof MyVector3) return f32Arr;
-        f.call(f32Arr);
-        Object.setPrototypeOf(f32Arr, f.prototype);
-        return f32Arr;
-    }
-    return f;
-})();
-MyVector3.constructor = MyVector3;
-
-Object.setPrototypeOf(MyVector3.prototype, Float32Array.prototype);
-
-Object.defineProperties(MyVector3, {
-    normalize: {
-		/**
-         * @param {Float32Array} vec3 
-         * @returns {MyVector3} new
-         */
-        value: function (vec3) {
-            let d = 1 / Math.hypot(vec3[0], vec3[1], vec3[2]);
-            var result = new MyVector3();
-            result[0] = vec3[0] * d;
-            result[1] = vec3[1] * d;
-            result[2] = vec3[2] * d;
-            return result;
+    constructor(arr = undefined) {
+        super(3);
+        if (arr) {
+            this[0] = arr[0] ? arr[0] : 0;
+            this[1] = arr[1] ? arr[1] : 0;
+            this[2] = arr[2] ? arr[2] : 0;
         }
-    },
-});
+    }
 
-/**
- * @returns{MyVector3}: self
- */
-MyVector3.prototype.normalized = function () {
-    let d = 1 / Math.hypot(this[0], this[1], this[2]);
-    this[0] *= d;
-    this[1] *= d;
-    this[2] *= d;
-    return this;
+    get x() { return this[0]; }
+    get y() { return this[1]; }
+    get z() { return this[2]; }
+    set x(value) { this[0] = value; }
+    set y(value) { this[1] = value; }
+    set z(value) { this[2] = value; }
+
+
+    normalized() {
+        const d = 1 / Math.hypot(this[0], this[1], this[2]);
+        this[0] *= d;
+        this[1] *= d;
+        this[2] *= d;
+        return this;
+    }
+
+    /**     
+     * @returns {MyVector3} new
+     */
+    normalize() {
+        const x = this[0], y = this[1], z = this[2];
+        const d = 1 / Math.hypot(x, y, z);
+        const result = new MyVector3();
+        result[0] = x * d;
+        result[0] = y * d;
+        result[0] = z * d;
+        return result;
+    }
+
+    /**
+     * @param {MyVector3|number[]} vec3 
+     */
+    dot(vec3) {
+        return this[0] * vec3[0] + this[1] * vec3[1] + this[2] * vec3[2];
+    }
+
+    /**     
+     * @param {MyVector3|number[]} vec3 
+     * @returns new
+     */
+    cross(vec3) {
+        const result = new MyVector3();
+        result[0] = this[1] * vec3[2] - this[2] * vec3[1];
+        result[1] = this[2] * vec3[0] - this[0] * vec3[2];
+        result[2] = this[0] * vec3[1] - this[1] * vec3[0];
+        return result;
+    }
+
+    /**
+     * @param {MyVector3|number[]} vec3 
+     */
+    added(vec3) {
+        this[0] += vec3[0];
+        this[1] += vec3[1];
+        this[2] += vec3[2];
+        return this;
+    }
+
+    /**
+     * 返回新的vector
+     * @param {MyVector3|number[]} vec3      
+     * @returns {MyVector3} new
+     */
+    add(vec3) {
+        const result = new MyVector3();
+        result[0] = this[0] + vec3[0];
+        result[1] = this[1] + vec3[1];
+        result[2] = this[2] + vec3[2];
+        return result;
+    }
+
+    /**
+     * 取反
+     */
+    negatived() {
+        this[0] = -this[0];
+        this[1] = -this[1];
+        this[2] = -this[2];
+        return this;
+    }
+
+    /**     
+     * 取反
+     * @returns {MyVector3} new
+     */
+    negative() {
+        const result = new MyVector3();
+        result[0] = -this[0];
+        result[1] = -this[1];
+        result[2] = -this[2];
+        return result;
+    }
+
 }
 
 /**
- * @returns{Float32Array}: new
+ * farr长度至少3
+ * @param {Float32Array} farr 
+ * @returns {MyVector3} self
  */
-MyVector3.prototype.normalize = function () {
-    let x = this[0], y = this[1], z = this[2];
-    let d = 1 / Math.hypot(x, y, z);
-    let result = new MyVector3(3);
-    result[0] = x * d;
-    result[0] = y * d;
-    result[0] = z * d;
-    return result;
+MyVector3.from = function (farr) {
+    Object.setPrototypeOf(farr, MyVector3.prototype);
+    return farr;
 }
-
-MyVector3.prototype.dot = function (vec3) {
-    return this[0] * vec3[0] + this[1] * vec3[1] + this[2] * vec3[2];
-}
-

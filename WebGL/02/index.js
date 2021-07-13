@@ -1,0 +1,363 @@
+"use strict";
+import MyCamera from "../js/MyCamera.js";
+import MyGeometry from "../js/MyGeometry.js";
+import { MyMatrix4x4 } from "../js/MyMatrix.js";
+import { MyVector3 } from "../js/MyVector.js";
+
+
+window.addEventListener('DOMContentLoaded', function () {
+    // const App = top.window.App;
+    // /**@type{MyMemu} */
+    // const myMenu = App.myMenu;
+    // const origin = top.location.origin;				// http://127.0.0.1
+    // const host = top.location.host;					// 127.0.0.1
+    // const hostp = top.location.origin.substr(4);	// ://127.0.0.1或者s://127.0.0.1
+
+    const inputs = document.querySelectorAll("input[type='radio']");
+    for (let i = 0; i < inputs.length; i++) {
+        const input = inputs[i];
+        input.onchange = function (e) { eval(`cv${i}(${i})`) };
+    }
+
+});
+
+/**
+ * @param {HTMLInputElement} em 
+ */
+function getColorFromInputElement(em) {
+    const s = em.value;
+    const color = new Float32Array(4);
+    color[0] = parseInt(s.substr(1, 2), 16) / 255;
+    color[1] = parseInt(s.substr(3, 2), 16) / 255;
+    color[2] = parseInt(s.substr(5, 2), 16) / 255;
+    color[3] = 1;
+    return color;
+}
+//fog
+function cv0(cvi) {
+    const cv = document.getElementsByTagName("canvas")[cvi];
+    cv.width = cv.clientWidth;
+    cv.height = cv.clientHeight;
+
+    const gl = cv.getContext("webgl2");
+
+
+    const camera = new MyCamera(Math.PI / 4, gl.drawingBufferWidth / gl.drawingBufferHeight, 0.1, 200);
+
+    camera.transform.rotateX(Math.PI / 4);
+    camera.transform.translate(0, 0, 10);
+
+    window.onresize = e => {
+        cv.width = cv.clientWidth;
+        cv.height = cv.clientHeight;
+        gl.viewport(0, 0, cv.clientWidth, cv.clientHeight);
+        camera.aspectRatio = gl.drawingBufferWidth / gl.drawingBufferHeight;
+    }
+    window.onresize();
+    let mbDraging = false;
+    let rbDraging = false;
+    let rotSensitivity = 0.01;
+    let wheelSensitivity = 0.01;
+    let movSensitivity = 0.01;
+    cv.onmousedown = e => {
+        if (e.button === 1) mbDraging = true;
+        if (e.button === 2) rbDraging = true;
+    }
+    cv.onmouseup = e => {
+        if (e.button === 1) mbDraging = false;
+        if (e.button === 2) rbDraging = false;
+    }
+    cv.onmousemove = e => {
+        if (!e.buttons) return;
+        const dx = e.movementX;
+        const dy = e.movementY;
+        if (mbDraging) {
+            rotCamera(dx, dy);
+        } else if (rbDraging) {
+            camera.transform.translate(-dx * movSensitivity, dy * movSensitivity, 0);
+        }
+    }
+    function rotCamera(dx, dy) {
+        let rad = dx * rotSensitivity;
+        if (Math.abs(rad) > Number.EPSILON) {
+            camera.transform.rotateAround([0, 0, 0], [0, 0, 1], -rad, true);
+        }
+        rad = dy * rotSensitivity;
+        if (Math.abs(rad) > Number.EPSILON) {
+            let xAxis = camera.transform.xAxis;
+            camera.transform.rotateAround([0, 0, 0], xAxis, -rad, true);
+        }
+    }
+    cv.onwheel = e => {
+        const dz = e.wheelDelta * wheelSensitivity;
+        camera.transform.translate(0, 0, dz);
+    }
+    cv.oncontextmenu = e => e.preventDefault();
+
+    const vShader = gl.createShader(gl.VERTEX_SHADER);
+    const fShader = gl.createShader(gl.FRAGMENT_SHADER);
+    gl.shaderSource(vShader, `#version 300 es
+        layout(location=0) in vec4 apos;
+        layout(location=1) in vec3 anormal;
+        layout(location=4) in vec4 acolor;
+        uniform mat4 uMVPmat;
+
+        flat out vec4 vColor;
+        flat out vec3 vNormal;
+        out float vDist;
+        void main(){
+            gl_Position=uMVPmat * apos;
+            vColor=acolor;
+            vNormal=anormal;
+            vDist =pow(max(gl_Position.z,gl_DepthRange.near), 0.5) * 25.0 ;
+        }
+    `);
+    gl.shaderSource(fShader, `#version 300 es
+        precision mediump float;
+
+        flat in vec4 vColor;
+        flat in vec3 vNormal;
+        in float vDist;
+        
+        uniform vec3 uFog;//(min, max, max-min)
+        uniform vec4 uFogColor;
+
+        out vec4 fragColor;     
+
+        float calcFogFactor(){
+            float factor =  (uFog.y - vDist)/uFog.z ;
+            factor = clamp(factor, 0.0, 1.0);
+            return factor;
+        }
+        
+        void main(){            
+            float fogFactor = calcFogFactor();
+            vec4 color = vec4(abs(vNormal), 1.0) ;
+            color = color * fogFactor + uFogColor * (1.0 - fogFactor);
+            
+            fragColor=color;
+        }
+    `);
+    const program = gl.createProgram();
+    gl.attachShader(program, vShader);
+    gl.attachShader(program, fShader);
+
+    gl.compileShader(vShader);
+    gl.compileShader(fShader);
+    gl.linkProgram(program);
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+        console.error("link error: ", gl.getProgramInfoLog(program));
+        console.error("vShader info: ", gl.getShaderInfoLog(vShader));
+        console.error("fShader info: ", gl.getShaderInfoLog(fShader));
+    }
+    for (const key of ["uMVPmat", "uFog", "uFogColor"]) {
+        program[key] = gl.getUniformLocation(program, key);
+    }
+
+
+
+    gl.enable(gl.DEPTH_TEST);
+    gl.enable(gl.CULL_FACE);
+
+    const sphere = new MyGeometry.Sphere();
+    const plane = new MyGeometry.Plane();
+    plane.createVAO(gl, () => {
+        plane.createVBOvertices(gl, 0, gl.STATIC_DRAW);
+        plane.createVBOnormals(gl, 1, gl.STATIC_DRAW);
+        plane.createVBOIndices(gl, gl.STATIC_DRAW);
+    });
+    sphere.createVAO(gl, () => {
+        sphere.createVBOvertices(gl, 0, gl.STATIC_DRAW);
+        sphere.createVBOnormals(gl, 1, gl.STATIC_DRAW);
+        sphere.createVBOIndices(gl, gl.STATIC_DRAW);
+    });
+
+    plane.transform.scale(10, 10, 10);
+    sphere.transform.translate(0, 0, 0.5);
+    let fogNear = 1;
+    let fogFar = camera.far;
+    const fog = new Float32Array([fogNear, fogFar, fogFar - fogNear]);
+
+    const da = Math.PI / 300;
+    function draw() {
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        const mVP = camera.getViewProjectMatrix();
+        const mV = camera.getViewMatrix();
+        gl.useProgram(program);
+
+        gl.uniform3fv(program.uFog, fog);
+
+        gl.uniform4fv(program.uFogColor, new Float32Array([250 / 255, 235 / 255, 215 / 255, 1]));
+
+        gl.polygonOffset(-1, -1);
+        gl.enable(gl.POLYGON_OFFSET_FILL);
+        gl.uniformMatrix4fv(program.uMVPmat, false, mVP.multiply(plane.transform));
+        plane.draw(gl);
+        gl.disable(gl.POLYGON_OFFSET_FILL);
+
+        gl.uniformMatrix4fv(program.uMVPmat, false, mVP.multiply(sphere.transform));
+        sphere.draw(gl);
+        requestAnimationFrame(draw);
+    }
+    draw();
+}
+
+//clip plane
+function cv1(cvi) {
+    const cv = document.getElementsByTagName("canvas")[cvi];
+    cv.width = cv.clientWidth;
+    cv.height = cv.clientHeight;
+
+    let clipDist = .5;
+    document.getElementById("clipDist").oninput = e => {
+        clipDist = parseFloat(e.currentTarget.value);
+    };
+
+    const gl = cv.getContext("webgl2");
+
+
+    const camera = new MyCamera(Math.PI / 4, gl.drawingBufferWidth / gl.drawingBufferHeight, 0.1, 200);
+
+    camera.transform.rotateX(Math.PI / 4);
+    camera.transform.translate(0, 0, 10);
+
+    window.onresize = e => {
+        cv.width = cv.clientWidth;
+        cv.height = cv.clientHeight;
+        gl.viewport(0, 0, cv.clientWidth, cv.clientHeight);
+        camera.aspectRatio = gl.drawingBufferWidth / gl.drawingBufferHeight;
+    }
+    window.onresize();
+    let mbDraging = false;
+    let rbDraging = false;
+    let rotSensitivity = 0.01;
+    let wheelSensitivity = 0.01;
+    let movSensitivity = 0.01;
+    cv.onmousedown = e => {
+        if (e.button === 1) mbDraging = true;
+        if (e.button === 2) rbDraging = true;
+    }
+    cv.onmouseup = e => {
+        if (e.button === 1) mbDraging = false;
+        if (e.button === 2) rbDraging = false;
+    }
+    cv.onmousemove = e => {
+        if (!e.buttons) return;
+        const dx = e.movementX;
+        const dy = e.movementY;
+        if (mbDraging) {
+            rotCamera(dx, dy);
+        } else if (rbDraging) {
+            camera.transform.translate(-dx * movSensitivity, dy * movSensitivity, 0);
+        }
+    }
+    function rotCamera(dx, dy) {
+        let rad = dx * rotSensitivity;
+        if (Math.abs(rad) > Number.EPSILON) {
+            camera.transform.rotateAround([0, 0, 0], [0, 0, 1], -rad, true);
+        }
+        rad = dy * rotSensitivity;
+        if (Math.abs(rad) > Number.EPSILON) {
+            let xAxis = camera.transform.xAxis;
+            camera.transform.rotateAround([0, 0, 0], xAxis, -rad, true);
+        }
+    }
+    cv.onwheel = e => {
+        const dz = e.wheelDelta * wheelSensitivity;
+        camera.transform.translate(0, 0, dz);
+    }
+    cv.oncontextmenu = e => e.preventDefault();
+
+    const vShader = gl.createShader(gl.VERTEX_SHADER);
+    const fShader = gl.createShader(gl.FRAGMENT_SHADER);
+    gl.shaderSource(vShader, `#version 300 es
+        layout(location=0) in vec4 apos;
+        layout(location=1) in vec3 anormal;
+
+        uniform mat4 uMVPmat;        
+        uniform mat4 uMmat;
+        uniform vec4 uClipPlane;//Ax+By+Cz+D=0
+
+        out vec3 vNormal;  
+        out float vClipDist;      
+        void main(){
+            gl_Position=uMVPmat * apos;
+            vNormal =  (uMmat * vec4(anormal, 0.)).xyz;            
+            vec4 pos = uMmat * apos;
+            vClipDist = dot(pos.xyz, uClipPlane.xyz) + uClipPlane.w;
+        }
+    `);
+    gl.shaderSource(fShader, `#version 300 es
+        precision mediump float;
+
+        in vec3 vNormal;
+        in float vClipDist;
+        out vec4 fragColor;     
+        
+        void main(){       
+            if(vClipDist < 0.0) discard;
+            fragColor = gl_FrontFacing ?  vec4(abs(vNormal), 1.) : vec4(1., 1., 0., 1.);
+        }
+    `);
+    const program = gl.createProgram();
+    gl.attachShader(program, vShader);
+    gl.attachShader(program, fShader);
+
+    gl.compileShader(vShader);
+    gl.compileShader(fShader);
+    gl.linkProgram(program);
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+        console.error("link error: ", gl.getProgramInfoLog(program));
+        console.error("vShader info: ", gl.getShaderInfoLog(vShader));
+        console.error("fShader info: ", gl.getShaderInfoLog(fShader));
+    }
+
+    const uniformCounts = gl.getProgramParameter(program, gl.ACTIVE_UNIFORMS);
+    for (let i = 0; i < uniformCounts; i++) {
+        const info = gl.getActiveUniform(program, i);
+        program[info.name] = gl.getUniformLocation(program, info.name);
+    }
+
+    gl.enable(gl.DEPTH_TEST);
+    // gl.enable(gl.CULL_FACE);
+
+
+    const sphere = new MyGeometry.Sphere();
+    const plane = new MyGeometry.Plane();
+    plane.createVAO(gl, () => {
+        plane.createVBOvertices(gl, 0, gl.STATIC_DRAW);
+        plane.createVBOnormals(gl, 1, gl.STATIC_DRAW);
+        plane.createVBOIndices(gl, gl.STATIC_DRAW);
+    });
+    sphere.createVAO(gl, () => {
+        sphere.createVBOvertices(gl, 0, gl.STATIC_DRAW);
+        sphere.createVBOnormals(gl, 1, gl.STATIC_DRAW);
+        sphere.createVBOIndices(gl, gl.STATIC_DRAW);
+    });
+
+    plane.transform.scale(10, 10, 10);
+    sphere.transform.translate(0, 0, 0.5);
+
+    const clipPlane = new MyVector3([-1, -1, -1]).normalized();
+    function draw() {
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        const mVP = camera.getViewProjectMatrix();
+        const mV = camera.getViewMatrix();
+        gl.useProgram(program);
+
+
+        gl.uniform4fv(program.uClipPlane, new Float32Array([...clipPlane, clipDist]));
+
+        gl.uniformMatrix4fv(program.uMVPmat, false, mVP.multiply(plane.transform));
+        gl.uniformMatrix4fv(program.uMmat, false, plane.transform);
+        plane.draw(gl);
+
+        gl.uniformMatrix4fv(program.uMVPmat, false, mVP.multiply(sphere.transform));
+        gl.uniformMatrix4fv(program.uMmat, false, sphere.transform);
+        sphere.draw(gl);
+        requestAnimationFrame(draw);
+    }
+    draw();
+}
+
+
