@@ -65,4 +65,8 @@ export default class MyInputFile extends HTMLElement {
 }
 MyInputFile.TAG = "my-input-file";
 MyInputFile.ID = "uploadicon";
-customElements.define(MyInputFile.TAG, MyInputFile);
+try {
+  customElements.define(MyInputFile.TAG, MyInputFile);
+} catch (error) {
+  console.warn(error);
+}

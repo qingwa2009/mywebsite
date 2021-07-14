@@ -985,8 +985,8 @@ export default class MyTable extends HTMLElement {
 
 
     /**
-	 * @param {{title:string, data:{col:string, width:number}[]}} setting 
-	 */
+     * @param {{title:string, data:{col:string, width:number}[]}} setting 
+     */
     _saveSettingInLocal(setting) {
         let settings = localStorage.getItem(MyTable.LOCAL_SETTING_NAME);
         if (!settings || typeof settings !== "object") {
@@ -1393,5 +1393,8 @@ MyTable.TBody_MenuItems = [
     { title: "选中行所在列求和", func: MyTable._sumSelectedColumn, disabled: false },
 ];
 MyTable.LOCAL_SETTING_NAME = "tableSettings"
-
-customElements.define(MyTable.TAG, MyTable);
+try {
+    customElements.define(MyTable.TAG, MyTable);
+} catch (error) {
+    console.warn(error);
+}

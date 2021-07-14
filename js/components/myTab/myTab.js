@@ -401,6 +401,9 @@ MyTab.IDSURFIX = { TITLE: "_ttl", CLS: "_cls", PAGE: "_pge" };
 MyTab.CLASSES = { TAB: "tab", TITLE: "title", CLS: "cls", PAGE: "page", alert: "alert" };
 MyTab.CLOSETYPE = { ALL: 0, ME: 2, OTHERS: 1 };
 MyTab.MAX_TAB_PAGE = 50;
-
-customElements.define(MyTab.TAG, MyTab);
+try {
+	customElements.define(MyTab.TAG, MyTab);
+} catch (error) {
+	console.warn(error);
+}
 

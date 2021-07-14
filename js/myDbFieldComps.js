@@ -279,8 +279,11 @@ MyDbFieldComps.MyInput.FIELD_LIKE_TYPE = {
     Both: "both",
 }
 MyDbFieldComps.MyInput.COMPARE_TYPES = ["=", "<=", "<", ">=", ">"];
-
-customElements.define(MyDbFieldComps.MyInput.TAG, MyDbFieldComps.MyInput, { extends: "input" });
+try {
+    customElements.define(MyDbFieldComps.MyInput.TAG, MyDbFieldComps.MyInput, { extends: "input" });
+} catch (error) {
+    console.warn(error);
+}
 
 
 const URL_GET_LIST_ITEMS = "/myplm/getlist";
@@ -396,5 +399,8 @@ MyDbFieldComps.MySelect.ATTR_FIELD_ROWFILTER = "fieldrowfilter";
 MyDbFieldComps.MySelect.ATTR_FIELD_LIKE = "fieldlike";
 /**默认值 */
 MyDbFieldComps.MySelect.ATTR_FIELD_DEFAULT_VALUE = "defaultvalue";
-
-customElements.define(MyDbFieldComps.MySelect.TAG, MyDbFieldComps.MySelect, { extends: "select" });
+try {
+    customElements.define(MyDbFieldComps.MySelect.TAG, MyDbFieldComps.MySelect, { extends: "select" });
+} catch (error) {
+    console.warn(error);
+}

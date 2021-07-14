@@ -320,4 +320,8 @@ MyMenu.TYPES = {
     /**菜单栏下拉菜单 1*/
     MENU: 1,
 };
-customElements.define(MyMenu.TAG, MyMenu);
+try {
+    customElements.define(MyMenu.TAG, MyMenu);
+} catch (error) {
+    console.warn(error);
+}

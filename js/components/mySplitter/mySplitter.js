@@ -74,5 +74,8 @@ export default class MySplitter extends HTMLElement {
 MySplitter.TAG = "my-splitter";
 MySplitter.TYPE = { horizontal: "horizontal", vertical: "vertical" }
 MySplitter.EDIT = { prev: "editprev", next: "editnext", both: "editboth" }
-
-customElements.define(MySplitter.TAG, MySplitter);
+try {
+  customElements.define(MySplitter.TAG, MySplitter);
+} catch (error) {
+  console.warn(error);
+}
