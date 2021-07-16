@@ -168,10 +168,23 @@ window.addEventListener('DOMContentLoaded', () => {
 				li.classList.add("myfile");
 				if (!notifyList.has(fn)) {
 					notifyList.set(fn, true);
-					new Notification(`导出完成！`, { body: `${fnn}导出完成！\n(请拖到桌面下载，或者右键下载！下载完记得右键删除！)` });
+					showNotification(`导出完成！`, `${fnn}导出完成！\n(请拖到桌面下载，或者右键下载！下载完记得右键删除！)`);
 				}
 			}
 			ol.appendChild(li);
+		}
+	}
+
+	function showNotification(title, body) {
+		if (!window.Notification) return;
+		if (window.Notification.permission === "denied") return;
+
+		if (window.Notification.permission === "granted") {
+			new Notification(title, { body });
+		} else {
+			window.Notification.requestPermission().then((permission) => {
+				if (permission === "granted") new Notification(title, { body });
+			})
 		}
 	}
 
