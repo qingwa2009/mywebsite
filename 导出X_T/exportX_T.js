@@ -152,6 +152,7 @@ window.addEventListener('DOMContentLoaded', () => {
 		}
 	}
 
+	const notifyList = new Map();
 	function loadExported(list) {
 		let ol = emExported.getElementsByTagName("ol")[0];
 		ol.innerHTML = "";
@@ -165,7 +166,10 @@ window.addEventListener('DOMContentLoaded', () => {
 			if (uploadingFiles.has(fn)) {
 				// uploadingFiles.delete(fn);
 				li.classList.add("myfile");
-				// new Notification(`导出完成！`, { body: `${fnn}导出完成！\n(请拖到桌面下载，或者右键下载！)` });
+				if (!notifyList.has(fn)) {
+					notifyList.set(fn, true);
+					new Notification(`导出完成！`, { body: `${fnn}导出完成！\n(请拖到桌面下载，或者右键下载！下载完记得右键删除！)` });
+				}
 			}
 			ol.appendChild(li);
 		}
