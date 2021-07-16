@@ -92,20 +92,25 @@ window.addEventListener('DOMContentLoaded', () => {
 
 	var worker = undefined;
 	var pg = document.getElementById("pg");
+	const uploadingFiles = new Map();
 	function upload(file) {
 		pg.value = 0;
+		const fn = file.name.replace(/\s/ig, " ");//所有空白字符替换成空格，与后端保持一致
 		if (worker === undefined) {
 			worker = new Worker("./uploadFileWorker.js");
 			worker.onmessage = (e) => {
 				console.log(e.data);
 				pg.value = Math.round(e.data.value);
 				if (e.data.error) {
+					uploadingFiles.delete(fn);
 					alert(e.data.error);
 				} else if (e.data.EOF) {
 					refresh();
+
 				}
 			}
 		}
+		uploadingFiles.set(fn, true);
 		worker.postMessage({
 			"file": file,
 			"url": cmdUpload
@@ -138,7 +143,11 @@ window.addEventListener('DOMContentLoaded', () => {
 		ol.innerHTML = "";
 		for (let i = 0; i < list.length; i++) {
 			let li = document.createElement("li");
-			li.textContent = list[i];
+			const fn = list[i];
+			li.textContent = fn;
+			if (uploadingFiles.has(fn)) {
+				li.classList.add("myfile");
+			}
 			ol.appendChild(li);
 		}
 	}
@@ -148,9 +157,16 @@ window.addEventListener('DOMContentLoaded', () => {
 		ol.innerHTML = "";
 		for (let i = 0; i < list.length; i++) {
 			let li = document.createElement("li");
-			li.textContent = list[i];
+			const fnn = list[i];
+			li.textContent = fnn;
 			li.setAttribute("draggable", true);
 			li.ondragstart = onDragStart;
+			const fn = fnn.substr(0, fnn.length - 4);
+			if (uploadingFiles.has(fn)) {
+				// uploadingFiles.delete(fn);
+				li.classList.add("myfile");
+				// new Notification(`导出完成！`, { body: `${fnn}导出完成！\n(请拖到桌面下载，或者右键下载！)` });
+			}
 			ol.appendChild(li);
 		}
 	}
