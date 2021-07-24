@@ -105,6 +105,10 @@ export class MyVector3 extends Float32Array {
         return result;
     }
 
+    distance() {
+        return Math.hypot(this[0], this[1], this[2]);
+    }
+
 }
 
 /**

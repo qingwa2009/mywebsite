@@ -9,6 +9,12 @@ export default class MyCamera {
     constructor(fov, aspectRatio, near, far) {
         this.transform = new MyMatrix4x4();
         this.updatePersperctiveMatrix(fov, aspectRatio, near, far);
+
+        this.mbDraging = false;
+        this.rbDraging = false;
+        this.rotSensitivity = 0.01;
+        this.wheelSensitivity = 0.01;
+        this.movSensitivity = 0.01;
     }
 
 
@@ -88,6 +94,46 @@ export default class MyCamera {
 
     get far() {
         return this._far;
+    }
+
+
+    /**
+     * @param {HTMLElement} em 
+     */
+    mouseControl(em) {
+        em.addEventListener("mousedown", e => {
+            if (e.button === 1) this.mbDraging = true;
+            if (e.button === 2) this.rbDraging = true;
+        });
+        em.addEventListener("mouseup", e => {
+            if (e.button === 1) this.mbDraging = false;
+            if (e.button === 2) this.rbDraging = false;
+        });
+        em.addEventListener("mousemove", e => {
+            if (!e.buttons) return;
+            const dx = e.movementX;
+            const dy = e.movementY;
+            if (this.mbDraging) {
+                rotCamera.call(this, dx, dy);
+            } else if (this.rbDraging) {
+                this.transform.translate(-dx * this.movSensitivity, dy * this.movSensitivity, 0);
+            }
+        });
+        function rotCamera(dx, dy) {
+            let rad = dx * this.rotSensitivity;
+            if (Math.abs(rad) > Number.EPSILON) {
+                this.transform.rotateAround([0, 0, 0], [0, 0, 1], -rad, true);
+            }
+            rad = dy * this.rotSensitivity;
+            if (Math.abs(rad) > Number.EPSILON) {
+                let xAxis = this.transform.xAxis;
+                this.transform.rotateAround([0, 0, 0], xAxis, -rad, true);
+            }
+        }
+        em.addEventListener("wheel", e => {
+            const dz = e.wheelDelta * this.wheelSensitivity;
+            this.transform.translate(0, 0, dz);
+        });
     }
 }
 

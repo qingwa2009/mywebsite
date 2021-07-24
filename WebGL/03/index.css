@@ -1,0 +1,36 @@
+@charset "utf-8";
+html,body {
+	width: 100%;
+	height: 100%;
+	margin: 0;
+}
+body{
+	position: relative;
+	z-index: 0;
+}
+div{
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	z-index: -1;
+	display: block;
+	top: 0;	
+}
+canvas{
+	width: 100%;
+	height: 100%;
+	background-color: antiquewhite;
+	position: absolute;
+}
+
+input[type="range"],input[type="color"],input[type="button"],input[type="file"], .mip, input[type="checkbox"]{
+	position: relative;
+	right: -100%;
+	display: block;
+	top: 0;
+	transform: translateX(-140%);
+}
+
+input:not(:checked) + div{
+	display: none;
+}
