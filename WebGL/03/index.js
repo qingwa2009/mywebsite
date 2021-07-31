@@ -604,23 +604,23 @@ function cv2(cvi) {
         layout(location=0) in vec4 aPos;
         layout(location=1) in vec3 aNormal;
         layout(location=2) in vec2 aUV;
-        layout(location=3) in vec4 aTangent; 
+        layout(location=3) in vec3 aTangent; 
 
         out vec2 vUV;
         out vec3 vNormal;
         out vec3 vTangent;
         out vec3 vBinormal;
 
-        vec3 createBinormal(vec3 normal, vec3 tangent, float sign){
-            return cross(normal, tangent.xyz) * sign;
+        vec3 createBinormal(vec3 normal, vec3 tangent){
+            return cross(normal, tangent);
         }
 
         void main(){
             gl_Position=uMVPmat * aPos;            
             vUV = aUV * uScale;
             vNormal =normalize((uMmat * vec4(aNormal, c0)).xyz);
-            vTangent=normalize((uMmat * vec4(aTangent.xyz, c0)).xyz);
-            vBinormal = createBinormal(vNormal, vTangent, aTangent.w);
+            vTangent=normalize((uMmat * vec4(aTangent, c0)).xyz);
+            vBinormal = createBinormal(vNormal, vTangent);
         }
     `);
     const fShader = MyGLProgram.FShader.create(gl, `#version 300 es
@@ -851,7 +851,7 @@ function cv3(cvi) {
         layout(location=0) in vec4 aPos;
         layout(location=1) in vec3 aNormal;
         layout(location=2) in vec2 aUV;
-        layout(location=3) in vec4 aTangent; 
+        layout(location=3) in vec3 aTangent; 
 
         out vec2 vUV;
         out vec3 vNormal;
@@ -859,12 +859,12 @@ function cv3(cvi) {
         out vec3 vBinormal;
         out vec3 vViewDirInTangentSpace;
 
-        vec3 createBinormal(vec3 normal, vec3 tangent, float sign){
-            return cross(normal, tangent.xyz) * sign;
+        vec3 createBinormal(vec3 normal, vec3 tangent){
+            return cross(normal, tangent);
         }
         
-        vec3 viewDirInTangentSpace(vec3 normal, vec3 tangent, float tangentSign, vec3 vertexPos, vec3 viewPosInObjectSpace){
-            mat3 obj2Tangent=inverse(mat3(tangent, createBinormal(normal, tangent, tangentSign), normal));
+        vec3 viewDirInTangentSpace(vec3 normal, vec3 tangent, vec3 vertexPos, vec3 viewPosInObjectSpace){
+            mat3 obj2Tangent=inverse(mat3(tangent, createBinormal(normal, tangent), normal));
             vec3 viewDir = viewPosInObjectSpace - vertexPos;
             return obj2Tangent * viewDir;
         }
@@ -873,10 +873,10 @@ function cv3(cvi) {
             gl_Position=uMVPmat * aPos;            
             vUV = aUV * uScale;
             vNormal =normalize((uMmat * vec4(aNormal, c0)).xyz);
-            vTangent=normalize((uMmat * vec4(aTangent.xyz, c0)).xyz);
-            vBinormal = createBinormal(vNormal, vTangent, aTangent.w);
+            vTangent=normalize((uMmat * vec4(aTangent, c0)).xyz);
+            vBinormal = createBinormal(vNormal, vTangent);
             
-            vViewDirInTangentSpace = viewDirInTangentSpace(aNormal, aTangent.xyz, aTangent.w, aPos.xyz, uViewPosInObjSpace);
+            vViewDirInTangentSpace = viewDirInTangentSpace(aNormal, aTangent, aPos.xyz, uViewPosInObjSpace);
         }
     `);
     const fShader = MyGLProgram.FShader.create(gl, `#version 300 es
@@ -935,12 +935,24 @@ function cv3(cvi) {
             return texture(tex, uv).rgb * 2.0 -1.0;
         }
 
-        void applyParallax(inout vec2 uv, vec3 viewDirInTangentSpace, sampler2D texHeight){
-            float height = texture(texHeight, uv).g;
+        float getParallaxHeight(vec2 uv, sampler2D texHeight){
+            return texture(texHeight, uv).g;
+        }
+
+        vec2 parallaxOffset(vec2 uv, vec3 viewDir, sampler2D texHeight){
+            float height = getParallaxHeight(uv, texHeight);
+            height -= 0.5;
             height *= uParallax;
+            viewDir.xy /= viewDir.z;
+            return viewDir.xy * height;
+        }
+
+        void applyParallax(inout vec2 uv, vec3 viewDirInTangentSpace, sampler2D texHeight){
             viewDirInTangentSpace.y = -viewDirInTangentSpace.y;
             // viewDirInTangentSpace.xy /= (viewDirInTangentSpace.z + 0.42);
-            uv += viewDirInTangentSpace.xy * height;
+
+            vec2 uvOffset=parallaxOffset(uv, viewDirInTangentSpace, texHeight);
+            uv += uvOffset;
         }
 
         void main(){    
@@ -974,6 +986,7 @@ function cv3(cvi) {
     const sphere = new MyGeometry.Sphere();
     const plane = new MyGeometry.Plane();
     const cube = new MyGeometry.Cube();
+
 
     plane.createVAOAll(gl, gl.STATIC_DRAW);
     cube.createVAOAll(gl, gl.STATIC_DRAW);
@@ -1220,7 +1233,7 @@ function cv4(cvi) {
         layout(location=0) in vec4 aPos;
         layout(location=1) in vec3 aNormal;
         layout(location=2) in vec2 aUV;
-        layout(location=3) in vec4 aTangent; 
+        layout(location=3) in vec3 aTangent; 
 
         out vec2 vUV;
         out vec3 vNormal;
@@ -1228,12 +1241,12 @@ function cv4(cvi) {
         out vec3 vBinormal;
         out vec3 vViewDirInTangentSpace;
 
-        vec3 createBinormal(vec3 normal, vec3 tangent, float sign){
-            return cross(normal, tangent.xyz) * sign;
+        vec3 createBinormal(vec3 normal, vec3 tangent){
+            return cross(normal, tangent);
         }
         
-        vec3 viewDirInTangentSpace(vec3 normal, vec3 tangent, float tangentSign, vec3 vertexPos, vec3 viewPosInObjectSpace){
-            mat3 obj2Tangent=inverse(mat3(tangent, createBinormal(normal, tangent, tangentSign), normal));
+        vec3 viewDirInTangentSpace(vec3 normal, vec3 tangent, vec3 vertexPos, vec3 viewPosInObjectSpace){
+            mat3 obj2Tangent=inverse(mat3(tangent, createBinormal(normal, tangent), normal));
             vec3 viewDir = viewPosInObjectSpace - vertexPos;
             return obj2Tangent * viewDir;
         }
@@ -1242,10 +1255,10 @@ function cv4(cvi) {
             gl_Position=uMVPmat * aPos;            
             vUV = aUV * uScale;
             vNormal =normalize((uMmat * vec4(aNormal, c0)).xyz);
-            vTangent=normalize((uMmat * vec4(aTangent.xyz, c0)).xyz);
-            vBinormal = createBinormal(vNormal, vTangent, aTangent.w);
+            vTangent=normalize((uMmat * vec4(aTangent, c0)).xyz);
+            vBinormal = createBinormal(vNormal, vTangent);
             
-            vViewDirInTangentSpace = viewDirInTangentSpace(aNormal, aTangent.xyz, aTangent.w, aPos.xyz, uViewPosInObjSpace);
+            vViewDirInTangentSpace = viewDirInTangentSpace(aNormal, aTangent, aPos.xyz, uViewPosInObjSpace);
         }
     `);
     /**
@@ -1326,7 +1339,7 @@ function cv4(cvi) {
         vec2 parallaxOffsetRaymarching(vec2 uv, vec3 viewDir, sampler2D texHeight){
             float count = uRaymarchingStep;
             float dz= 1./count;
-            viewDir /= viewDir.z;
+            viewDir.xy /= viewDir.z;
             vec2 uvOffset = viewDir.xy * uParallax;
             vec2 dOffset = uvOffset * dz;
             
@@ -1417,6 +1430,8 @@ function cv4(cvi) {
     const plane = new MyGeometry.Plane();
     const cube = new MyGeometry.Cube();
 
+
+
     plane.createVAOAll(gl, gl.STATIC_DRAW);
     cube.createVAOAll(gl, gl.STATIC_DRAW);
     sphere.createVAOAll(gl, gl.STATIC_DRAW);
@@ -1490,7 +1505,7 @@ function cv4(cvi) {
     emUVDetailScale.oninput();
 
     let parallax = 0;
-    const emParallax = document.getElementById("parallax");
+    const emParallax = document.getElementById("parallax1");
     emParallax.oninput = e => {
         parallax = emParallax.value;
     }

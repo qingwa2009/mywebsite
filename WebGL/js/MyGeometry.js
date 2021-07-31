@@ -86,7 +86,7 @@ export default class MyGeometry {
     }
 
     get tangentPointerSize() {
-        return 4;//x,y,z,w w 1 or -1 -1 means negative binormal
+        return 3;
     }
 
     get uvPointerSize() {
@@ -149,6 +149,118 @@ MyGeometry.attrb_normal_location = 1;
 MyGeometry.attrb_uv_location = 2;
 MyGeometry.attrb_tangent_location = 3;
 
+/**
+ * 生成顶点切线与副法线
+ * @param {number[]} vs 顶点
+ * @param {number} vSize 单个顶点数据个数
+ * @param {number[]} ns 法线
+ * @param {number} nSize 单个法线数据个数
+ * @param {number[]} uvs uv
+ * @param {number} uvSize 单个uv数据个数
+ * @param {number[]} indices 顶点索引
+ * @returns {{tangents:number[], binormals:number[]}}
+ */
+MyGeometry.createTangent = function (vs, vSize, ns, nSize, uvs, uvSize, indices) {
+    const tangents = [];
+    const binormals = [];
+    const n = indices.length;
+    for (let i = 0; i < n; i += 3) {
+        let ind;
+        let ii;
+        ind = indices[i];
+        ii = ind * vSize;
+        const v00 = vs[ii], v01 = vs[ii + 1], v02 = vs[ii + 2];
+        ii = ind * nSize;
+        const n00 = ns[ii], n01 = ns[ii + 1], n02 = ns[ii + 2];
+        ii = ind * uvSize;
+        const uv00 = uvs[ii], uv01 = uvs[ii + 1];
+
+        ind = indices[i + 1];
+        ii = ind * vSize;
+        const v10 = vs[ii], v11 = vs[ii + 1], v12 = vs[ii + 2];
+        ii = ind * nSize;
+        const n10 = ns[ii], n11 = ns[ii + 1], n12 = ns[ii + 2];
+        ii = ind * uvSize;
+        const uv10 = uvs[ii], uv11 = uvs[ii + 1];
+
+        ind = indices[i + 2];
+        ii = ind * vSize;
+        const v20 = vs[ii], v21 = vs[ii + 1], v22 = vs[ii + 2];
+        ii = ind * nSize;
+        const n20 = ns[ii], n21 = ns[ii + 1], n22 = ns[ii + 2];
+        ii = ind * uvSize;
+        const uv20 = uvs[ii], uv21 = uvs[ii + 1];
+
+        const E10 = v10 - v00, E11 = v11 - v01, E12 = v12 - v02;
+        const E20 = v20 - v00, E21 = v21 - v01, E22 = v22 - v02;
+        const U1 = uv10 - uv00, V1 = uv11 - uv01;
+        const U2 = uv20 - uv00, V2 = uv21 - uv01;
+
+        const e = U2 * V1 - U1 * V2;
+        const
+            t0 = (V1 * E20 - V2 * E10) / e,
+            t1 = (V1 * E21 - V2 * E11) / e,
+            t2 = (V1 * E22 - V2 * E12) / e;
+        let B0, B1, B2;
+        let T0, T1, T2;
+        let S;
+
+        ii = indices[i] * 3;
+        if (tangents[ii] === undefined) {
+            B0 = n01 * t2 - n02 * t1;
+            B1 = n02 * t0 - n00 * t2;
+            B2 = n00 * t1 - n01 * t0;
+            T0 = B1 * n02 - B2 * n01;
+            T1 = B2 * n00 - B0 * n02;
+            T2 = B0 * n01 - B1 * n00;
+            S = Math.hypot(T0, T1, T2);
+            tangents[ii] = T0 / S;
+            tangents[ii + 1] = T1 / S;
+            tangents[ii + 2] = T2 / S;
+            S = Math.hypot(B0, B1, B2);
+            binormals[ii] = B0 / S;
+            binormals[ii + 1] = B1 / S;
+            binormals[ii + 2] = B2 / S;
+        }
+
+        ii = indices[i + 1] * 3;
+        if (tangents[ii] === undefined) {
+            B0 = n11 * t2 - n12 * t1;
+            B1 = n12 * t0 - n10 * t2;
+            B2 = n10 * t1 - n11 * t0;
+            T0 = B1 * n12 - B2 * n11;
+            T1 = B2 * n10 - B0 * n12;
+            T2 = B0 * n11 - B1 * n10;
+            S = Math.hypot(T0, T1, T2);
+            tangents[ii] = T0 / S;
+            tangents[ii + 1] = T1 / S;
+            tangents[ii + 2] = T2 / S;
+            S = Math.hypot(B0, B1, B2);
+            binormals[ii] = B0 / S;
+            binormals[ii + 1] = B1 / S;
+            binormals[ii + 2] = B2 / S;
+        }
+
+        ii = indices[i + 2] * 3;
+        if (tangents[ii] === undefined) {
+            B0 = n21 * t2 - n22 * t1;
+            B1 = n22 * t0 - n20 * t2;
+            B2 = n20 * t1 - n21 * t0;
+            T0 = B1 * n22 - B2 * n21;
+            T1 = B2 * n20 - B0 * n22;
+            T2 = B0 * n21 - B1 * n20;
+            S = Math.hypot(T0, T1, T2);
+            tangents[ii] = T0 / S;
+            tangents[ii + 1] = T1 / S;
+            tangents[ii + 2] = T2 / S;
+            S = Math.hypot(B0, B1, B2);
+            binormals[ii] = B0 / S;
+            binormals[ii + 1] = B1 / S;
+            binormals[ii + 2] = B2 / S;
+        }
+    }
+    return { tangents, binormals };
+}
 
 /**
  * @param {WebGL2RenderingContext} gl  
@@ -191,8 +303,8 @@ MyGeometry.Plane = class extends MyGeometry {
             0, 0, 1, 0,
         ]);
         this.tangents = new Float32Array([
-            1, 0, 0, 1, 1, 0, 0, 1,
-            1, 0, 0, 1, 1, 0, 0, 1,
+            1, 0, 0, 1, 0, 0,
+            1, 0, 0, 1, 0, 0,
         ]);
         this.indices = new Uint8Array([
             0, 1, 2, 1, 3, 2,
@@ -286,12 +398,12 @@ MyGeometry.Cube = class extends MyGeometry {
             0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0,
         ]);
         this.tangents = new Float32Array([
-            1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1,
-            0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1,
-            -1, 0, 0, 1, -1, 0, 0, 1, -1, 0, 0, 1, -1, 0, 0, 1,
-            0, 0, -1, 1, 0, 0, -1, 1, 0, 0, -1, 1, 0, 0, -1, 1,
-            1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1,
-            1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1,
+            1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0,
+            0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1,
+            -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0,
+            0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1,
+            1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0,
+            1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0,
         ]);
         this.uvs = new Float32Array([
             0.50, 0.25, 0.50, 0.50, 0.25, 0.25, 0.25, 0.50,
@@ -362,7 +474,7 @@ MyGeometry.Sphere = class extends MyGeometry {
         for (let i = 0; i < seg; i++) {
             vertices.push(0, 0, r);
             normals.push(0, 0, 1);
-            tangents.push(-Math.sin(ta), Math.cos(ta), 0, 1);
+            tangents.push(-Math.sin(ta), Math.cos(ta), 0);
             ta += da;
 
             uvs.push(u, v);
@@ -390,7 +502,7 @@ MyGeometry.Sphere = class extends MyGeometry {
 
                 vertices.push(x, y, z);
                 normals.push(cosb * sina, sinb * sina, cosa);
-                tangents.push(-sinb, cosb, 0, 1);
+                tangents.push(-sinb, cosb, 0);
 
                 uvs.push(u, v);
 
@@ -414,8 +526,8 @@ MyGeometry.Sphere = class extends MyGeometry {
         for (let i = 0; i < seg; i++) {
             vertices.push(0, 0, -r);
             normals.push(0, 0, -1);
-            const ii = i * 4;
-            tangents.push(tangents[ii], tangents[ii + 1], tangents[ii + 2], tangents[ii + 3]);
+            const ii = i * 3;
+            tangents.push(tangents[ii], tangents[ii + 1], tangents[ii + 2]);
             uvs.push(u, v);
             u += du;
             indices.push(ind, ind - seg, ind - seg - 1);
