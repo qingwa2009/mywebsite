@@ -42,13 +42,25 @@ function getColorFromInputElement(em) {
 
 //height map transfer to normal map
 function cv0(cvi) {
-    const imgs = document.getElementsByTagName("img");
-    const img = imgs[0];
+    const img = document.getElementById("heightMap");
     const cv = document.getElementsByTagName("canvas")[cvi];
     cv.width = img.width;// cv.clientWidth;
     cv.height = img.height;// cv.clientHeight;
 
     const gl = cv.getContext("webgl2");
+
+    const emKeepRatio = document.getElementById("keepRatio");
+    emKeepRatio.onchange = () => {
+        // console.log(emKeepRatio);
+        if (emKeepRatio.checked) {
+            cv.style.width = cv.width + "px";
+            cv.style.height = cv.height + "px";
+        } else {
+            cv.style.width = "100%";
+            cv.style.height = "100%";
+        }
+    }
+    emKeepRatio.onchange();
 
     const camera = new MyCamera(Math.PI / 4, gl.drawingBufferWidth / gl.drawingBufferHeight, 0.1, 200);
     camera.transform.rotateX(Math.PI / 4);
@@ -151,12 +163,7 @@ function cv0(cvi) {
     gl.enable(gl.CULL_FACE);
 
     const plane = new MyGeometry.Plane();
-    plane.createVAO(gl, () => {
-        plane.createVBOvertices(gl, 0, gl.STATIC_DRAW);
-        plane.createVBOnormals(gl, 1, gl.STATIC_DRAW);
-        plane.createVBOuvs(gl, 2, gl.STATIC_DRAW);
-        plane.createVBOIndices(gl, gl.STATIC_DRAW);
-    });
+    plane.createVAOAll(gl, gl.STATIC_DRAW);
 
     const tex = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, tex);
@@ -164,6 +171,7 @@ function cv0(cvi) {
     gl.texParameterf(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, img);
 
+    let updating = false;
     /**@type{HTMLInputElement} */
     const file = document.querySelectorAll("input[type='file']")[0];
     file.onchange = e => {
@@ -177,15 +185,20 @@ function cv0(cvi) {
                 gl.bindTexture(gl.TEXTURE_2D, tex);
                 gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, img);
             }
+            updating = true;
         }
     }
 
     let hScale = 1;
+
     const emHScale = document.getElementById("hScale");
     emHScale.oninput = e => {
         hScale = emHScale.value;
+        updating = true;
     }
     emHScale.oninput();
+
+
 
     function draw() {
         const mVP = camera.getViewProjectMatrix();
@@ -204,6 +217,10 @@ function cv0(cvi) {
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         plane.draw(gl);
 
+        if (updating) {
+            updating = false;
+            document.getElementById("outNormalMap").src = createNormalMapURL();
+        }
         if (saving) {
             saving = false;
             saveAsFile();
@@ -217,10 +234,7 @@ function cv0(cvi) {
     /**@type{CanvasRenderingContext2D} */
     let ctxSave = null;
 
-    btns[0].onclick = e => {
-        saving = true;
-    }
-    function saveAsFile() {
+    function createNormalMapURL() {
         // gl.readBuffer(gl.COLOR_ATTACHMENT0);
         const pixels = new Uint8Array(gl.drawingBufferWidth * gl.drawingBufferHeight * 4);
         gl.readPixels(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
@@ -243,12 +257,16 @@ function cv0(cvi) {
                 k++;
             }
         }
-
         ctxSave.putImageData(imgdata, 0, 0);
-        // ctxSave.drawImage(gl.canvas, 0, 0, w, h, 0, 0, w, h);
-        download(ctxSave.canvas.toDataURL("image/png"));
+        return ctxSave.canvas.toDataURL("image/png");
     }
 
+    btns[0].onclick = e => {
+        saving = true;
+    }
+    function saveAsFile() {
+        download(createNormalMapURL);
+    }
     let downloadA = null;
     function download(url) {
         if (!downloadA) downloadA = document.createElement("a");
@@ -262,8 +280,7 @@ function cv0(cvi) {
 
 //height map
 function cv1(cvi) {
-    const imgs = document.getElementsByTagName("img");
-    const img = imgs[0];
+    const img = document.getElementById("heightMap");
     const cv = document.getElementsByTagName("canvas")[cvi];
     cv.width = img.width;// cv.clientWidth;
     cv.height = img.height;// cv.clientHeight;
@@ -550,8 +567,7 @@ let anim = false;
 
 //normal map
 function cv2(cvi) {
-    const imgs = document.getElementsByTagName("img");
-    const img = imgs[1];
+    const img = document.getElementById("outNormalMap");
     const cv = document.getElementsByTagName("canvas")[cvi];
     cv.width = img.width;// cv.clientWidth;
     cv.height = img.height;// cv.clientHeight;
@@ -792,13 +808,10 @@ function cv2(cvi) {
 
 //parallax map
 function cv3(cvi) {
-    const imgs = document.getElementsByTagName("img");
-    const imgNormal = imgs[1];
-    const imgHeight = imgs[2];
-    const imgDetail = imgs[3];
-    const imgColor = imgs[4];
-    const imgNormal1 = imgs[5];
-    const imgHeight1 = imgs[6];
+    const imgHeight = document.getElementById("heightMap");
+    const imgNormal = document.getElementById("outNormalMap");
+    const imgGrid = document.getElementById("gridMap");
+    const imgDiffuse = document.getElementById("diffuseMap");
 
     const cv = document.getElementsByTagName("canvas")[cvi];
 
@@ -864,9 +877,12 @@ function cv3(cvi) {
         }
         
         vec3 viewDirInTangentSpace(vec3 normal, vec3 tangent, vec3 vertexPos, vec3 viewPosInObjectSpace){
-            mat3 obj2Tangent=inverse(mat3(tangent, createBinormal(normal, tangent), normal));
             vec3 viewDir = viewPosInObjectSpace - vertexPos;
-            return obj2Tangent * viewDir;
+            vec3 binormal= createBinormal(normal, tangent);
+            //正交矩阵的逆等于该矩阵的转置
+            // mat3 obj2Tangent=inverse(mat3(tangent, binormal, normal));
+            // return obj2Tangent * viewDir;
+            return viewDir * mat3(tangent, binormal, normal);//transpose(mat3(tangent, binormal, normal));
         }
 
         void main(){
@@ -905,8 +921,8 @@ function cv3(cvi) {
         uniform sampler2D uTexHeight;
         uniform float uParallax;
 
-        uniform sampler2D uDetailTex;
-        uniform vec2 uDetailScale;
+        uniform sampler2D uGridTex;
+        uniform vec2 uGridScale;
 
         in vec3 vNormal;
         in vec3 vTangent;
@@ -965,10 +981,10 @@ function cv3(cvi) {
             n = vTangent * n.x + vBinormal * n.y + vNormal * n.z; 
             n=normalize(n);
 
-            vec2 detailUV=uv * uDetailScale;
+            vec2 detailUV=uv * uGridScale;
             vec4 color = direction_light_color(n);
             color += uLight.color * texture(uTexColor, uv);
-            color *= texture(uDetailTex, detailUV);
+            color *= texture(uGridTex, detailUV);
             // fragColor =vec4((viewDirInTangentSpace + 1.) * 0.5, 1.);     
             fragColor =uShowNormal ? vec4(n, c1) : color;            
         }
@@ -997,9 +1013,9 @@ function cv3(cvi) {
     cube.transform.translate(1.5, 0, 0.5);
     cube.transform.rotateY(Math.PI * 0.5);
 
-    const texColor = gl.createTexture();
-    gl.bindTexture(gl.TEXTURE_2D, texColor);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, imgColor);
+    const texDiffuse = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, texDiffuse);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, imgDiffuse);
     gl.generateMipmap(gl.TEXTURE_2D);
 
     const texNormal = gl.createTexture();
@@ -1017,16 +1033,32 @@ function cv3(cvi) {
     gl.samplerParameteri(smp, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
     gl.samplerParameteri(smp, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
 
-    const texDetail = gl.createTexture();
-    gl.bindTexture(gl.TEXTURE_2D, texDetail);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, imgDetail);
+    const texGrid = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, texGrid);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, imgGrid);
     gl.generateMipmap(gl.TEXTURE_2D);
 
-    const smpDetail = gl.createSampler();
+    const smpGrid = gl.createSampler();
     gl.samplerParameteri(smp, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
     gl.samplerParameteri(smp, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
 
     const lightDir = new MyVector3([0, 10, 10]).normalized();
+
+    /**@type{HTMLInputElement} */
+    const file = document.querySelectorAll("input[type='file']")[1];
+    file.onchange = e => {
+        const f = file.files[0];
+        if (!f) return;
+        const fr = new FileReader();
+        fr.readAsDataURL(f);
+        fr.onloadend = e => {
+            imgDiffuse.src = fr.result;
+            imgDiffuse.onload = e => {
+                gl.bindTexture(gl.TEXTURE_2D, texDiffuse);
+                gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, imgDiffuse);
+            }
+        }
+    }
 
     const emLightAng = document.getElementById("lightAng1");
     emLightAng.oninput = e => {
@@ -1053,12 +1085,12 @@ function cv3(cvi) {
     }
     emUVScale.oninput();
 
-    let uvDetailScale = 1;
-    const emUVDetailScale = document.getElementById("uvDetailScale");
-    emUVDetailScale.oninput = e => {
-        uvDetailScale = emUVDetailScale.value;
+    let uvGridScale = 1;
+    const emUVGridScale = document.getElementById("uvGridScale");
+    emUVGridScale.oninput = e => {
+        uvGridScale = emUVGridScale.value;
     }
-    emUVDetailScale.oninput();
+    emUVGridScale.oninput();
 
     let parallax = 0;
     const emParallax = document.getElementById("parallax");
@@ -1073,28 +1105,13 @@ function cv3(cvi) {
     }
 
 
+    gl.bindTexture(gl.TEXTURE_2D, texNormal);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, imgNormal);
+    gl.generateMipmap(gl.TEXTURE_2D);
 
-    const emTerrain = document.getElementById("terrain");
-    emTerrain.onchange = e => {
-        if (emTerrain.checked) {
-            gl.bindTexture(gl.TEXTURE_2D, texNormal);
-            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, imgNormal1);
-            gl.generateMipmap(gl.TEXTURE_2D);
-
-            gl.bindTexture(gl.TEXTURE_2D, texHeight);
-            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, imgHeight1);
-            gl.generateMipmap(gl.TEXTURE_2D);
-        } else {
-            gl.bindTexture(gl.TEXTURE_2D, texNormal);
-            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, imgNormal);
-            gl.generateMipmap(gl.TEXTURE_2D);
-
-            gl.bindTexture(gl.TEXTURE_2D, texHeight);
-            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, imgHeight);
-            gl.generateMipmap(gl.TEXTURE_2D);
-        }
-    };
-    emTerrain.onchange();
+    gl.bindTexture(gl.TEXTURE_2D, texHeight);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, imgHeight);
+    gl.generateMipmap(gl.TEXTURE_2D);
 
     function draw() {
         if (anim) {
@@ -1140,13 +1157,13 @@ function cv3(cvi) {
         gl.uniform1f(program.uniforms["uParallax"], parallax);
 
         gl.activeTexture(gl.TEXTURE2);
-        gl.bindTexture(gl.TEXTURE_2D, texDetail);
-        gl.bindSampler(2, smpDetail);
-        gl.uniform1i(program.uniforms["uDetailTex"], 2);
-        gl.uniform2f(program.uniforms["uDetailScale"], uvDetailScale, uvDetailScale);
+        gl.bindTexture(gl.TEXTURE_2D, texGrid);
+        gl.bindSampler(2, smpGrid);
+        gl.uniform1i(program.uniforms["uGridTex"], 2);
+        gl.uniform2f(program.uniforms["uGridScale"], uvGridScale, uvGridScale);
 
         gl.activeTexture(gl.TEXTURE3);
-        gl.bindTexture(gl.TEXTURE_2D, texColor);
+        gl.bindTexture(gl.TEXTURE_2D, texDiffuse);
         gl.bindSampler(3, smp);
         gl.uniform1i(program.uniforms["uTexColor"], 3);
 
@@ -1174,13 +1191,10 @@ function cv3(cvi) {
 
 //raymarching
 function cv4(cvi) {
-    const imgs = document.getElementsByTagName("img");
-    const imgNormal = imgs[1];
-    const imgHeight = imgs[2];
-    const imgDetail = imgs[3];
-    const imgColor = imgs[4];
-    const imgNormal1 = imgs[5];
-    const imgHeight1 = imgs[6];
+    const imgHeight = document.getElementById("heightMap");
+    const imgNormal = document.getElementById("outNormalMap");
+    const imgGrid = document.getElementById("gridMap");
+    const imgDiffuse = document.getElementById("diffuseMap");
 
     const cv = document.getElementsByTagName("canvas")[cvi];
 
@@ -1246,9 +1260,12 @@ function cv4(cvi) {
         }
         
         vec3 viewDirInTangentSpace(vec3 normal, vec3 tangent, vec3 vertexPos, vec3 viewPosInObjectSpace){
-            mat3 obj2Tangent=inverse(mat3(tangent, createBinormal(normal, tangent), normal));
             vec3 viewDir = viewPosInObjectSpace - vertexPos;
-            return obj2Tangent * viewDir;
+            vec3 binormal= createBinormal(normal, tangent);
+            //正交矩阵的逆等于该矩阵的转置
+            // mat3 obj2Tangent=inverse(mat3(tangent, binormal, normal));
+            // return obj2Tangent * viewDir;
+            return viewDir * mat3(tangent, binormal, normal);//transpose(mat3(tangent, binormal, normal));
         }
 
         void main(){
@@ -1290,8 +1307,8 @@ function cv4(cvi) {
         uniform sampler2D uTexHeight;
         uniform float uParallax;
 
-        uniform sampler2D uDetailTex;
-        uniform vec2 uDetailScale;
+        uniform sampler2D uGridTex;
+        uniform vec2 uGridScale;
 
         uniform float uRaymarchingStep;
         uniform float uUseBinaryApproach;
@@ -1399,19 +1416,20 @@ function cv4(cvi) {
         }
 
         void main(){    
-            vec2 uv=vUV;                   
+            vec2 uv=vUV; 
             vec3 viewDirInTangentSpace = normalize(vViewDirInTangentSpace);
             applyParallax(uv, viewDirInTangentSpace, uTexHeight);
+            // if(uv.x<0. || uv.x>1. || uv.y<0. || uv.y>1.) discard;
 
             vec3 n = getNormalFromTex(uTexNormal, uv);
             n.z*=uHScale;
             n = vTangent * n.x + vBinormal * n.y + vNormal * n.z; 
             n=normalize(n);
 
-            vec2 detailUV=uv * uDetailScale;
+            vec2 detailUV=uv * uGridScale;
             vec4 color = direction_light_color(n);
             color += uLight.color * texture(uTexColor, uv);
-            color *= texture(uDetailTex, detailUV);
+            color *= texture(uGridTex, detailUV);
             // fragColor =vec4((viewDirInTangentSpace + 1.) * 0.5, 1.);     
             fragColor =uShowNormal ? vec4(n, c1) : color;            
         }
@@ -1441,9 +1459,9 @@ function cv4(cvi) {
     cube.transform.translate(1.5, 0, 0.5);
     cube.transform.rotateY(Math.PI * 0.5);
 
-    const texColor = gl.createTexture();
-    gl.bindTexture(gl.TEXTURE_2D, texColor);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, imgColor);
+    const texDiffuse = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, texDiffuse);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, imgDiffuse);
     gl.generateMipmap(gl.TEXTURE_2D);
 
     const texNormal = gl.createTexture();
@@ -1461,12 +1479,12 @@ function cv4(cvi) {
     gl.samplerParameteri(smp, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
     gl.samplerParameteri(smp, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
 
-    const texDetail = gl.createTexture();
-    gl.bindTexture(gl.TEXTURE_2D, texDetail);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, imgDetail);
+    const texGrid = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, texGrid);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, imgGrid);
     gl.generateMipmap(gl.TEXTURE_2D);
 
-    const smpDetail = gl.createSampler();
+    const smpGrid = gl.createSampler();
     gl.samplerParameteri(smp, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
     gl.samplerParameteri(smp, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
 
@@ -1497,10 +1515,10 @@ function cv4(cvi) {
     }
     emUVScale.oninput();
 
-    let uvDetailScale = 1;
-    const emUVDetailScale = document.getElementById("uvDetailScale");
+    let uvGridScale = 1;
+    const emUVDetailScale = document.getElementById("uvGridScale");
     emUVDetailScale.oninput = e => {
-        uvDetailScale = emUVDetailScale.value;
+        uvGridScale = emUVDetailScale.value;
     }
     emUVDetailScale.oninput();
 
@@ -1531,29 +1549,16 @@ function cv4(cvi) {
         anim = !anim;
     }
 
-    const emTerrain = document.getElementById("terrain");
+
     const emBinaryApproach = document.getElementById("binaryApproach");
 
-    emTerrain.onchange = e => {
-        if (emTerrain.checked) {
-            gl.bindTexture(gl.TEXTURE_2D, texNormal);
-            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, imgNormal1);
-            gl.generateMipmap(gl.TEXTURE_2D);
+    gl.bindTexture(gl.TEXTURE_2D, texNormal);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, imgNormal);
+    gl.generateMipmap(gl.TEXTURE_2D);
 
-            gl.bindTexture(gl.TEXTURE_2D, texHeight);
-            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, imgHeight1);
-            gl.generateMipmap(gl.TEXTURE_2D);
-        } else {
-            gl.bindTexture(gl.TEXTURE_2D, texNormal);
-            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, imgNormal);
-            gl.generateMipmap(gl.TEXTURE_2D);
-
-            gl.bindTexture(gl.TEXTURE_2D, texHeight);
-            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, imgHeight);
-            gl.generateMipmap(gl.TEXTURE_2D);
-        }
-    };
-    emTerrain.onchange();
+    gl.bindTexture(gl.TEXTURE_2D, texHeight);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, imgHeight);
+    gl.generateMipmap(gl.TEXTURE_2D);
 
     function draw() {
         if (anim) {
@@ -1603,13 +1608,13 @@ function cv4(cvi) {
         gl.uniform1f(program.uniforms["uParallax"], parallax);
 
         gl.activeTexture(gl.TEXTURE2);
-        gl.bindTexture(gl.TEXTURE_2D, texDetail);
-        gl.bindSampler(2, smpDetail);
-        gl.uniform1i(program.uniforms["uDetailTex"], 2);
-        gl.uniform2f(program.uniforms["uDetailScale"], uvDetailScale, uvDetailScale);
+        gl.bindTexture(gl.TEXTURE_2D, texGrid);
+        gl.bindSampler(2, smpGrid);
+        gl.uniform1i(program.uniforms["uGridTex"], 2);
+        gl.uniform2f(program.uniforms["uGridScale"], uvGridScale, uvGridScale);
 
         gl.activeTexture(gl.TEXTURE3);
-        gl.bindTexture(gl.TEXTURE_2D, texColor);
+        gl.bindTexture(gl.TEXTURE_2D, texDiffuse);
         gl.bindSampler(3, smp);
         gl.uniform1i(program.uniforms["uTexColor"], 3);
 

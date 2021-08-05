@@ -14,15 +14,17 @@
 </head>
 
 <body>
-	<input name="n" type="radio">
+	<input name="n" type="radio" title="height map transfer to normal map">
 	<div>
 		<canvas></canvas>
-		<img src="01.png" style="display: none;">
+		<img id="heightMap" src="height.png" style="display: none;">
+		<img id="outNormalMap" src="" style="display: none;">
 		<input type="file" accept="image/*">
 		<input type="button" value="保存图片">
-		<input id="hScale" type="range" min="0.1" max="1000" value="1" step=0.1 title="hScale">
+		<input id="hScale" type="range" min="0.1" max="1000" value="100" step=0.1 title="hScale">
+		<input id="keepRatio" type="checkbox" title="keepRatio" checked>
 	</div>
-	<input name="n" type="radio">
+	<input name="n" type="radio" title="height map">
 	<div>
 		<canvas></canvas>
 		<input id="m_ambient" type="color" value="#555555">
@@ -39,29 +41,25 @@
 		<input class="mip" type="radio" name="mip" title="linear_mipmap_linear">
 		<input id="uvScale" type="range" min="1" max="10" value="1" step=0.1 title="uvScale">
 	</div>
-	<input name="n" type="radio">
+	<input name="n" type="radio" title="normal map">
 	<div>
 		<canvas></canvas>
-		<img src="02.png" style="display: none;">
 		<input id="lightAng1" type="range" min="0" max="360" value="90" step=0.1 title="lightAng">
 		<input id="hScale1" type="range" min="0.1" max="10" value="1" step=0.01 title="hScale">
-		<input id="uvScale1" type="range" min="1" max="20" value="10" step=0.1 title="uvScale">
+		<input id="uvScale1" type="range" min="1" max="20" value="2" step=0.1 title="uvScale">
 		<input id="showNormal" type="checkbox" title="show normal">
 		<input id="btnAnim" type="button" value="anim">
 	</div>
-	<input name="n" type="radio">
+	<input name="n" type="radio" title="parallax">
 	<div>
 		<canvas></canvas>
-		<img src="03.png" style="display: none;">
-		<img src="detail.png" style="display: none;">
-		<img src="04.png" style="display: none;">
-		<img src="05.png" style="display: none;">
-		<img src="06.png" style="display: none;">
+		<img id="diffuseMap" src="diffuse.png" style="display: none;">
+		<img id="gridMap" src="grid.png" style="display: none;">
+		<input type="file" accept="image/*">
 		<input id="parallax" type="range" min="0" max="0.1" value="0.02" step=0.001 title="parallax">
-		<input id="uvDetailScale" type="range" min="1" max="20" value="10" step=0.1 title="uvDetailScale">
-		<input id="terrain" type="checkbox" title="terrain" checked>
+		<input id="uvGridScale" type="range" min="1" max="20" value="10" step=0.1 title="uvGridScale">
 	</div>
-	<input name="n" type="radio">
+	<input name="n" type="radio" title="raymarching">
 	<div>
 		<canvas></canvas>
 		<input id="parallax1" type="range" min="0" max="0.1" value="0.02" step=0.001 title="parallax">
