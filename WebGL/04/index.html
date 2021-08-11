@@ -1,0 +1,42 @@
+<!doctype html>
+<html style="user-select: none">
+
+<head>
+	<meta http-equiv="X-UA-Compatible" content="chrome=1">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+
+	<title>WebGL2</title>
+	<!--外部引用样式-->
+	<!-- <link rel="stylesheet" type="text/css" href="./css/cssVar.css"> -->
+	<!-- <link rel="stylesheet" type="text/css" href="./css/commStyle.css"> -->
+	<link rel="stylesheet" type="text/css" href="index.css">
+</head>
+
+<body>
+	<input name="n" type="radio" title="enviroment map">
+	<div>
+		<canvas></canvas>
+		<input id="emAmbient" type="color" value="#555555" title="ambient">
+		<input id="emDiffuse" type="color" value="#aaaaaa" title="diffuse">
+		<input id="emSpecular" type="color" value="#ffffff" title="specular">
+		<input id="emExponent" type="range" min="1" max="500" value="10" step=1 title="specular_exp">
+		<input id="emLightColor" type="color" value="#aaaaaa" , title="lightColor">
+		<input id="emLightAng" type="range" min="0" max="360" value="90" step=0.1 title="lightAng">
+		<input id="emBaseFactor" type="range" min="0" max="1" value="0.5" step=0.01 title="baseFactor">
+		<input id="emEnvFactor" type="range" min="0" max="1" value="0.5" step=0.01 title="envFactor">
+		<input id="emNormalFactor" type="range" min="0" max="1" value="0.5" step=0.01 title="normalFactor">
+		<img id="c0" src="../01/1.png" style="display: none;">
+		<img id="c1" src="../01/2.png" style="display: none;">
+		<img id="c2" src="../01/3.png" style="display: none;">
+		<img id="c3" src="../01/4.png" style="display: none;">
+		<img id="c4" src="../01/5.png" style="display: none;">
+		<img id="c5" src="../01/6.png" style="display: none;">
+		<img id="normal" src="../03/normal.png" style="display: none;">
+		<img id="diffuse" src="../03/diffuse.png" style="display: none;">
+	</div>
+
+	<script type="module" src="index.js"></script>
+</body>
+
+</html>

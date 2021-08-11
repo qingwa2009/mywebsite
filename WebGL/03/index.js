@@ -1448,8 +1448,6 @@ function cv4(cvi) {
     const plane = new MyGeometry.Plane();
     const cube = new MyGeometry.Cube();
 
-
-
     plane.createVAOAll(gl, gl.STATIC_DRAW);
     cube.createVAOAll(gl, gl.STATIC_DRAW);
     sphere.createVAOAll(gl, gl.STATIC_DRAW);

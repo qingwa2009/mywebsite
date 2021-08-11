@@ -85,19 +85,6 @@ export function createWebSocket(win, url, protocol) {
 }
 
 /**
- * 获取id与obj.key同名的元素
- * @param {Object<string, undefined>} obj 
- * @param {document} doc
- * @returns {Object<string, HTMLElement>}
- */
-export function getElementByKeys(obj, doc = document) {
-    for (const key in obj) {
-        obj[key] = doc.getElementById(key);
-    }
-    return obj;
-}
-
-/**
  * 枚举所有子元素
  * @param {HTMLElement} parentEm 
  * @returns {IterableIterator<HTMLElement>}
@@ -111,3 +98,31 @@ export function* enumAllChildren(parentEm) {
     }
 }
 
+const getElementsByIdHandler = {
+    /**
+     * @param {Object<string, HTMLElement>} obj 
+     * @param {string} prop 
+     * @param {Proxy} proxy 
+     */
+    get: function (obj, prop, proxy) {
+        if (prop in obj) {
+            return obj[prop];
+        }
+        /**@type{Document} */
+        const doc = obj.document;
+        const em = doc.getElementById(prop);
+        obj[prop] = em;
+        return em;
+    },
+
+}
+/**
+ * const {id1, id2, id3, ...} = getElementsById(document);
+ * @param {Document} doc 
+ */
+export function getElementsById(doc) {
+    const obj = Object.create(null);
+    Object.defineProperty(obj, "document", { value: doc });
+    const proxy = new Proxy(obj, getElementsByIdHandler);
+    return proxy;
+}

@@ -6,7 +6,7 @@ import { enumAllChildren } from "../../js/myUtil.js";
 import MyTable from "../../js/components/myTable/myTable.js";
 import MyTableData from "../../js/myTableData.js";
 import MyInputFile from "../../js/components/myInputFile/myInputFile.js";
-import { getElementByKeys } from "../../js/myUtil.js";
+import { getElementsById } from "../../js/myUtil.js";
 
 window.addEventListener('DOMContentLoaded', () => {
 	const App = top.window.App;
@@ -38,98 +38,96 @@ window.addEventListener('DOMContentLoaded', () => {
 	/**@type{HTMLTableRowElement} */
 	let currentRow = null;
 
-	const ems = {
+	const {
 		/**@type{MyDbFieldComps.MySelect} */
-		t0: 0,
+		t0,
 		/**@type{MyDbFieldComps.MySelect} */
-		t1: 0,
+		t1,
 		/**@type{MyDbFieldComps.MySelect} */
-		t2: 0,
+		t2,
 		/**@type{MyDbFieldComps.MySelect} */
-		TYPE_NO: 0,
+		TYPE_NO,
 		/**@type{HTMLInputElement} */
-		ITEM_NO: 0,
+		ITEM_NO,
 		/**@type{HTMLInputElement} */
-		RD_NO: 0,
+		RD_NO,
 		/**@type{HTMLInputElement} */
-		UPLOAD_IMG: 0,
-		ITEM_NO: 0,
+		UPLOAD_IMG,
 		/**@type{MyTable} */
-		tbSearchItems: 0,
+		tbSearchItems,
 		/**@type{MyTable} */
-		tbItemDoc: 0,
+		tbItemDoc,
 		/**@type{HTMLImageElement} */
-		img: 0,
+		img,
 		/**@type{HTMLDivElement} */
-		imgView: 0,
+		imgView,
 		/**@type{MyInputFile} */
-		imgFile: 0,
+		imgFile,
 		/**@type{HTMLButtonElement} */
-		btnSearch: 0, btnAdd: 0, btnUpdate: 0, btnDel: 0,
-		btnCancel: 0, btnConfirm: 0,
-		btnCopy: 0, btnPaste: 0, btnImportFromExcel: 0,
-	};
-	getElementByKeys(ems);
+		btnSearch, btnAdd, btnUpdate, btnDel,
+		btnCancel, btnConfirm,
+		btnCopy, btnPaste, btnImportFromExcel,
+	} = getElementsById(document);
 
-	ems.imgFile.addOnChangeListener(fs => {
-		ems.UPLOAD_IMG.value = fs.length > 0 ? fs[0].name : "";
+	imgFile.addOnChangeListener(fs => {
+		UPLOAD_IMG.value = fs.length > 0 ? fs[0].name : "";
 	});
 
-	ems.t0.addEventListener("change", () => {
-		const value = ems.t0.value;
+	t0.addEventListener("change", () => {
+		const value = t0.value;
 		if (!value) return;
-		ems.t1.fieldRowFilter = id => id.length === 2 && id.substr(0, 1) === value;
-		ems.t1.reloadList().then(() => {
-			if (ems.t1._value) ems.t1.value = ems.t1._value;
-			ems.t1._value = undefined;
+		t1.fieldRowFilter = id => id.length === 2 && id.substr(0, 1) === value;
+		t1.reloadList().then(() => {
+			if (t1._value) t1.value = t1._value;
+			t1._value = undefined;
 		});
 	});
 
-	ems.t1.addEventListener("change", () => {
-		const value = ems.t1._value;
+	t1.addEventListener("change", () => {
+		const value = t1._value;
 		if (!value) return;
-		ems.t2.fieldRowFilter = id => id.length === 3 && id.substr(0, 2) === value;
-		ems.t2.reloadList().then(() => {
-			if (ems.t2._value) ems.t2.value = ems.t2._value;
-			ems.t2._value = undefined;
+		t2.fieldRowFilter = id => id.length === 3 && id.substr(0, 2) === value;
+		t2.reloadList().then(() => {
+			if (t2._value) t2.value = t2._value;
+			t2._value = undefined;
 		});
 	});
 
-	ems.t2.addEventListener("change", () => {
-		const value = ems.t2._value;
+	t2.addEventListener("change", () => {
+		const value = t2._value;
 		if (!value) return;
-		ems.TYPE_NO.fieldRowFilter = id => id.length === 4 && id.substr(0, 3) === value;
-		ems.TYPE_NO.reloadList().then(() => {
-			if (ems.TYPE_NO._value) ems.TYPE_NO.value = ems.TYPE_NO._value;
-			ems.TYPE_NO._value = undefined;
+		TYPE_NO.fieldRowFilter = id => id.length === 4 && id.substr(0, 3) === value;
+		TYPE_NO.reloadList().then(() => {
+			if (TYPE_NO._value) TYPE_NO.value = TYPE_NO._value;
+			TYPE_NO._value = undefined;
 		});
 	});
 
-	ems.tbSearchItems.addSelectionChangedEvent(rs => {
+	tbSearchItems.addSelectionChangedEvent(rs => {
 		if (rs.length > 0) {
 			const tr = rs[rs.length - 1];
-			const itemno = ems.tbSearchItems.getCellValue("物料编号", tr);
+			const itemno = tbSearchItems.getCellValue("物料编号", tr);
 			currentRow = tr;
 			loadItem(itemno);
 		} else {
 			currentRow = null;
 			currentItem = null;
-			setDisabled(ems.btnUpdate, ems.btnDel);
+			setDisabled(btnUpdate, btnDel);
 		}
 	});
 
-	ems.btnCancel.addEventListener("click", () => {
+	btnCancel.addEventListener("click", () => {
 		setStateNormal();
 		if (currentItem) {
 			setCurrentItem(currentItem);
 		}
-		// const rs = ems.tbSearchItems.getSelectedRows();
+		// const rs = tbSearchItems.getSelectedRows();
 		// if (rs.length > 0) {
-		// 	ems.tbSearchItems.performSelectRow(rs[rs.length - 1], true);
+		// 	tbSearchItems.performSelectRow(rs[rs.length - 1], true);
 		// }
 	});
 
-	ems.btnConfirm.addEventListener("click", () => {
+	btnConfirm.addEventListener("click", () => {
 		switch (currentState) {
 			case states.search:
 				searchItem();
@@ -144,7 +142,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
 	/**-----------search-------------- */
-	ems.btnSearch.addEventListener("click", () => {
+	btnSearch.addEventListener("click", () => {
 		setStateSearch();
 	});
 
@@ -152,11 +150,11 @@ window.addEventListener('DOMContentLoaded', () => {
 		currentState = states.search;
 
 		setFormDisabled(false);
-		setDisabled(ems.btnSearch, ems.btnAdd, ems.btnUpdate, ems.btnDel);
-		setEnabled(ems.btnCancel, ems.btnConfirm);
-		setDisabled(ems.btnCopy, ems.btnPaste, ems.btnImportFromExcel);
+		setDisabled(btnSearch, btnAdd, btnUpdate, btnDel);
+		setEnabled(btnCancel, btnConfirm);
+		setDisabled(btnCopy, btnPaste, btnImportFromExcel);
 
-		const ignoreEms = [ems.t0, ems.t1, ems.t2, ems.TYPE_NO];
+		const ignoreEms = [t0, t1, t2, TYPE_NO];
 		for (const em of enumAllChildren(document.forms[0])) {
 			if ((em instanceof HTMLInputElement || em instanceof HTMLSelectElement) && (!ignoreEms.includes(em))) {
 				if (em.setValue) em.setValue("");
@@ -177,20 +175,20 @@ window.addEventListener('DOMContentLoaded', () => {
 		currentRow = null;
 
 		const ignoreEms = [];
-		if (ems.ITEM_NO.value.trim() || ems.RD_NO.value.trim()) {
-			ignoreEms.push(...[ems.t0, ems.t1, ems.t2, ems.TYPE_NO,]);
+		if (ITEM_NO.value.trim() || RD_NO.value.trim()) {
+			ignoreEms.push(...[t0, t1, t2, TYPE_NO,]);
 		} else {
-			if (ems.TYPE_NO.value) {
-				ignoreEms.push(...[ems.t0, ems.t1, ems.t2]);
-			} else if (ems.t2.value) {
-				ignoreEms.push(...[ems.t0, ems.t1]);
-			} else if (ems.t1.value) {
-				ignoreEms.push(ems.t0);
+			if (TYPE_NO.value) {
+				ignoreEms.push(...[t0, t1, t2]);
+			} else if (t2.value) {
+				ignoreEms.push(...[t0, t1]);
+			} else if (t1.value) {
+				ignoreEms.push(t0);
 			}
 		}
 		const criteria = MyDbFieldComps.createCriteria(document.forms[0], ignoreEms);
 
-		ems.tbSearchItems.clearTable();
+		tbSearchItems.clearTable();
 
 		const st = new Date().getTime();
 		return App.myHttpRequest("post", cmdSearchItems + _offset, criteria.toString(), true, "json").then((/**@type{XMLHttpRequest} */req) => {
@@ -198,7 +196,7 @@ window.addEventListener('DOMContentLoaded', () => {
 			const mtd = MyTableData.decorate(req.response);
 			if (mtd.error) throw new Error(mtd.error);
 
-			ems.tbSearchItems.setTableData(mtd, clear, eachAddRow);
+			tbSearchItems.setTableData(mtd, clear, eachAddRow);
 			_EOF = mtd.EOF;
 			_offset += mtd.data.length;
 
@@ -263,14 +261,14 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
 	/**-----------insert-------------- */
-	ems.btnAdd.addEventListener("click", () => {
+	btnAdd.addEventListener("click", () => {
 		alert("还没写！");
 	});
 
 	/**-----------update-------------- */
-	ems.btnUpdate.addEventListener("click", () => {
+	btnUpdate.addEventListener("click", () => {
 		if (!currentItem || !currentRow) return;
-		if (ems.tbSearchItems.getSelectedRows().length < 1) return;
+		if (tbSearchItems.getSelectedRows().length < 1) return;
 
 		setStateUpdate();
 	});
@@ -279,10 +277,10 @@ window.addEventListener('DOMContentLoaded', () => {
 		currentState = states.update;
 
 		setFormDisabled(false);
-		setDisabled(ems.t0, ems.t1, ems.t2, ems.TYPE_NO, ems.ITEM_NO);
-		setDisabled(ems.btnSearch, ems.btnAdd, ems.btnUpdate, ems.btnDel, ems.tbSearchItems);
-		setEnabled(ems.btnCancel, ems.btnConfirm);
-		setDisabled(ems.btnCopy, ems.btnPaste, ems.btnImportFromExcel);
+		setDisabled(t0, t1, t2, TYPE_NO, ITEM_NO);
+		setDisabled(btnSearch, btnAdd, btnUpdate, btnDel, tbSearchItems);
+		setEnabled(btnCancel, btnConfirm);
+		setDisabled(btnCopy, btnPaste, btnImportFromExcel);
 	}
 
 	function updateItem() {
@@ -298,11 +296,11 @@ window.addEventListener('DOMContentLoaded', () => {
 
 		let p = Promise.resolve();
 
-		if (ems.imgFile.files.length > 0) {
+		if (imgFile.files.length > 0) {
 			const url = new URL(cmdItemImg, location);
 			url.searchParams.append("itemno", itemno);
-			url.searchParams.append("img", ems.imgFile.files[0].name);
-			p = App.myHttpRequest("post", url, ems.imgFile.files[0], true);
+			url.searchParams.append("img", imgFile.files[0].name);
+			p = App.myHttpRequest("post", url, imgFile.files[0], true);
 		}
 
 		p.then(() => {
@@ -310,7 +308,7 @@ window.addEventListener('DOMContentLoaded', () => {
 			App.myHttpRequest("post", cmdUpdateItem, JSON.stringify(obj), true, "json").then(req => {
 				setCurrentItem(req.response);
 				searchByItemNo(itemno).then(mtd => {
-					ems.tbSearchItems.updateRow(currentRow, mtd, eachAddRow);
+					tbSearchItems.updateRow(currentRow, mtd, eachAddRow);
 					setStateNormal();
 				});
 			}, error => {
@@ -324,7 +322,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
 	/**-----------delete-------------- */
-	ems.btnDel.addEventListener("click", () => {
+	btnDel.addEventListener("click", () => {
 		alert("还没写！");
 	});
 
@@ -344,16 +342,16 @@ window.addEventListener('DOMContentLoaded', () => {
 		currentItem = json;
 
 		const evchange = new Event("change");
-		ems.t0.value = currentItem.TYPE_NO.substr(0, 1);
-		ems.t1._value = currentItem.TYPE_NO.substr(0, 2);
-		ems.t2._value = currentItem.TYPE_NO.substr(0, 3);
-		ems.TYPE_NO._value = currentItem.TYPE_NO;
+		t0.value = currentItem.TYPE_NO.substr(0, 1);
+		t1._value = currentItem.TYPE_NO.substr(0, 2);
+		t2._value = currentItem.TYPE_NO.substr(0, 3);
+		TYPE_NO._value = currentItem.TYPE_NO;
 
-		ems.t0.dispatchEvent(evchange);
-		ems.t1.dispatchEvent(evchange);
-		ems.t2.dispatchEvent(evchange);
+		t0.dispatchEvent(evchange);
+		t1.dispatchEvent(evchange);
+		t2.dispatchEvent(evchange);
 
-		ems.imgFile.clear();
+		imgFile.clear();
 
 		const ks = Object.keys(currentItem);
 		for (let i = 0; i < ks.length; i++) {
@@ -372,15 +370,15 @@ window.addEventListener('DOMContentLoaded', () => {
 	}
 
 	function loadImg(imgName, lastUpdateTime) {
-		ems.img.src = "";
+		img.src = "";
 
 		let s = imgName;
 		if (s) s = s.trim().toUpperCase();
 		if (s) {
-			ems.imgView.classList.add("loading");
+			imgView.classList.add("loading");
 			App.getItemImg(s, lastUpdateTime).then((blobUrl) => {
-				ems.imgView.classList.remove("loading");
-				if (blobUrl) ems.img.src = blobUrl;
+				imgView.classList.remove("loading");
+				if (blobUrl) img.src = blobUrl;
 			});
 		}
 	}
@@ -388,16 +386,16 @@ window.addEventListener('DOMContentLoaded', () => {
 	function loadItemDoc(itemno) {
 		const url = new URL(cmdItemDoc, location);
 		url.searchParams.append("itemno", itemno);
-		ems.tbItemDoc.setLoadingAnim();
+		tbItemDoc.setLoadingAnim();
 		App.myHttpRequest("get", url, undefined, false, "json").then((/**@type{XMLHttpRequest} */req) => {
 			const mtd = MyTableData.decorate(req.response);
 			if (mtd.error) throw new Error(mtd.error);
-			ems.tbItemDoc.setTableData(mtd, true, eachItemDocRow);
-			ems.tbItemDoc.removeLoadingAnim();
+			tbItemDoc.setTableData(mtd, true, eachItemDocRow);
+			tbItemDoc.removeLoadingAnim();
 		}).catch(err => {
 			alert("图档加载失败！");
 			console.log(err);
-			ems.tbItemDoc.removeLoadingAnim();
+			tbItemDoc.removeLoadingAnim();
 		});
 	}
 
@@ -430,7 +428,7 @@ window.addEventListener('DOMContentLoaded', () => {
 			for (const em of enumAllChildren(document.forms[0])) {
 				em.disabled = false;
 			}
-		ems.UPLOAD_IMG.disabled = true;
+		UPLOAD_IMG.disabled = true;
 	}
 
 	function setEnabled(...ems) {
@@ -450,14 +448,14 @@ window.addEventListener('DOMContentLoaded', () => {
 
 		setFormDisabled(true);
 
-		setEnabled(ems.btnSearch, ems.btnAdd, ems.tbSearchItems);
-		if (ems.tbSearchItems.getSelectedRows().length > 0) {
-			setEnabled(ems.btnUpdate, ems.btnDel);
+		setEnabled(btnSearch, btnAdd, tbSearchItems);
+		if (tbSearchItems.getSelectedRows().length > 0) {
+			setEnabled(btnUpdate, btnDel);
 		} else {
-			setDisabled(ems.btnUpdate, ems.btnDel);
+			setDisabled(btnUpdate, btnDel);
 		}
-		setDisabled(ems.btnCancel, ems.btnConfirm);
-		setDisabled(ems.btnCopy, ems.btnPaste, ems.btnImportFromExcel);
+		setDisabled(btnCancel, btnConfirm);
+		setDisabled(btnCopy, btnPaste, btnImportFromExcel);
 	}
 
 
@@ -468,9 +466,9 @@ window.addEventListener('DOMContentLoaded', () => {
 		currentState = states.fetching;
 
 		setFormDisabled(true);
-		setDisabled(ems.btnSearch, ems.btnAdd, ems.btnUpdate, ems.btnDel);
-		setDisabled(ems.btnCancel, ems.btnConfirm);
-		setDisabled(ems.btnCopy, ems.btnPaste, ems.btnImportFromExcel);
+		setDisabled(btnSearch, btnAdd, btnUpdate, btnDel);
+		setDisabled(btnCancel, btnConfirm);
+		setDisabled(btnCopy, btnPaste, btnImportFromExcel);
 	}
 
 
@@ -479,12 +477,12 @@ window.addEventListener('DOMContentLoaded', () => {
 
 	let itemno = new URLSearchParams(location.search).get("itemno");
 	if (itemno) {
-		ems.ITEM_NO.value = itemno;
+		ITEM_NO.value = itemno;
 		searchItem().then(() => {
-			const n = ems.tbSearchItems.rows.length;
+			const n = tbSearchItems.rows.length;
 			if (n > 0) {
-				const tr = ems.tbSearchItems.rows[n - 1];
-				ems.tbSearchItems.performSelectRow(tr, true);
+				const tr = tbSearchItems.rows[n - 1];
+				tbSearchItems.performSelectRow(tr, true);
 			}
 		});
 	}

@@ -3,7 +3,7 @@ import MyDbFieldComps from "../../js/myDbFieldComps.js";
 // import MyMemu from "../../js/components/myMenu/myMenu.js";
 import MyTable from "../../js/components/myTable/myTable.js"
 import MyTableData from "../../js/myTableData.js"
-import { getElementByKeys } from "../../js/myUtil.js";
+import { getElementsById } from "../../js/myUtil.js";
 
 window.addEventListener('DOMContentLoaded', () => {
 	const App = top.window.App;
@@ -15,49 +15,48 @@ window.addEventListener('DOMContentLoaded', () => {
 	const cmdSearchItems = "/myplm/item/search?offset=";
 
 
-	const ems = {
+	const {
 		/**@type{HTMLElement} */
-		btnSearch: 0,
+		btnSearch,
 		/**@type{MyTable} */
-		tbSearchItems: 0,
+		tbSearchItems,
 		/**@type{HTMLElement} */
-		fields: 0,
+		fields,
 		/**@type{MyDbFieldComps.MySelect} */
-		t0: 0,
+		t0,
 		/**@type{MyDbFieldComps.MySelect} */
-		t1: 0,
+		t1,
 		/**@type{MyDbFieldComps.MySelect} */
-		t2: 0,
+		t2,
 		/**@type{MyDbFieldComps.MySelect} */
-		t3: 0,
-		ITEM_NO: 0,
-		RD_NO: 0,
-		ENG_ITEM_NO: 0,
-	};
-	getElementByKeys(ems);
+		t3,
+		ITEM_NO,
+		RD_NO,
+		ENG_ITEM_NO,
+	} = getElementsById(document);
 
-	ems.t0.addEventListener("change", () => {
-		const value = ems.t0.value;
+	t0.addEventListener("change", () => {
+		const value = t0.value;
 		if (!value) return;
-		ems.t1.fieldRowFilter = id => id.length === 2 && id.substr(0, 1) === value;
-		ems.t1.reloadList();
-		ems.t2.value = "";
-		ems.t3.value = "";
+		t1.fieldRowFilter = id => id.length === 2 && id.substr(0, 1) === value;
+		t1.reloadList();
+		t2.value = "";
+		t3.value = "";
 	});
 
-	ems.t1.addEventListener("change", () => {
-		const value = ems.t1.value;
+	t1.addEventListener("change", () => {
+		const value = t1.value;
 		if (!value) return;
-		ems.t2.fieldRowFilter = id => id.length === 3 && id.substr(0, 2) === value;
-		ems.t2.reloadList();
-		ems.t3.value = "";
+		t2.fieldRowFilter = id => id.length === 3 && id.substr(0, 2) === value;
+		t2.reloadList();
+		t3.value = "";
 	});
 
-	ems.t2.addEventListener("change", () => {
-		const value = ems.t2.value;
+	t2.addEventListener("change", () => {
+		const value = t2.value;
 		if (!value) return;
-		ems.t3.fieldRowFilter = id => id.length === 4 && id.substr(0, 3) === value;
-		ems.t3.reloadList();
+		t3.fieldRowFilter = id => id.length === 4 && id.substr(0, 3) === value;
+		t3.reloadList();
 	});
 
 
@@ -73,11 +72,11 @@ window.addEventListener('DOMContentLoaded', () => {
 	let _order = null;
 	let _isSearching = false;
 
-	ems.btnSearch.addEventListener("click", ev => {
+	btnSearch.addEventListener("click", ev => {
 		ev.preventDefault();
 		if (_isSearching) return;
 
-		ems.tbSearchItems.clearTable();
+		tbSearchItems.clearTable();
 
 		_offset = 0;
 		_orderby = null;
@@ -86,10 +85,10 @@ window.addEventListener('DOMContentLoaded', () => {
 		search(true);
 	});
 
-	ems.tbSearchItems.setSortFilter((td) => {
+	tbSearchItems.setSortFilter((td) => {
 		if (_isSearching) return null;
 
-		if (_EOF) return ems.tbSearchItems.getDefaultSortFunc(td);
+		if (_EOF) return tbSearchItems.getDefaultSortFunc(td);
 
 		if (_orderby === td.textContent) {
 			_order = _order === "ASC" ? "DESC" : "ASC";
@@ -104,18 +103,18 @@ window.addEventListener('DOMContentLoaded', () => {
 		return null;
 	})
 
-	ems.tbSearchItems.addScrollBottomEvent(() => {
+	tbSearchItems.addScrollBottomEvent(() => {
 		if (_isSearching) return;
 		if (_EOF) return;
 		search(false);
 	});
 
-	ems.tbSearchItems.addSelectionChangedEvent((rs) => {
+	tbSearchItems.addSelectionChangedEvent((rs) => {
 		App.showExecuteInfo(`选中${rs.length}条记录`, undefined, window);
 	});
 
-	ems.tbSearchItems.addDbClickRowEvent((tr) => {
-		const itemno = ems.tbSearchItems.getCellValue("物料编号", tr)
+	tbSearchItems.addDbClickRowEvent((tr) => {
+		const itemno = tbSearchItems.getCellValue("物料编号", tr)
 		const url = new URL("../物料建档/index.html", location.href);
 		url.searchParams.append("itemno", itemno);
 		App.openNewPage("物料建档", url);
@@ -124,7 +123,7 @@ window.addEventListener('DOMContentLoaded', () => {
 	document.addEventListener("keydown", e => {
 		if (e.keyCode !== 116) return;
 		e.preventDefault();
-		ems.btnSearch.click();
+		btnSearch.click();
 	});
 
 	function search(clear) {
@@ -132,34 +131,34 @@ window.addEventListener('DOMContentLoaded', () => {
 
 		_isSearching = true;
 
-		ems.btnSearch.disabled = true;
+		btnSearch.disabled = true;
 
 		const ignoreEms = [];
-		if (ems.ITEM_NO.value.trim() || ems.RD_NO.value.trim()) {
-			ignoreEms.push(...[ems.t0, ems.t1, ems.t2, ems.t3,]);
+		if (ITEM_NO.value.trim() || RD_NO.value.trim()) {
+			ignoreEms.push(...[t0, t1, t2, t3,]);
 		} else {
-			if (ems.t3.value) {
-				ignoreEms.push(...[ems.t0, ems.t1, ems.t2]);
-			} else if (ems.t2.value) {
-				ignoreEms.push(...[ems.t0, ems.t1]);
-			} else if (ems.t1.value) {
-				ignoreEms.push(ems.t0);
+			if (t3.value) {
+				ignoreEms.push(...[t0, t1, t2]);
+			} else if (t2.value) {
+				ignoreEms.push(...[t0, t1]);
+			} else if (t1.value) {
+				ignoreEms.push(t0);
 			}
 		}
-		const criteria = MyDbFieldComps.createCriteria(ems.fields, ignoreEms);
+		const criteria = MyDbFieldComps.createCriteria(fields, ignoreEms);
 
 		if (_orderby) {
 			criteria.addOrderBy(_orderby, _order);
 		}
 
-		if (clear) ems.tbSearchItems.clearTable();
+		if (clear) tbSearchItems.clearTable();
 
 		const st = new Date().getTime();
 		App.myHttpRequest("post", cmdSearchItems + _offset, criteria.toString(), true, "json").then((/**@type{XMLHttpRequest} */req) => {
 			const mtd = MyTableData.decorate(req.response);
 			if (mtd.error) throw new Error(mtd.error);
 
-			ems.tbSearchItems.setTableData(mtd, clear, eachAddRow);
+			tbSearchItems.setTableData(mtd, clear, eachAddRow);
 			_EOF = mtd.EOF;
 			_offset += mtd.data.length;
 
@@ -168,7 +167,7 @@ window.addEventListener('DOMContentLoaded', () => {
 		}).catch(err => {
 			alert(err.message);
 		}).finally(() => {
-			ems.btnSearch.disabled = "";
+			btnSearch.disabled = "";
 			_isSearching = false;
 		});
 	}

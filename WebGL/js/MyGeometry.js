@@ -11,7 +11,8 @@ export default class MyGeometry {
         this.uvs = null;
         /**@type{Float32Array} */
         this.tangents = null;
-
+        /**@type{Float32Array} */
+        this.binormals = null;
         /**@type{Uint8Array|Uint16Array} */
         this.indices = null;
     }
@@ -35,6 +36,7 @@ export default class MyGeometry {
             this.createVBOnormals(gl, MyGeometry.attrb_normal_location, usage);
             this.createVBOuvs(gl, MyGeometry.attrb_uv_location, usage);
             this.createVBOtangents(gl, MyGeometry.attrb_tangent_location, usage);
+            this.createVBObinormals(gl, MyGeometry.attrb_binormal_location, usage);
             this.createVBOIndices(gl, usage);
         });
     }
@@ -66,7 +68,15 @@ export default class MyGeometry {
         console.assert(!this._vboTangents, "不要重复调用！");
         this._vboTangents = MyGeometry.createAttrbPointer(gl, this.tangents, usage, location, this.tangentPointerSize);
     }
-
+    /** 
+     * @param {WebGL2RenderingContext} gl 
+     * @param {number} location 
+     * @param {number} usage STATIC_DRAW...
+     */
+    createVBObinormals(gl, location, usage) {
+        console.assert(!this._vboBinormals, "不要重复调用！");
+        this._vboBinormals = MyGeometry.createAttrbPointer(gl, this.binormals, usage, location, this.binormalPointerSize);
+    }
     /** 
      * @param {WebGL2RenderingContext} gl 
      * @param {number} location 
@@ -86,6 +96,10 @@ export default class MyGeometry {
     }
 
     get tangentPointerSize() {
+        return 3;
+    }
+
+    get binormalPointerSize() {
         return 3;
     }
 
@@ -138,6 +152,10 @@ export default class MyGeometry {
             gl.deleteBuffer(this._vboTangents);
             this._vboTangents = null;
         }
+        if (this._vboBinormals) {
+            gl.deleteBuffer(this._vboBinormals);
+            this._vboBinormals = null;
+        }
         if (this._vboIndices) {
             gl.deleteBuffer(this._vboIndices);
             this._vboIndices = null;
@@ -148,6 +166,7 @@ MyGeometry.attrb_vertex_location = 0;
 MyGeometry.attrb_normal_location = 1;
 MyGeometry.attrb_uv_location = 2;
 MyGeometry.attrb_tangent_location = 3;
+MyGeometry.attrb_binormal_location = 4;
 
 /**
  * 生成顶点切线与副法线
@@ -306,6 +325,10 @@ MyGeometry.Plane = class extends MyGeometry {
             1, 0, 0, 1, 0, 0,
             1, 0, 0, 1, 0, 0,
         ]);
+        this.binormals = new Float32Array([
+            0, 1, 0, 0, 1, 0,
+            0, 1, 0, 0, 1, 0,
+        ]);
         this.indices = new Uint8Array([
             0, 1, 2, 1, 3, 2,
         ]);
@@ -326,6 +349,7 @@ MyGeometry.SubdivPlane = class extends MyGeometry {
         const vertices = [];
         const normals = [];
         const tangents = [];
+        const binormals = [];
         const uvs = [];
         const indices = [];
 
@@ -343,7 +367,8 @@ MyGeometry.SubdivPlane = class extends MyGeometry {
             for (let j = 0; j <= segX; j++) {
                 vertices.push(x, y, 0);
                 normals.push(0, 0, 1);
-                tangents.push(1, 0, 0, 1);
+                tangents.push(1, 0, 0);
+                binormals.push(0, 1, 0);
                 uvs.push(ux, uy);
 
                 x += dx;
@@ -370,6 +395,7 @@ MyGeometry.SubdivPlane = class extends MyGeometry {
         this.normals = new Float32Array(normals);
         this.uvs = new Float32Array(uvs);
         this.tangents = new Float32Array(tangents);
+        this.binormals = new Float32Array(binormals);
         this.indices = new Uint16Array(indices);
     }
 }
@@ -404,6 +430,14 @@ MyGeometry.Cube = class extends MyGeometry {
             0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1,
             1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0,
             1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0,
+        ]);
+        this.binormals = new Float32Array([
+            0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0,
+            0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0,
+            0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0,
+            0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0,
+            0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1,
+            0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1,
         ]);
         this.uvs = new Float32Array([
             0.50, 0.25, 0.50, 0.50, 0.25, 0.25, 0.25, 0.50,
@@ -463,6 +497,7 @@ MyGeometry.Sphere = class extends MyGeometry {
         const indices = []
         const uvs = [];
         const tangents = [];
+        const binormals = [];
 
         let ind = 0;
         const du = 1 / seg;
@@ -474,7 +509,10 @@ MyGeometry.Sphere = class extends MyGeometry {
         for (let i = 0; i < seg; i++) {
             vertices.push(0, 0, r);
             normals.push(0, 0, 1);
-            tangents.push(-Math.sin(ta), Math.cos(ta), 0);
+            const sta = -Math.sin(ta);
+            const cta = Math.cos(ta);
+            tangents.push(sta, cta, 0);
+            binormals.push(-cta, sta, 0);
             ta += da;
 
             uvs.push(u, v);
@@ -503,7 +541,7 @@ MyGeometry.Sphere = class extends MyGeometry {
                 vertices.push(x, y, z);
                 normals.push(cosb * sina, sinb * sina, cosa);
                 tangents.push(-sinb, cosb, 0);
-
+                binormals.push(-cosa * cosb, -cosa * sinb, sina);
                 uvs.push(u, v);
 
                 u += du;
@@ -528,6 +566,7 @@ MyGeometry.Sphere = class extends MyGeometry {
             normals.push(0, 0, -1);
             const ii = i * 3;
             tangents.push(tangents[ii], tangents[ii + 1], tangents[ii + 2]);
+            binormals.push(binormals[ii], binormals[ii + 1], binormals[ii + 2]);
             uvs.push(u, v);
             u += du;
             indices.push(ind, ind - seg, ind - seg - 1);
@@ -538,6 +577,7 @@ MyGeometry.Sphere = class extends MyGeometry {
         this.vertices = new Float32Array(vertices);
         this.normals = new Float32Array(normals);
         this.tangents = new Float32Array(tangents);
+        this.binormals = new Float32Array(binormals);
         this.uvs = new Float32Array(uvs);
         this.indices = new Uint16Array(indices);
     }
