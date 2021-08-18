@@ -84,7 +84,7 @@ window.addEventListener('DOMContentLoaded', () => {
 	});
 
 	t1.addEventListener("change", () => {
-		const value = t1._value;
+		const value = t1.value;
 		if (!value) return;
 		t2.fieldRowFilter = id => id.length === 3 && id.substr(0, 2) === value;
 		t2.reloadList().then(() => {
@@ -94,7 +94,7 @@ window.addEventListener('DOMContentLoaded', () => {
 	});
 
 	t2.addEventListener("change", () => {
-		const value = t2._value;
+		const value = t2.value;
 		if (!value) return;
 		TYPE_NO.fieldRowFilter = id => id.length === 4 && id.substr(0, 3) === value;
 		TYPE_NO.reloadList().then(() => {
