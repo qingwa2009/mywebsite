@@ -98,10 +98,15 @@ MyGLProgram.Shader = class extends WebGLShader {
         gl.shaderSource(this, src);
         this._isCompiled = false;
     }
-    compile() {
+    compile(logErr = false) {
         if (this._isCompiled) return;
         this.gl.compileShader(this);
         this._isCompiled = true;
+
+        if (logErr) {
+            const info = this.gl.getShaderInfoLog(this);
+            if (info) console.error("Shader compile error: ", info);
+        }
     }
     delete() {
         this.gl.deleteShader(this);

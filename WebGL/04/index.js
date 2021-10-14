@@ -76,6 +76,7 @@ function cv0(cvi) {
         layout(location=3) in vec3 atangent;
         layout(location=4) in vec3 abinormal;
         
+        out vec3 vpos;
         out vec2 vuv;
         out vec3 vnormal;
         out vec3 vtangent;
@@ -83,7 +84,8 @@ function cv0(cvi) {
         out vec3 vViewDir;
         void main(){
             gl_Position = uMVPmat * apos;
-
+            
+            
             vuv = auv;
             mat3 mit = mat3(uMInvTpmat[0].xyz, uMInvTpmat[1].xyz, uMInvTpmat[2].xyz);
             vnormal =normalize(mit * anormal);
@@ -94,7 +96,8 @@ function cv0(cvi) {
             // vtangent =normalize((uMInvTpmat * vec4(atangent, 0.)).xyz);
             // vbinormal =normalize((uMInvTpmat * vec4(abinormal, 0.)).xyz);
 
-            vViewDir = uCamPos - (uMmat * apos).xyz;
+            vpos = (uMmat * apos).xyz;
+            vViewDir = uCamPos - vpos;
         }
     `);
     const fShader = MyGLProgram.FShader.create(gl, `#version 300 es
@@ -121,6 +124,7 @@ function cv0(cvi) {
         uniform float uEnvFactor;
         uniform float uNormalFactor;
 
+        in vec3 vpos;
         in vec2 vuv;
         in vec3 vnormal;
         in vec3 vtangent;
@@ -128,7 +132,8 @@ function cv0(cvi) {
         in vec3 vViewDir;
         layout(location=0) out vec4 fragColor;
 
-
+        const vec3 hBoxSize = vec3(5.);
+        
         vec4 directionLight(vec3 normal, DirectionLight light, Material material){
             float ndl = max(0., dot(normal, light.direction)) ;
             float ndh = max(0., dot(normal, light.halfplane)) ;
@@ -147,7 +152,12 @@ function cv0(cvi) {
             color *= directionLight(normal, uLight, uMaterial);
 
             vec3 viewDir = normalize(vViewDir);
-            vec3 dir = reflect( vViewDir , normal);
+            vec3 dir = reflect( -vViewDir , normal);
+
+            vec3 c = sign(dir) * hBoxSize;
+            vec3 d = (c - vpos) ;
+            vec3 s = abs(d / dir);
+            dir =min(s.z, min(s.x, s.y)) * dir + vpos;
 
             vec4 envColor = texture(uTexEnv, dir);           
             fragColor = vec4(uBaseFactor * color.rgb + uEnvFactor * envColor.rgb, 1.0);
@@ -156,6 +166,33 @@ function cv0(cvi) {
 
     const program = MyGLProgram.create(gl);
     program.link(vShader, fShader);
+
+    const vShader2 = MyGLProgram.VShader.create(gl, `#version 300 es
+        uniform mat4 uMVPmat;
+        uniform mat4 uMmat;
+        
+        layout(location=0) in vec4 apos;
+
+        out vec3 dir;
+        void main(){
+            gl_Position = uMVPmat * apos;
+            dir = (uMmat * apos).xyz;
+            // dir = vec3(dir.x, dir.y, -dir.z);
+        }
+    `);
+    const fShader2 = MyGLProgram.FShader.create(gl, `#version 300 es
+        precision mediump float;
+
+        uniform samplerCube uTexEnv;     
+        in vec3 dir;
+        layout(location=0) out vec4 fragColor;
+        void main(){
+            vec4 envColor = texture(uTexEnv, dir);           
+            fragColor = envColor;
+        }
+    `);
+    const program2 = MyGLProgram.create(gl);
+    program2.link(vShader2, fShader2);
 
     gl.enable(gl.DEPTH_TEST);
     gl.enable(gl.CULL_FACE);
@@ -195,7 +232,7 @@ function cv0(cvi) {
     gl.generateMipmap(gl.TEXTURE_2D);
 
 
-
+    var tick = 0;
     function draw() {
         const mVP = camera.getViewProjectMatrix();
         const mV = camera.getViewMatrix();
@@ -234,10 +271,13 @@ function cv0(cvi) {
         gl.uniform1f(program.uniforms["uNormalFactor"], normalFactor);
 
 
+        plane.transform.positionZ = 4.9 * Math.sin(MyMath.deg2radian * tick * 0.1);
         gl.uniformMatrix4fv(program.uniforms["uMVPmat"], false, mVP.multiply(plane.transform));
         gl.uniformMatrix4fv(program.uniforms["uMmat"], false, plane.transform);
         gl.uniformMatrix4fv(program.uniforms["uMInvTpmat"], false, plane.transform.inverse().transposed());
+        gl.disable(gl.CULL_FACE);
         plane.draw(gl);
+        gl.enable(gl.CULL_FACE);
 
         gl.uniformMatrix4fv(program.uniforms["uMVPmat"], false, mVP.multiply(cube.transform));
         gl.uniformMatrix4fv(program.uniforms["uMmat"], false, cube.transform);
@@ -249,15 +289,17 @@ function cv0(cvi) {
         gl.uniformMatrix4fv(program.uniforms["uMInvTpmat"], false, sphere.transform.inverse().transposed());
         sphere.draw(gl);
 
+        program2.use();
         cube.transform.translate(0, 0, -0.5);
         cube.transform.scale(-10, 10, 10);
-        gl.uniformMatrix4fv(program.uniforms["uMVPmat"], false, mVP.multiply(cube.transform));
-        gl.uniformMatrix4fv(program.uniforms["uMmat"], false, cube.transform);
-        gl.uniformMatrix4fv(program.uniforms["uMInvTpmat"], false, cube.transform.inverse().transposed());
+        gl.uniformMatrix4fv(program2.uniforms["uMVPmat"], false, mVP.multiply(cube.transform));
+        gl.uniformMatrix4fv(program2.uniforms["uMmat"], false, cube.transform);
         cube.draw(gl);
+
         cube.transform.scale(-0.1, 0.1, 0.1);
         cube.transform.translate(0, 0, 0.5);
 
+        tick++;
         requestAnimationFrame(draw);
     }
 
@@ -293,6 +335,185 @@ function cv0(cvi) {
     emLightAng.oninput(); emLightColor.oninput();
     emAmbient.oninput(); emDiffuse.oninput(); emSpecular.oninput(); emExponent.oninput();
     emBaseFactor.oninput(); emEnvFactor.oninput(); emNormalFactor.oninput();
+
+    draw();
+}
+
+//Particle System
+function cv1(cvi) {
+    const cv = document.getElementsByTagName("canvas")[cvi];
+    cv.width = cv.clientWidth;
+    cv.height = cv.clientHeight;
+
+    const gl = cv.getContext("webgl2");
+
+    const camera = new MyCamera(Math.PI / 4, gl.drawingBufferWidth / gl.drawingBufferHeight, 0.1, 200);
+    camera.transform.rotateX(Math.PI / 4);
+    camera.transform.translate(0, 0, 10);
+    camera.mouseControl(cv);
+
+    window.onresize = e => {
+        // cv.width = cv.clientWidth * 0.5;
+        // cv.height = cv.clientHeight * 0.5;
+        gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
+        camera.aspectRatio = gl.drawingBufferWidth / gl.drawingBufferHeight;
+    }
+    window.onresize();
+    cv.oncontextmenu = e => e.preventDefault();
+
+    const particleCount = 10000;
+    const p = MyGLProgram.create(gl);
+    const v = MyGLProgram.VShader.create(gl, `#version 300 es
+        #define NUM_PARTICLES   ${particleCount}
+        #define ATTR_POSITION   0         
+        #define ATTR_VELOCITY   1
+        #define ATTR_SIZE       2
+        #define ATTR_CURTIME    3
+        #define ATTR_LIFETIME   4
+
+        layout (location = ATTR_POSITION) in vec2 aPos;    
+        layout (location = ATTR_VELOCITY) in vec2 aVelocity;
+        
+        out vec2 vPos;
+        out vec2 vVelocity;        
+
+        const vec2 g = vec2(0, -9.8);
+        const float unit = 0.05;
+        const float dt = 0.02;
+        float reduction = 0.9;
+        bool hit = false;
+        void main(){
+            vec2 gt = g * dt;
+            vPos =aPos + (aVelocity * dt + 0.5 * gt * dt) * unit;
+            vVelocity = aVelocity + gt;
+            
+            if(vPos.x < -1.0) {
+                vPos.x = -1.0;
+                if(vVelocity.x < 0.0) {
+                    vVelocity.x = -aVelocity.x;
+                }
+                hit = true;
+            }
+            else if(vPos.x > 1.0) {
+                vPos.x = 1.0;
+                if(vVelocity.x > 0.0) {
+                    vVelocity.x = -aVelocity.x;
+                }
+                hit = true;
+            }
+            if(vPos.y < -1.0) {
+                vPos.y = -1.0;
+                if(vVelocity.y < 0.0) {
+                    vVelocity.y = -aVelocity.y;
+                }
+                hit = true;
+            }
+            else if(vPos.y > 1.0) {
+                vPos.y = 1.0;
+                if(vVelocity.y > 0.0) {
+                    vVelocity.y = -aVelocity.y;
+                }
+                hit = true;
+            }
+
+            if (hit) {
+                vVelocity *= reduction;
+                hit = false;
+            }
+        }
+    `);
+    const f = MyGLProgram.FShader.create(gl, `#version 300 es
+        precision mediump float;
+        void main(){}
+    `);
+
+    const p1 = MyGLProgram.create(gl);
+    p1.link(MyGLProgram.VShader.create(gl, `#version 300 es
+        layout (location = 0) in vec2 aPos;    
+        layout (location = 1) in vec2 aVelocity;
+        void main(){                        
+            gl_Position=vec4(aPos, 0.0, 1.0);
+            gl_PointSize=2.0;
+        }
+    `), MyGLProgram.FShader.create(gl, `#version 300 es
+        precision mediump float;
+        out vec4 fragColor;
+        void main(){
+            fragColor = vec4(1.0, 0., 0., 1.0);
+        }
+    `));
+
+    gl.transformFeedbackVaryings(p, ["vPos", "vVelocity"], gl.INTERLEAVED_ATTRIBS);
+    p.link(v, f);
+
+    const arr = [];
+    for (let i = 0; i < particleCount; i++) {
+        arr.push(0, 0, Math.random() * 40 - 20, Math.random() * 40 - 20);
+    }
+    const iv = new Float32Array(arr);
+
+    const vbo0 = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, vbo0);
+    gl.bufferData(gl.ARRAY_BUFFER, iv, gl.STATIC_DRAW);
+
+    const vbo1 = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, vbo1);
+    gl.bufferData(gl.ARRAY_BUFFER, iv.byteLength, gl.DYNAMIC_DRAW);
+
+
+
+    const vbos = [vbo0, vbo1];
+
+    const vaos = [gl.createVertexArray(), gl.createVertexArray()];
+    for (let i = 0; i < vaos.length; i++) {
+        gl.bindVertexArray(vaos[i]);
+        gl.bindBuffer(gl.ARRAY_BUFFER, vbos[i]);
+        gl.enableVertexAttribArray(0);
+        gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 4 * Float32Array.BYTES_PER_ELEMENT, 0);
+        gl.enableVertexAttribArray(1);
+        gl.vertexAttribPointer(1, 2, gl.FLOAT, false, 4 * Float32Array.BYTES_PER_ELEMENT, 2 * Float32Array.BYTES_PER_ELEMENT);
+
+
+        gl.bindVertexArray(null);
+    }
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, null);
+
+    let ind0 = 0;
+    function draw() {
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+        const ind1 = !ind0 + 0;
+
+        p.use();
+
+        gl.bindVertexArray(vaos[ind0]);
+        gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 0, vbos[ind1]);
+
+        gl.enable(gl.RASTERIZER_DISCARD);
+        gl.beginTransformFeedback(gl.POINTS);
+        gl.drawArrays(gl.POINTS, 0, particleCount);
+        gl.endTransformFeedback();
+
+        const sync = gl.fenceSync(gl.SYNC_GPU_COMMANDS_COMPLETE, 0);
+        gl.waitSync(sync, 0, gl.TIMEOUT_IGNORED);
+        gl.deleteSync(sync);
+        gl.disable(gl.RASTERIZER_DISCARD);
+
+        // const ov = new Float32Array(4);
+        // gl.getBufferSubData(gl.TRANSFORM_FEEDBACK_BUFFER, 0, ov);
+        // console.log(ov);
+
+
+        p1.use();
+        // gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 0, null);
+        // gl.bindVertexArray(vaos[ind1]);
+        gl.drawArrays(gl.POINTS, 0, particleCount);
+
+
+        ind0 = ind1;
+        requestAnimationFrame(draw);
+    }
 
     draw();
 }

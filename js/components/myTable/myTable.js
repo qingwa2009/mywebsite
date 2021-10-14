@@ -70,7 +70,7 @@ export default class MyTable extends HTMLElement {
         myMenu.bindElementMenu(this.headRow, MyTable.HeadRow_MenuItems, MyMenu.TYPES.CONTEXTMENU, MyTable._ContextMenuFilter);
 
         this.tbody.addEventListener("scroll", this._handleScroll.bind(this));
-        if (ResizeObserver) {
+        if (window.ResizeObserver) {
             new ResizeObserver(this._handleResize.bind(this)).observe(this);
         } else {
             window.addEventListener("resize", this._handleResize.bind(this));
