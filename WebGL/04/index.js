@@ -5,6 +5,7 @@ import { MyMatrix4x4 } from "../js/MyMatrix.js";
 import { MyVector3 } from "../js/MyVector.js";
 import MyGLProgram from "../js/MyGLProgram.js";
 import MyMaterial from "../js/MyMaterial.js";
+import MyTexture from "../js/MyTexture.js";
 import * as MyMath from "../js/MyMath.js";
 import { getElementsById } from "../../js/myUtil.js";
 
@@ -361,7 +362,17 @@ function cv1(cvi) {
     window.onresize();
     cv.oncontextmenu = e => e.preventDefault();
 
+    const unit = 0.05;
     const particleCount = 10000;
+    const particleSize = 20.1;
+    const touch = new Float32Array([0, 0, particleSize / cv.clientWidth, 0]);
+    cv.onclick = e => {
+        touch[0] = e.clientX / cv.clientWidth * 2 - 1;
+        touch[1] = 1 - e.clientY / cv.clientHeight * 2;
+        touch[3] = 100;
+        console.log(touch[0], touch[1]);
+    }
+
     const p = MyGLProgram.create(gl);
     const v = MyGLProgram.VShader.create(gl, `#version 300 es
         #define NUM_PARTICLES   ${particleCount}
@@ -374,18 +385,30 @@ function cv1(cvi) {
         layout (location = ATTR_POSITION) in vec2 aPos;    
         layout (location = ATTR_VELOCITY) in vec2 aVelocity;
         
+        uniform float dt;
+        uniform float unit;        
+        uniform vec4 uTouch;    //vec4(x, y, size, force);
+        
         out vec2 vPos;
         out vec2 vVelocity;        
 
         const vec2 g = vec2(0, -9.8);
-        const float unit = 0.05;
-        const float dt = 0.02;
-        float reduction = 0.9;
+        
+        float reduction = 0.5;
         bool hit = false;
+
         void main(){
             vec2 gt = g * dt;
             vPos =aPos + (aVelocity * dt + 0.5 * gt * dt) * unit;
-            vVelocity = aVelocity + gt;
+
+            vec2 dd = vPos - uTouch.xy;
+            float ddd = length(dd);
+            if (uTouch.w>1. && ddd<uTouch.z){
+                vVelocity = ddd / uTouch.z * normalize(dd) * uTouch.w ;
+            }else{
+                vVelocity = aVelocity + gt;
+            }
+
             
             if(vPos.x < -1.0) {
                 vPos.x = -1.0;
@@ -401,8 +424,8 @@ function cv1(cvi) {
                 }
                 hit = true;
             }
-            if(vPos.y < -1.0) {
-                vPos.y = -1.0;
+            if(vPos.y < -.9) {
+                vPos.y = -.9;
                 if(vVelocity.y < 0.0) {
                     vVelocity.y = -aVelocity.y;
                 }
@@ -433,13 +456,22 @@ function cv1(cvi) {
         layout (location = 1) in vec2 aVelocity;
         void main(){                        
             gl_Position=vec4(aPos, 0.0, 1.0);
-            gl_PointSize=2.0;
+            gl_PointSize=${particleSize};
         }
     `), MyGLProgram.FShader.create(gl, `#version 300 es
         precision mediump float;
         out vec4 fragColor;
         void main(){
-            fragColor = vec4(1.0, 0., 0., 1.0);
+            vec2 uv = gl_PointCoord-vec2(0.5);
+            float r2 = uv.x * uv.x + uv.y * uv.y;
+            if(r2<0.25){
+                vec3 c0 = vec3(0.7, 0.0, 0.0);
+                vec3 c1 = vec3(1.0, 0.5, 0.0);            
+                float d = r2*4.0;
+                fragColor = vec4(smoothstep(c0, c1, vec3(d)), d);
+            }
+            else discard;
+
         }
     `));
 
@@ -480,8 +512,15 @@ function cv1(cvi) {
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
 
     let ind0 = 0;
+    let preTime = new Date().getTime();
+
     function draw() {
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+        let currTime = new Date().getTime();
+        let dt = currTime - preTime;
+        preTime = currTime;
+
 
         const ind1 = !ind0 + 0;
 
@@ -489,6 +528,9 @@ function cv1(cvi) {
 
         gl.bindVertexArray(vaos[ind0]);
         gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 0, vbos[ind1]);
+        gl.uniform1f(p.uniforms["unit"], unit);
+        gl.uniform1f(p.uniforms["dt"], dt / 1000);
+        gl.uniform4fv(p.uniforms["uTouch"], touch);
 
         gl.enable(gl.RASTERIZER_DISCARD);
         gl.beginTransformFeedback(gl.POINTS);
@@ -512,6 +554,395 @@ function cv1(cvi) {
 
 
         ind0 = ind1;
+        touch[3] = 0;
+        requestAnimationFrame(draw);
+    }
+
+    draw();
+}
+
+//Image Postprocessing
+function cv2(cvi) {
+
+    const cv = document.getElementsByTagName("canvas")[cvi];
+    cv.width = cv.clientWidth;
+    cv.height = cv.clientHeight;
+
+    const gl = cv.getContext("webgl2");
+
+    const camera = new MyCamera(Math.PI / 4, gl.drawingBufferWidth / gl.drawingBufferHeight, 0.1, 200);
+    camera.transform.rotateX(Math.PI / 4);
+    camera.transform.translate(0, 0, 10);
+    camera.mouseControl(cv);
+
+    window.onresize = e => {
+        // cv.width = cv.clientWidth * 0.5;
+        // cv.height = cv.clientHeight * 0.5;
+        gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
+        camera.aspectRatio = gl.drawingBufferWidth / gl.drawingBufferHeight;
+    }
+    window.onresize();
+    cv.oncontextmenu = e => e.preventDefault();
+
+    const vShader = MyGLProgram.VShader.create(gl, `#version 300 es
+        layout(location=0) in vec4 apos;
+        layout(location=1) in vec3 anormal;
+
+        uniform mat4 uMVPmat;        
+        uniform mat4 uMmat;
+
+        out vec3 vNormal;  
+        void main(){
+            gl_Position=uMVPmat * apos;
+            vNormal =  ((uMmat * vec4(anormal, 0.)).xyz + 1.0) * 0.5;                
+        }
+    `);
+    const fShader = MyGLProgram.FShader.create(gl, `#version 300 es
+        precision mediump float;
+
+        in vec3 vNormal;
+        out vec4 fragColor;             
+
+        void main(){                  
+            fragColor = vec4(vNormal, 1.0);
+        }
+    `);
+
+    const program = MyGLProgram.create(gl);
+    program.link(vShader, fShader);
+
+    const vShader2 = MyGLProgram.VShader.create(gl, `#version 300 es
+        layout(location=${MyGeometry.attrb_vertex_location}) in vec4 aPos;
+        layout(location=${MyGeometry.attrb_uv_location}) in vec2 aUV;
+        out vec2 vUV;
+        void main(){
+            gl_Position = aPos;
+            vUV = vec2(aUV.x, 1.0-aUV.y);            
+        }
+    `);
+
+    const SMP_COUNT = 4
+    const SMP_OFFSETS = new Float32Array(SMP_COUNT * 2);
+    const fShader2 = MyGLProgram.FShader.create(gl, `#version 300 es
+        #define SMP_COUNT ${SMP_COUNT}
+        precision mediump float;
+
+        in vec2 vUV;
+        out vec4 fragColor;
+
+        uniform sampler2D uTex;
+        uniform vec2[SMP_COUNT] offsets;
+        void main(){
+            // for (int i=0; i<SMP_COUNT; i++){
+            //     fragColor+=texture(uTex, vUV+offsets[i]);
+            // }
+            // fragColor*=0.25;
+
+            vec4 c;
+            fragColor = vec4(0.0);
+            c = texture(uTex, vUV+offsets[0]);
+            fragColor.r = c.r;           
+            fragColor.a += c.a;
+            c = texture(uTex, vUV+offsets[1]);
+            fragColor.g = c.g;     
+            fragColor.a += c.a;
+            c = texture(uTex, vUV+offsets[2]);            
+            fragColor.b = c.b; 
+            fragColor.a += c.a;
+            fragColor.a *= 0.333;
+
+        }
+    `);
+    const program2 = MyGLProgram.create(gl);
+    program2.link(vShader2, fShader2);
+
+    gl.enable(gl.DEPTH_TEST);
+    gl.enable(gl.CULL_FACE);
+
+    const plane = new MyGeometry.Plane(2, 2);
+    plane.createVAOAll(gl, gl.STATIC_DRAW);
+    const cube = new MyGeometry.Cube();
+    cube.createVAOAll(gl, gl.STATIC_DRAW);
+    const sphere = new MyGeometry.Sphere();
+    sphere.createVAOAll(gl, gl.STATIC_DRAW);
+
+    cube.transform.translate(0, 0, 0.5);
+    sphere.transform.translate(0, 0, 1.25);
+    sphere.transform.scale(1, 1, 0.5);
+
+    const fbo = gl.createFramebuffer();
+    const fboWidth = gl.drawingBufferWidth;
+    const fboHeight = gl.drawingBufferHeight;
+
+    const tex = MyTexture.create(gl, gl.TEXTURE_2D);
+    tex.loadFromBuffer(0, gl.RGBA, fboWidth, fboHeight, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    const smp = new MyTexture.Sampler(gl, gl.LINEAR_MIPMAP_NEAREST, gl.LINEAR);
+    smp.wrapST(gl.CLAMP_TO_EDGE, gl.CLAMP_TO_EDGE);
+
+    const rbo = gl.createRenderbuffer();
+    gl.bindRenderbuffer(gl.RENDERBUFFER, rbo);
+    gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH24_STENCIL8, fboWidth, fboHeight);
+    gl.bindRenderbuffer(gl.RENDERBUFFER, null);
+
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, tex.target, tex, 0);
+    gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_STENCIL_ATTACHMENT, gl.RENDERBUFFER, rbo);
+
+    const statusFBO = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
+    if (statusFBO !== gl.FRAMEBUFFER_COMPLETE) {
+        alert(`frame buffer is not complete: ${statusFBO}`);
+    } else {
+
+    }
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+
+
+    function draw() {
+        const mVP = camera.getViewProjectMatrix();
+        const mV = camera.getViewMatrix();
+
+        gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+        // gl.clearColor(1.0, 0.0, 0.0, 1.0);
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+        program.use();
+        gl.uniformMatrix4fv(program.uniforms.uMVPmat, false, mVP.multiply(sphere.transform));
+        gl.uniformMatrix4fv(program.uniforms.uMmat, false, sphere.transform);
+        sphere.draw(gl);
+        gl.uniformMatrix4fv(program.uniforms.uMVPmat, false, mVP.multiply(cube.transform));
+        gl.uniformMatrix4fv(program.uniforms.uMmat, false, cube.transform);
+        cube.draw(gl);
+
+        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+        // gl.clearColor(0.0, 1.0, 0.0, 1.0);
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+        gl.useProgram(program2);
+        tex.activeAndBind(gl.TEXTURE0);
+        smp.bind(0);
+        gl.uniform1i(program2.uTex, 0);
+
+        for (let i = 0; i < SMP_COUNT; i++) {
+            let j = i * 2;
+            SMP_OFFSETS[j] = Math.random() * 0.02;
+            SMP_OFFSETS[j + 1] = Math.random() * 0.02;
+        }
+        gl.uniform2fv(program2.uniforms["offsets[0]"], SMP_OFFSETS);
+        plane.draw(gl);
+
+
+        requestAnimationFrame(draw);
+    }
+
+    draw();
+}
+
+//blur
+function cv3(cvi) {
+
+    const cv = document.getElementsByTagName("canvas")[cvi];
+    cv.width = cv.clientWidth;
+    cv.height = cv.clientHeight;
+
+    const gl = cv.getContext("webgl2");
+
+    const camera = new MyCamera(Math.PI / 4, gl.drawingBufferWidth / gl.drawingBufferHeight, 0.1, 200);
+    camera.transform.rotateX(Math.PI / 4);
+    camera.transform.translate(0, 0, 10);
+    camera.mouseControl(cv);
+
+    window.onresize = e => {
+        // cv.width = cv.clientWidth * 0.5;
+        // cv.height = cv.clientHeight * 0.5;
+        gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
+        camera.aspectRatio = gl.drawingBufferWidth / gl.drawingBufferHeight;
+    }
+    window.onresize();
+    cv.oncontextmenu = e => e.preventDefault();
+
+    const programBase = MyGLProgram.create(gl);
+    programBase.link(MyGLProgram.VShader.create(gl, `#version 300 es
+        layout(location=0) in vec4 apos;
+        uniform mat4 uMVPmat;  
+        void main(){
+            gl_Position=uMVPmat * apos;               
+        }
+    `), MyGLProgram.FShader.create(gl, `#version 300 es
+        precision mediump float;
+        uniform vec4 blurColor;
+        layout(location=0) out vec4 fragColor;             
+        void main(){                  
+            fragColor = blurColor;
+        }
+    `));
+
+    const programBlur = MyGLProgram.create(gl);
+    programBlur.link(MyGLProgram.VShader.create(gl, `#version 300 es
+        layout(location=${MyGeometry.attrb_vertex_location}) in vec4 aPos;
+        layout(location=${MyGeometry.attrb_uv_location}) in vec2 aUV;
+        out vec2 vUV;
+        void main(){
+            gl_Position = aPos;
+            vUV = vec2(aUV.x, 1.0-aUV.y);            
+        }
+    `), MyGLProgram.FShader.create(gl, `#version 300 es
+        precision mediump float;
+
+        in vec2 vUV;
+        layout(location=0) out vec4 fragColor;
+
+        uniform sampler2D uTex;
+        uniform vec2[4] offsets;
+        uniform float offset;
+        void main(){
+            fragColor=vec4(0.0);
+            for (int i=0; i<4; i++){
+                fragColor+=texture(uTex, vUV+offsets[i]*offset);
+            }
+            fragColor*=0.25;
+        }
+    `));
+
+
+    const vShader = MyGLProgram.VShader.create(gl, `#version 300 es
+        layout(location=0) in vec4 apos;
+        layout(location=1) in vec3 anormal;
+
+        uniform mat4 uMVPmat;        
+        uniform mat4 uMmat;
+
+        out vec3 vNormal;  
+        void main(){
+            gl_Position=uMVPmat * apos;
+            vNormal =  ((uMmat * vec4(anormal, 0.)).xyz + 1.0) * 0.5;                
+        }
+    `);
+    const fShader = MyGLProgram.FShader.create(gl, `#version 300 es
+        precision mediump float;
+
+        in vec3 vNormal;
+        out vec4 fragColor;             
+
+        void main(){                  
+            fragColor = vec4(vNormal, 1.0);
+        }
+    `);
+
+    const program = MyGLProgram.create(gl);
+    program.link(vShader, fShader);
+
+    gl.enable(gl.DEPTH_TEST);
+    gl.enable(gl.CULL_FACE);
+
+    const plane = new MyGeometry.Plane(2, 2);
+    plane.createVAOAll(gl, gl.STATIC_DRAW);
+    const cube = new MyGeometry.Cube();
+    cube.createVAOAll(gl, gl.STATIC_DRAW);
+    const sphere = new MyGeometry.Sphere();
+    sphere.createVAOAll(gl, gl.STATIC_DRAW);
+
+    cube.transform.translate(0, 0, 0.5);
+    sphere.transform.translate(0, 0, 1.25);
+    sphere.transform.scale(1, 1, 0.5);
+
+    const fbo0 = gl.createFramebuffer();
+    const fbo1 = gl.createFramebuffer();
+    const fboWidth = gl.drawingBufferWidth;
+    const fboHeight = gl.drawingBufferHeight;
+
+    const tex0 = MyTexture.create(gl, gl.TEXTURE_2D);
+    tex0.loadFromBuffer(0, gl.RGBA, fboWidth, fboHeight, gl.RGBA, gl.UNSIGNED_BYTE, null);
+
+    const tex1 = MyTexture.create(gl, gl.TEXTURE_2D);
+    tex1.loadFromBuffer(0, gl.RGBA, fboWidth, fboHeight, gl.RGBA, gl.UNSIGNED_BYTE, null);
+
+    const smp = new MyTexture.Sampler(gl, gl.NEAREST, gl.NEAREST);
+    smp.wrapST(gl.CLAMP_TO_EDGE, gl.CLAMP_TO_EDGE);
+
+    // const rbo = gl.createRenderbuffer();
+    // gl.bindRenderbuffer(gl.RENDERBUFFER, rbo);
+    // gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH24_STENCIL8, fboWidth, fboHeight);
+    // gl.bindRenderbuffer(gl.RENDERBUFFER, null);
+
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fbo0);
+    // gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_STENCIL_ATTACHMENT, gl.RENDERBUFFER, rbo);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, tex0.target, tex0, 0);
+
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fbo1);
+    // gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_STENCIL_ATTACHMENT, gl.RENDERBUFFER, rbo);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, tex1.target, tex1, 0);
+
+    let statusFBO = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
+    if (statusFBO !== gl.FRAMEBUFFER_COMPLETE) {
+        alert(`frame buffer is not complete: ${statusFBO}`);
+    } else {
+
+    }
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+
+    let blurStep = 3;
+    let blurSize = 0.01 / blurStep;
+    let blurSpeed = 3;
+    let blurColor = new Float32Array([0.0, 1.0, 1.0, 1.0]);
+    const mvps = {};
+    const SMP_OFFSETS = new Float32Array([1, 1, 1, -1, -1, -1, -1, 1]);
+
+    let tick = 0;
+    function draw() {
+        const mVP = camera.getViewProjectMatrix();
+        const mV = camera.getViewMatrix();
+
+        gl.bindFramebuffer(gl.FRAMEBUFFER, fbo0);
+        // gl.clearColor(0.0, 0.0, 0.0, 0.0);
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+        programBase.use();
+        gl.uniform4fv(programBase.uniforms.blurColor, blurColor);
+        mvps.sphere = mVP.multiply(sphere.transform);
+        gl.uniformMatrix4fv(programBase.uniforms.uMVPmat, false, mvps.sphere);
+        sphere.draw(gl);
+        mvps.cube = mVP.multiply(cube.transform);
+        gl.uniformMatrix4fv(programBase.uniforms.uMVPmat, false, mvps.cube);
+        cube.draw(gl);
+
+        gl.useProgram(programBlur);
+        smp.bind(0);
+        gl.uniform1i(programBlur.uTex, 0);
+        gl.uniform2fv(programBlur.uniforms["offsets[0]"], SMP_OFFSETS);
+
+        let dblur = Math.sin(MyMath.deg2radian * tick * blurSpeed) * blurSize;
+        let tex;
+        let fbo;
+        for (let i = 0; i < blurStep; i++) {
+            if (i % 2 === 0) {
+                tex = tex0;
+                fbo = fbo1;
+            } else {
+                tex = tex1;
+                fbo = fbo0;
+            }
+
+            gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+            tex.activeAndBind(gl.TEXTURE0);
+            gl.uniform1f(programBlur.uniforms.offset, dblur * (i + 1));
+            plane.draw(gl);
+        }
+
+        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        tex.activeAndBind(gl.TEXTURE0);
+        plane.draw(gl);
+
+        gl.clear(gl.DEPTH_BUFFER_BIT);
+        program.use();
+        gl.uniformMatrix4fv(program.uniforms.uMVPmat, false, mvps.sphere);
+        gl.uniformMatrix4fv(program.uniforms.uMmat, false, sphere.transform);
+        sphere.draw(gl);
+        gl.uniformMatrix4fv(program.uniforms.uMVPmat, false, mvps.cube);
+        gl.uniformMatrix4fv(program.uniforms.uMmat, false, cube.transform);
+        cube.draw(gl);
+
+        tick++;
         requestAnimationFrame(draw);
     }
 
