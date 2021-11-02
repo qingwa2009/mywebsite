@@ -20,7 +20,7 @@ export default class MyTexture extends WebGLTexture {
      * @param {number} type gl.UNSIGNED_BYTE
      * @param {HTMLImageElement} img 
      */
-    loadFromImg(level, internalformat, format, type, img, genMipmap = true, cubeMapTarget = undefined) {
+    loadFromImg(level, internalformat, format, type, img, genMipmap = true) {
         const gl = this.gl;
         gl.bindTexture(this.target, this);
         gl.texImage2D(this.target, level, internalformat, format, type, img);

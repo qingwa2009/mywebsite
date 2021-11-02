@@ -948,3 +948,130 @@ function cv3(cvi) {
 
     draw();
 }
+
+//Projective Texturing
+function cv4(cvi) {
+
+    const cv = document.getElementsByTagName("canvas")[cvi];
+    cv.width = cv.clientWidth;
+    cv.height = cv.clientHeight;
+
+    const gl = cv.getContext("webgl2");
+
+    const camera = new MyCamera(Math.PI / 4, gl.drawingBufferWidth / gl.drawingBufferHeight, 0.1, 200);
+    camera.transform.rotateX(Math.PI / 4);
+    camera.transform.translate(0, 0, 10);
+    camera.mouseControl(cv);
+
+    window.onresize = e => {
+        // cv.width = cv.clientWidth * 0.5;
+        // cv.height = cv.clientHeight * 0.5;
+        gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
+        camera.aspectRatio = gl.drawingBufferWidth / gl.drawingBufferHeight;
+    }
+    window.onresize();
+    cv.oncontextmenu = e => e.preventDefault();
+
+
+    const vShader = MyGLProgram.VShader.create(gl, `#version 300 es
+        layout(location=0) in vec4 apos;
+        layout(location=1) in vec3 anormal;
+
+        uniform mat4 uMVPmat;        
+        uniform mat4 uMmat;
+
+        uniform mat4 uLightMVPmat;
+
+        out vec3 vNormal; 
+        out vec3 vProjUV; 
+        void main(){
+            gl_Position=uMVPmat * apos;
+            vNormal =  ((uMmat * vec4(anormal, 0.)).xyz + 1.0) * 0.5;    
+            vProjUV = ((uLightMVPmat * apos + 1.0) * 0.5).xyz;   
+                     
+            // vProjUV = (uLightMVPmat * apos).xyz * mat3(0.5, 0.0, 0.5,
+            //                                            0.0,-0.5, 0.5,
+            //                                            0.0, 0.0, 1.0);
+        }
+    `);
+    const fShader = MyGLProgram.FShader.create(gl, `#version 300 es
+        precision mediump float;
+
+        in vec3 vNormal;
+        in vec3 vProjUV;
+
+        uniform sampler2D uTex;
+        out vec4 fragColor;             
+
+        void main(){
+            vec4 c;
+            if(vProjUV.x<0. || vProjUV.y<0. || vProjUV.x>1. || vProjUV.y>1.){
+                c = vec4(1.0);
+            }else{
+                c = texture(uTex, vProjUV.xy);
+                // c = textureProj(uTex, vProjUV);
+            }             
+            fragColor = vec4(vNormal, 1.0) * c;
+        }
+    `);
+
+    const program = MyGLProgram.create(gl);
+    program.link(vShader, fShader);
+
+    gl.enable(gl.DEPTH_TEST);
+    gl.enable(gl.CULL_FACE);
+
+    const plane = new MyGeometry.Plane(10, 10);
+    plane.createVAOAll(gl, gl.STATIC_DRAW);
+    const cube = new MyGeometry.Cube();
+    cube.createVAOAll(gl, gl.STATIC_DRAW);
+    const sphere = new MyGeometry.Sphere();
+    sphere.createVAOAll(gl, gl.STATIC_DRAW);
+    const cone = new MyGeometry.
+
+        cube.transform.translate(0, 0, 0.5);
+    sphere.transform.translate(0, 0, 1.25);
+    sphere.transform.scale(1, 1, 0.5);
+
+    const projLight = new MyCamera(Math.PI / 1.5, 1.0, 0.1, 200);
+    projLight.transform.translate(0, 0, 3);
+
+    const img = document.getElementById("favicon");
+    const tex0 = MyTexture.create(gl, gl.TEXTURE_2D);
+    tex0.loadFromImg(0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img, true);
+    const smp = new MyTexture.Sampler(gl, gl.LINEAR_MIPMAP_NEAREST, gl.NEAREST);
+    smp.wrapST(gl.CLAMP_TO_EDGE, gl.CLAMP_TO_EDGE);
+
+    let tick = 0;
+    function draw() {
+        const mVP = camera.getViewProjectMatrix();
+        const mV = camera.getViewMatrix();
+        const mligtVP = projLight.getViewProjectMatrix();
+
+        gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
+        program.use();
+        tex0.activeAndBind(gl.TEXTURE0);
+        smp.bind(0);
+        gl.uniform1i(program.uniforms.uTex, 0);
+
+        gl.uniformMatrix4fv(program.uniforms.uMVPmat, false, mVP.multiply(sphere.transform));
+        gl.uniformMatrix4fv(program.uniforms.uMmat, false, sphere.transform);
+        gl.uniformMatrix4fv(program.uniforms.uLightMVPmat, false, mligtVP.multiply(sphere.transform));
+        sphere.draw(gl);
+        gl.uniformMatrix4fv(program.uniforms.uMVPmat, false, mVP.multiply(cube.transform));
+        gl.uniformMatrix4fv(program.uniforms.uMmat, false, cube.transform);
+        gl.uniformMatrix4fv(program.uniforms.uLightMVPmat, false, mligtVP.multiply(cube.transform));
+        cube.draw(gl);
+        gl.uniformMatrix4fv(program.uniforms.uMVPmat, false, mVP.multiply(plane.transform));
+        gl.uniformMatrix4fv(program.uniforms.uMmat, false, plane.transform);
+        gl.uniformMatrix4fv(program.uniforms.uLightMVPmat, false, mligtVP.multiply(plane.transform));
+        plane.draw(gl);
+
+        projLight.transform.translate(Math.sin(MyMath.deg2radian * tick) * 0.02, 0, 0);
+        // projLight.transform.rotateZ(Math.sin(MyMath.deg2radian * tick) * 0.02);
+        tick++;
+        requestAnimationFrame(draw);
+    }
+
+    draw();
+}

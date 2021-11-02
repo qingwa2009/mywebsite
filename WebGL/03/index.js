@@ -999,7 +999,7 @@ function cv3(cvi) {
     gl.enable(gl.CULL_FACE);
 
 
-    const sphere = new MyGeometry.Sphere();
+    const sphere = new MyGeometry.Sphere(1, 4);
     const plane = new MyGeometry.Plane();
     const cube = new MyGeometry.Cube();
 

@@ -582,3 +582,103 @@ MyGeometry.Sphere = class extends MyGeometry {
         this.indices = new Uint16Array(indices);
     }
 }
+
+MyGeometry.Cone = class extends MyGeometry {
+    constructor(diameter = 1, height = 1, seg = 24) {
+        super();
+        seg = Math.max(3, seg);
+        const r = diameter * 0.5;
+        const da = Math.PI * 2 / seg;
+        const db = Math.PI / seg;
+
+        const vertices = [];
+        const normals = [];
+        const indices = []
+        const uvs = [];
+        const tangents = [];
+        const binormals = [];
+
+        let ind = 0;
+        const du = 1 / seg;
+        const dv = 1 / seg;
+        let u = 0.25;
+        let v = 0.5;
+        let ta = da * 0.5;
+        //上
+        for (let i = 0; i < seg; i++) {
+            vertices.push(0, 0, height);
+            normals.push(0, 0, 1);
+            const sta = -Math.sin(ta);
+            const cta = Math.cos(ta);
+            tangents.push(sta, cta, 0);
+            binormals.push(-cta, sta, 0);
+            ta += da;
+
+            uvs.push(0.25, 0.5);
+
+            indices.push(ind, ind + seg, ind + seg + 1);
+
+            ind++;
+        }
+
+        //中
+        const hr1_2 = Math.pow(height * height + r * r, -0.5);
+        const rp = r * hr1_2;
+        const hp = h * hr1_2;
+
+        v += dv;
+        u = 0;
+        for (let i = 0; i <= seg; i++) {
+            const b = da * i;
+            const cosb = Math.cos(b);
+            const sinb = Math.sin(b);
+            const x = cosb * r;
+            const y = sinb * r;
+
+            vertices.push(x, y, 0);
+            normals.push(cosb * hp, sinb * hp, rp);
+            tangents.push(-sinb, cosb, 0);
+            binormals.push(-cosb * rp, -sinb * rp, hp);
+
+            uvs.push(u, v);
+
+            u += du;
+        }
+
+        ind += seg + 2;
+        //底
+        for (let i = 0; i < seg; i++) {
+            vertices.push(0, 0, 0);
+            normals.push(0, 0, -1);
+
+            let j = i * 3;
+            tangents.push(-1 * tangents[j], -1 * tangents[j + 1], 0);
+            binormals.push(-1 * binormals[j], -1 * binormals[j + 1], 0);
+
+            uvs.push(0.75, 0.5);
+            indices.push(ind, ind + seg, ind + seg + 1);
+
+            ind++;
+        }
+
+        for (let i = 0; i <= seg; i++) {
+
+            vertices.push(x, y, 0);
+            normals.push(cosb * hp, sinb * hp, rp);
+            tangents.push(-sinb, cosb, 0);
+            binormals.push(-cosb * rp, -sinb * rp, hp);
+
+        }
+
+
+
+        this.vertices = new Float32Array(vertices);
+        this.normals = new Float32Array(normals);
+        this.tangents = new Float32Array(tangents);
+        this.binormals = new Float32Array(binormals);
+        this.uvs = new Float32Array(uvs);
+        this.indices = new Uint16Array(indices);
+    }
+
+
+}
