@@ -16,7 +16,8 @@
 <body style="display:flex; flex-flow:column nowrap; user-select:none;">
 
 	<div style="display:flex; flex-flow:row nowrap; flex-grow: 1; user-select:none;">
-		<fieldset class="inbox" id="exporting" style="flex-grow: 1;">
+		<fieldset class="inbox" id="exporting" style="flex-grow: 1;"
+			title="Solidworks文件拖放的此处上传，&#13装配的零件请勾上上面的勾（具体看提示）">
 			<legend style="white-space:nowrap;">
 				<label class="help" title="将SolidWorks文件拖放到框内导出&#13导出失败的请右键删除">导出中</label>
 				<progress id="pg" value="0" max="100"></progress>
@@ -33,9 +34,10 @@
 			</div>
 		</fieldset>
 		<my-splitter vertical editnext></my-splitter>
-		<fieldset class="outbox" id="exported" style="width:50%;">
+		<fieldset class="outbox" id="exported" style="width:50%;"
+			title="加快下载的方法：&#13 1.左上角打开下拉菜单点‘设置’&#13 2.滚到最下面点‘高级’&#13 3.点‘同步功能和Google服务’ &#13 4.取消‘安全浏览’选项就可以了！">
 			<legend style="white-space:nowrap;">
-				<label class="help" title="将下列文件拖放到桌面下载&#13注意不能同时下载多个&#13下载完请右键删除">导出完成</label>
+				<label class="help" title="将下列文件拖放到桌面下载&#13（注意拖放下载不能同时下载多个，&#13右键下载可以同时下载多个）&#13下载完请右键删除">导出完成</label>
 			</legend>
 			<ol class="list"></ol>
 	</div>
