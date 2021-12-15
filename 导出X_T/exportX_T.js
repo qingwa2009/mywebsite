@@ -57,11 +57,15 @@ window.addEventListener('DOMContentLoaded', () => {
 
 	var emExporting = document.getElementById("exporting");
 	var emExported = document.getElementById("exported");
+	var emIsAssemblyPart = document.getElementById("isAssemblyPart");
+	var emResultList = document.getElementById("resultList");
+	document.getElementById("btnClearResult").addEventListener("click", () => {
+		emResultList.innerHTML = "";
+	});
 
 	emExported.ondragover = function (e) {
 		e.preventDefault();
 		e.dataTransfer.dropEffect = "none";
-
 	}
 
 	emExporting.ondragover = function (e) {
@@ -102,18 +106,20 @@ window.addEventListener('DOMContentLoaded', () => {
 				console.log(e.data);
 				pg.value = Math.round(e.data.value);
 				if (e.data.error) {
+					addToResultList(fn, false);
 					uploadingFiles.delete(fn);
 					alert(e.data.error);
 				} else if (e.data.EOF) {
+					addToResultList(fn, true);
 					refresh();
-
 				}
 			}
 		}
 		uploadingFiles.set(fn, true);
 		worker.postMessage({
 			"file": file,
-			"url": cmdUpload
+			"url": cmdUpload,
+			"filename": emIsAssemblyPart.checked ? `AssemblyParts/${file.name}` : file.name,
 		});
 	}
 
@@ -208,6 +214,14 @@ window.addEventListener('DOMContentLoaded', () => {
 		if (ws === null || ws.readyState === WebSocket.CLOSED || ws.readyState === WebSocket.CLOSING) {
 			reconnectWebSocket();
 		}
+	}
+
+	function addToResultList(name, isSuccess) {
+		const li = document.createElement("li");
+		li.classList.add(isSuccess ? "infook" : "infofail");
+		li.textContent = `${name} ${isSuccess ? "-->上传成功" : "-->上传失败"}`;
+		emResultList.appendChild(li);
+		li.scrollIntoView();
 	}
 
 	function reconnectWebSocket() {
