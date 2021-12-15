@@ -4,6 +4,7 @@ onmessage = function (oEvent) {
 	var f = dt.file;
 	var url = dt.url;
 	var filename = dt.filename;
+	var isAssemblyPart = dt.isAssemblyPart;
 	var xhr = new XMLHttpRequest();
 
 	xhr.open("POST", url, true);
@@ -12,7 +13,7 @@ onmessage = function (oEvent) {
 		if (e.lengthComputable) {
 			let pc = e.loaded / e.total * 100;
 			console.log(`已上传：${pc}`);
-			postMessage({ "value": pc, "EOF": false, "filename": filename });
+			postMessage({ "value": pc, "EOF": false, "filename": filename, "isAssemblyPart": isAssemblyPart });
 		}
 	}
 	xhr.upload.onload = (e) => {
@@ -25,13 +26,13 @@ onmessage = function (oEvent) {
 	}
 	xhr.onload = () => {
 		if (xhr.status == 200) {
-			postMessage({ "value": 100, "EOF": true, "filename": filename });
+			postMessage({ "value": 100, "EOF": true, "filename": filename, "isAssemblyPart": isAssemblyPart });
 		} else {
-			postMessage({ "value": 0, "error": "服务器：\n" + xhr.responseText, "filename": filename });
+			postMessage({ "value": 0, "error": "服务器：\n" + xhr.responseText, "filename": filename, "isAssemblyPart": isAssemblyPart });
 		}
 	}
 	xhr.onerror = () => {
-		postMessage({ "value": 0, "error": "请求错误！无法连接到服务器！", "filename": filename });
+		postMessage({ "value": 0, "error": "请求错误！无法连接到服务器！", "filename": filename, "isAssemblyPart": isAssemblyPart });
 	}
 	xhr.send(f);
 }

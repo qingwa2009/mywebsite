@@ -22,6 +22,20 @@ export function getParent(em, parentElementClass) {
 }
 
 /**
+ * 是否父子关系
+ * @param {HTMLElement} parentElement 
+ * @param {HTMLElement} childElement 
+ */
+export function isParentAndChild(parentElement, childElement) {
+    let p = childElement;
+    while (1) {
+        p = p.parentElement;
+        if (p == null) return false;
+        else if (p === parentElement) return true;
+    }
+}
+
+/**
  * 分割字符串，仅分割找到的第一处
  * @param {string} s 
  * @param {string} splitter 

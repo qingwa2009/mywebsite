@@ -17,20 +17,20 @@
 
 	<div style="display:flex; flex-flow:row nowrap; flex-grow: 1; user-select:none;">
 		<fieldset class="inbox" id="exporting" style="flex-grow: 1;"
-			title="Solidworks文件拖放的此处上传，&#13装配的零件请勾上上面的勾（具体看提示）">
+			title="Solidworks零件或者装配体文件拖放的此处上传，&#13装配的零件请拖放到下面那个框里！">
 			<legend style="white-space:nowrap;">
 				<label class="help" title="将SolidWorks文件拖放到框内导出&#13导出失败的请右键删除">导出中</label>
 				<progress id="pg" value="0" max="100"></progress>
-				<label class="is_assem_part" for="isAssemblyPart"
+				<!-- <label class="is_assem_part" for="isAssemblyPart"
 					title="转装配体图时:&#13 1.先勾上‘作为装配体的零件上传’&#13 2.然后上传装配用到的所有零件&#13 3.上传完后取消勾选&#13 4.最后再上传装配体！">
 					作为装配体的零件上传
 					<input id="isAssemblyPart" type="checkbox" />
-				</label>
+				</label> -->
 			</legend>
 			<ol class="list"></ol>
-			<div class="infobox">
+			<div class="infobox" title="装配体的零件请拖放到这里！&#13">
 				<ol id="resultList"></ol>
-				<div id="btnClearResult">×</div>
+				<div id="btnClearResult" title="清空列表">×</div>
 			</div>
 		</fieldset>
 		<my-splitter vertical editnext></my-splitter>

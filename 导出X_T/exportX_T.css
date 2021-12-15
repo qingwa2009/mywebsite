@@ -92,7 +92,7 @@
 
 .infobox{
     position: absolute;
-    width: 15em;
+    width: 20em;
     height: 10em;
     border-radius: 1em;
     border: 1px solid var(--border-color);
@@ -104,7 +104,7 @@
     transition: filter 3s;
 }
 .infobox:hover{
-    filter: drop-shadow(2px 4px 6px var(--color)) opacity(1);
+    filter: drop-shadow(-2px -4px 6px var(--color)) opacity(1);
     transition: filter 1s;    
 }
 .infook{

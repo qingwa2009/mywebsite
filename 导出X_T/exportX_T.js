@@ -1,5 +1,5 @@
 'use strict';
-import { createWebSocket } from '../js/myUtil.js';
+import { createWebSocket, isParentAndChild } from '../js/myUtil.js';
 import MyMenu from "../js/components/myMenu/myMenu.js";
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -57,7 +57,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
 	var emExporting = document.getElementById("exporting");
 	var emExported = document.getElementById("exported");
-	var emIsAssemblyPart = document.getElementById("isAssemblyPart");
 	var emResultList = document.getElementById("resultList");
 	document.getElementById("btnClearResult").addEventListener("click", () => {
 		emResultList.innerHTML = "";
@@ -81,6 +80,8 @@ window.addEventListener('DOMContentLoaded', () => {
 
 	emExporting.ondrop = function (e) {
 		e.preventDefault();
+		const isAssemblyPart = isParentAndChild(emResultList.parentElement, e.target);
+
 		for (let i = 0; i < e.dataTransfer.files.length; i++) {
 			let f = e.dataTransfer.files[i];
 			let ext = f.name.substr(f.name.lastIndexOf(".")).toUpperCase();
@@ -89,7 +90,7 @@ window.addEventListener('DOMContentLoaded', () => {
 				alert(f.name + "\n不是SolidWorks文件！");
 				continue;
 			}
-			upload(f);
+			upload(f, isAssemblyPart);
 		}
 
 	}
@@ -97,7 +98,7 @@ window.addEventListener('DOMContentLoaded', () => {
 	var worker = undefined;
 	var pg = document.getElementById("pg");
 	const uploadingFiles = new Map();
-	function upload(file) {
+	function upload(file, isAssemblyPart) {
 		pg.value = 0;
 		const fn = file.name.replace(/\s/ig, " ");//所有空白字符替换成空格，与后端保持一致
 		if (worker === undefined) {
@@ -106,21 +107,22 @@ window.addEventListener('DOMContentLoaded', () => {
 				console.log(e.data);
 				pg.value = Math.round(e.data.value);
 				if (e.data.error) {
-					addToResultList(e.data.filename, false);
+					if (e.data.isAssemblyPart) addToResultList(e.data.filename, false);
 					uploadingFiles.delete(e.data.filename);
 					alert(e.data.error);
 				} else if (e.data.EOF) {
-					addToResultList(e.data.filename, true);
+					if (e.data.isAssemblyPart) addToResultList(e.data.filename, true);
 					refresh();
 				}
 			}
 		}
-		const fliename = emIsAssemblyPart.checked ? `AssemblyParts/${fn}` : fn;
+		const fliename = isAssemblyPart ? `AssemblyParts/${fn}` : fn;
 		uploadingFiles.set(fliename, true);
 		worker.postMessage({
 			"file": file,
 			"url": cmdUpload,
 			"filename": fliename,
+			"isAssemblyPart": isAssemblyPart,
 		});
 	}
 
