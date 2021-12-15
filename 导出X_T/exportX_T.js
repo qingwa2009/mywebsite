@@ -106,20 +106,21 @@ window.addEventListener('DOMContentLoaded', () => {
 				console.log(e.data);
 				pg.value = Math.round(e.data.value);
 				if (e.data.error) {
-					addToResultList(fn, false);
-					uploadingFiles.delete(fn);
+					addToResultList(e.data.filename, false);
+					uploadingFiles.delete(e.data.filename);
 					alert(e.data.error);
 				} else if (e.data.EOF) {
-					addToResultList(fn, true);
+					addToResultList(e.data.filename, true);
 					refresh();
 				}
 			}
 		}
-		uploadingFiles.set(fn, true);
+		const fliename = emIsAssemblyPart.checked ? `AssemblyParts/${fn}` : fn;
+		uploadingFiles.set(fliename, true);
 		worker.postMessage({
 			"file": file,
 			"url": cmdUpload,
-			"filename": emIsAssemblyPart.checked ? `AssemblyParts/${file.name}` : file.name,
+			"filename": fliename,
 		});
 	}
 
@@ -168,7 +169,7 @@ window.addEventListener('DOMContentLoaded', () => {
 			li.textContent = fnn;
 			li.setAttribute("draggable", true);
 			li.ondragstart = onDragStart;
-			const fn = fnn.substr(0, fnn.length - 4);
+			let fn = fnn.substr(0, fnn.length - 4);
 			if (uploadingFiles.has(fn)) {
 				// uploadingFiles.delete(fn);
 				li.classList.add("myfile");
