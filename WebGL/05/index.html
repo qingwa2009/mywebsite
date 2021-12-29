@@ -1,0 +1,33 @@
+<!doctype html>
+<html style="user-select: none">
+
+<head>
+	<meta http-equiv="X-UA-Compatible" content="chrome=1">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+
+	<title>PID控制</title>
+	<!--外部引用样式-->
+	<!-- <link rel="stylesheet" type="text/css" href="./css/cssVar.css"> -->
+	<!-- <link rel="stylesheet" type="text/css" href="./css/commStyle.css"> -->
+	<link rel="stylesheet" type="text/css" href="index.css">
+</head>
+
+<body>
+	<div>
+		<canvas></canvas>
+		<div>
+			<div><label>balanceForce: </label><label id="emBalanceForce"></label></div>
+			<div><label>kp: </label></label><label id="emKp"></label></div>
+			<div><label>ki: </label></label><label id="emKi"></label></div>
+			<div><label>kd: </label></label><label id="emKd"></label></div>
+			<div><label>force: </label></label><label id="emForce"></label></div>
+		</div>
+		<input id="emMass" type="number" step="0.02" value="3" title="mass">
+		<!-- <img src="img.png" style="display: none;"> -->
+	</div>
+
+	<script type="module" src="index.js"></script>
+</body>
+
+</html>
