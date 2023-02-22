@@ -139,7 +139,7 @@ window.addEventListener('DOMContentLoaded', function () {
 	}
 
 	function delFileAsync(filename) {
-		let url = `${location.origin}${cmd}?del=${encodeURI(filename)}`;
+		let url = `${location.origin}${cmd}?del=${encodeURIComponent(filename)}`;
 		return new Promise(function (res, rej) {
 			const xhr = new XMLHttpRequest();
 			xhr.open("GET", url, true);
@@ -184,7 +184,7 @@ window.addEventListener('DOMContentLoaded', function () {
 		}
 
 		download.download = filename;
-		const fn = encodeURI(filename);
+		const fn = encodeURIComponent(filename);
 		// 		download.href=`${cmd}/?file=${fn}`;		
 		download.href = `${cmd}/${fn}?file=${fn}`;//兼容不支持download属性的浏览器	
 		download.click();

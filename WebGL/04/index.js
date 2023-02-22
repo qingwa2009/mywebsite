@@ -275,19 +275,19 @@ function cv0(cvi) {
         plane.transform.positionZ = 4.9 * Math.sin(MyMath.deg2radian * tick * 0.1);
         gl.uniformMatrix4fv(program.uniforms["uMVPmat"], false, mVP.multiply(plane.transform));
         gl.uniformMatrix4fv(program.uniforms["uMmat"], false, plane.transform);
-        gl.uniformMatrix4fv(program.uniforms["uMInvTpmat"], false, plane.transform.inverse().transposed());
+        gl.uniformMatrix4fv(program.uniforms["uMInvTpmat"], false, plane.transform.inverseAffine().transposed());
         gl.disable(gl.CULL_FACE);
         plane.draw(gl);
         gl.enable(gl.CULL_FACE);
 
         gl.uniformMatrix4fv(program.uniforms["uMVPmat"], false, mVP.multiply(cube.transform));
         gl.uniformMatrix4fv(program.uniforms["uMmat"], false, cube.transform);
-        gl.uniformMatrix4fv(program.uniforms["uMInvTpmat"], false, cube.transform.inverse().transposed());
+        gl.uniformMatrix4fv(program.uniforms["uMInvTpmat"], false, cube.transform.inverseAffine().transposed());
         cube.draw(gl);
 
         gl.uniformMatrix4fv(program.uniforms["uMVPmat"], false, mVP.multiply(sphere.transform));
         gl.uniformMatrix4fv(program.uniforms["uMmat"], false, sphere.transform);
-        gl.uniformMatrix4fv(program.uniforms["uMInvTpmat"], false, sphere.transform.inverse().transposed());
+        gl.uniformMatrix4fv(program.uniforms["uMInvTpmat"], false, sphere.transform.inverseAffine().transposed());
         sphere.draw(gl);
 
         program2.use();
@@ -1027,9 +1027,8 @@ function cv4(cvi) {
     cube.createVAOAll(gl, gl.STATIC_DRAW);
     const sphere = new MyGeometry.Sphere();
     sphere.createVAOAll(gl, gl.STATIC_DRAW);
-    const cone = new MyGeometry.
 
-        cube.transform.translate(0, 0, 0.5);
+    cube.transform.translate(0, 0, 0.5);
     sphere.transform.translate(0, 0, 1.25);
     sphere.transform.scale(1, 1, 0.5);
 

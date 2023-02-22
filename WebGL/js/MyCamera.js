@@ -38,10 +38,10 @@ export default class MyCamera {
     }
 
     getViewProjectMatrix() {
-        return MyMatrix4x4.multiply(this._persperctiveMatrix, this.transform.inverse());
+        return MyMatrix4x4.multiply(this._persperctiveMatrix, this.transform.inverseOrtho());
     }
     getViewMatrix() {
-        return this.transform.inverse();
+        return this.transform.inverseOrtho();
     }
     /**不要随意改变该返回值 */
     get projectMatrix() {

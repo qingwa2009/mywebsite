@@ -102,6 +102,7 @@ export class MyMatrix4x4 extends Float32Array {
 
 
 	/**
+	 * 逆矩阵
 	 * @returns {MyMatrix4x4} new
 	 */
 	inverse() {
@@ -149,6 +150,69 @@ export class MyMatrix4x4 extends Float32Array {
 		m[13] = (a20 * c00 - a22 * c03 + a23 * c04) * det;
 		m[14] = (a21 * c03 - a20 * c01 - a23 * c05) * det;
 		m[15] = (a20 * c02 - a21 * c04 + a22 * c05) * det;
+		return m;
+	}
+	/**
+	 * 正交变换矩阵的逆矩阵；仅进行过平移和旋转变换的逆矩阵
+	 * @returns {MyMatrix4x4} new
+	 */
+	inverseOrtho() {
+		const m0 = this;
+		const m = new MyMatrix4x4();
+		m[0] = m0[0]; m[4] = m0[1]; m[8] = m0[2]; m[12] = -(m0[0] * m0[12] + m0[1] * m0[13] + m0[2] * m0[14]);
+		m[1] = m0[4]; m[5] = m0[5]; m[9] = m0[6]; m[13] = -(m0[4] * m0[12] + m0[5] * m0[13] + m0[6] * m0[14]);
+		m[2] = m0[8]; m[6] = m0[9]; m[10] = m0[10]; m[14] = -(m0[8] * m0[12] + m0[9] * m0[13] + m0[10] * m0[14]);
+		m[3] = 0; m[7] = 0; m[11] = 0; m[15] = 1;
+		return m;
+	}
+	/**
+	 * 仿射变换矩阵的逆矩阵；包含平移、旋转、缩放、剪切变换的逆矩阵
+	 * @returns {MyMatrix4x4} new
+	 */
+	inverseAffine() {
+		const m0 = this;
+		let a = m0[0], d = m0[4], g = m0[8], j = m0[12],
+			b = m0[1], e = m0[5], h = m0[9], k = m0[13],
+			c = m0[2], f = m0[6], i = m0[10], l = m0[14],
+			/*0,       0,         0,      */ s = m0[15];
+		let aa = e * i - f * h, bb = f * g - d * i, cc = d * h - e * g,
+			dd = c * h - b * i, ee = a * i - c * g, ff = b * g - a * h,
+			gg = b * f - c * e, hh = c * d - a * f, ii = a * e - b * d;
+		let det = a * aa + b * bb + c * cc;
+		det = 1.0 / det;
+		let ss = 1.0 / s;
+		let jj = -j * ss, kk = -k * ss, ll = -l * ss;
+		aa *= det; bb *= det; cc *= det;
+		dd *= det; ee *= det; ff *= det;
+		gg *= det; hh *= det; ii *= det;
+		const m = new MyMatrix4x4();
+		m[0] = aa; m[4] = bb; m[8] = cc; m[12] = jj * aa + kk * bb + ll * cc;
+		m[1] = dd; m[5] = ee; m[9] = ff; m[13] = jj * dd + kk * ee + ll * ff;
+		m[2] = gg; m[6] = hh; m[10] = ii; m[14] = jj * gg + kk * hh + ll * ii;
+		m[3] = 0; m[7] = 0; m[11] = 0; m[15] = ss;
+		return m;
+	}
+	/**
+	 * 非剪切变换矩阵的逆矩阵；仅进行了平移、旋转、缩放变换的逆矩阵。
+	 * @returns {MyMatrix4x4} new
+	 */
+	inverseNonSkew() {
+		const m0 = this;
+		let a = m0[0], d = m0[4], g = m0[8], j = m0[12],
+			b = m0[1], e = m0[5], h = m0[9], k = m0[13],
+			c = m0[2], f = m0[6], i = m0[10], l = m0[14],
+			/*0,       0,         0,      */ s = m0[15];
+		let abc = 1.0 / (a * a + b * b + c * c), def = 1.0 / (d * d + e * e + f * f), ghi = 1.0 / (g * g + h * h + i * i);
+		a *= abc; b *= abc; c *= abc;
+		d *= def; e *= def; f *= def;
+		g *= ghi; h *= ghi; i *= ghi;
+		let ss = 1.0 / s;
+		let jj = -j * ss, kk = -k * ss, ll = -l * ss;
+		const m = new MyMatrix4x4();
+		m[0] = a; m[4] = b; m[8] = c; m[12] = jj * a + kk * b + ll * c;
+		m[1] = d; m[5] = e; m[9] = f; m[13] = jj * d + kk * e + ll * f;
+		m[2] = g; m[6] = h; m[10] = i; m[14] = jj * g + kk * h + ll * i;
+		m[3] = 0; m[7] = 0; m[11] = 0; m[15] = ss;
 		return m;
 	}
 
@@ -401,10 +465,10 @@ export class MyMatrix4x4 extends Float32Array {
 
 	toString() {
 		return `
-			${round(this[0], 6)},	${round(this[4], 6)},	${round(this[8], 6)},	${tround(his[12], 6)}
-			${round(this[1], 6)},	${round(this[5], 6)},	${round(this[9], 6)},	${tround(his[13], 6)}
-			${round(this[2], 6)},	${round(this[6], 6)},	${tround(his[10], 6)},	${tround(his[14], 6)}
-			${round(this[3], 6)},	${round(this[7], 6)},	${tround(his[11], 6)},	${tround(his[15], 6)}
+			${round(this[0], 6)},	${round(this[4], 6)},	${round(this[8], 6)},	${round(this[12], 6)}
+			${round(this[1], 6)},	${round(this[5], 6)},	${round(this[9], 6)},	${round(this[13], 6)}
+			${round(this[2], 6)},	${round(this[6], 6)},	${round(this[10], 6)},	${round(this[14], 6)}
+			${round(this[3], 6)},	${round(this[7], 6)},	${round(this[11], 6)},	${round(this[15], 6)}
 			`;
 	}
 

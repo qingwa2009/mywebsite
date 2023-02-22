@@ -1,6 +1,6 @@
 'use strict';
 
-var readSTLFile = function (file) {
+export function readSTLFile(file) {
 	return new Promise((resolve, reject) => {
 		let fr = new FileReader();
 		fr.readAsArrayBuffer(file);
@@ -67,7 +67,7 @@ var readSTLFile = function (file) {
  * @param {Blob} file stl文件
  * @param {WebGL2RenderingContext} gl 
  */
-var createVAOFromSTLFile = function (file, gl) {
+export function createVAOFromSTLFile(file, gl) {
 	return readSTLFile(file).then(
 		points => {
 			const vao = gl.createVertexArray();
@@ -93,7 +93,7 @@ var createVAOFromSTLFile = function (file, gl) {
 	);
 }
 
-var releaseSTLVAO = function (stl, gl) {
+export function releaseSTLVAO(stl, gl) {
 	gl.deleteVertexArray(stl.vao);
 	for (let i = 0; i < stl.vbos.length; i++) {
 		gl.deleteBuffer(stl.vbos[i]);

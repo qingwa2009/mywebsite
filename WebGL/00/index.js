@@ -590,7 +590,7 @@ function cv6() {
         gl.bindVertexArray(vao);
 
         vMat.rotateY(da);
-        gl.uniformMatrix4fv(program.uViewMat, false, vMat.inverse());
+        gl.uniformMatrix4fv(program.uViewMat, false, vMat.inverseOrtho());
 
 
 
@@ -750,7 +750,7 @@ function cv7() {
         uViewMat.rotateY(da);
 
         gl.useProgram(program);
-        gl.uniformMatrix4fv(program.uViewMat, false, uViewMat.inverse());
+        gl.uniformMatrix4fv(program.uViewMat, false, uViewMat.inverseOrtho());
 
         gl.bindVertexArray(vao);
         gl.uniform4fv(program.uColor, color);
@@ -935,7 +935,7 @@ function cv8() {
         camera.rotateAround([0, 0, 0], [1, 1, 1], da);
 
         gl.useProgram(program);
-        gl.uniformMatrix4fv(program.uMVPMat, false, MyMatrix4x4.multiply(projMat, camera.inverse()));
+        gl.uniformMatrix4fv(program.uMVPMat, false, MyMatrix4x4.multiply(projMat, camera.inverseOrtho()));
 
         gl.bindVertexArray(vao);
         gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);

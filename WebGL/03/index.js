@@ -1169,17 +1169,17 @@ function cv3(cvi) {
 
         gl.uniformMatrix4fv(program.uniforms["uMVPmat"], false, mVP.multiply(plane.transform));
         gl.uniformMatrix4fv(program.uniforms["uMmat"], false, plane.transform);
-        gl.uniform3fv(program.uniforms["uViewPosInObjSpace"], plane.transform.inverse().multiplyPoint(camPos));
+        gl.uniform3fv(program.uniforms["uViewPosInObjSpace"], plane.transform.inverseAffine().multiplyPoint(camPos));
         plane.draw(gl);
 
         gl.uniformMatrix4fv(program.uniforms["uMVPmat"], false, mVP.multiply(cube.transform));
         gl.uniformMatrix4fv(program.uniforms["uMmat"], false, cube.transform);
-        gl.uniform3fv(program.uniforms["uViewPosInObjSpace"], cube.transform.inverse().multiplyPoint(camPos));
+        gl.uniform3fv(program.uniforms["uViewPosInObjSpace"], cube.transform.inverseAffine().multiplyPoint(camPos));
         cube.draw(gl);
 
         gl.uniformMatrix4fv(program.uniforms["uMVPmat"], false, mVP.multiply(sphere.transform));
         gl.uniformMatrix4fv(program.uniforms["uMmat"], false, sphere.transform);
-        gl.uniform3fv(program.uniforms["uViewPosInObjSpace"], sphere.transform.inverse().multiplyPoint(camPos));
+        gl.uniform3fv(program.uniforms["uViewPosInObjSpace"], sphere.transform.inverseAffine().multiplyPoint(camPos));
         sphere.draw(gl);
 
         requestAnimationFrame(draw);
@@ -1618,17 +1618,17 @@ function cv4(cvi) {
 
         gl.uniformMatrix4fv(program.uniforms["uMVPmat"], false, mVP.multiply(plane.transform));
         gl.uniformMatrix4fv(program.uniforms["uMmat"], false, plane.transform);
-        gl.uniform3fv(program.uniforms["uViewPosInObjSpace"], plane.transform.inverse().multiplyPoint(camPos));
+        gl.uniform3fv(program.uniforms["uViewPosInObjSpace"], plane.transform.inverseAffine().multiplyPoint(camPos));
         plane.draw(gl);
 
         gl.uniformMatrix4fv(program.uniforms["uMVPmat"], false, mVP.multiply(cube.transform));
         gl.uniformMatrix4fv(program.uniforms["uMmat"], false, cube.transform);
-        gl.uniform3fv(program.uniforms["uViewPosInObjSpace"], cube.transform.inverse().multiplyPoint(camPos));
+        gl.uniform3fv(program.uniforms["uViewPosInObjSpace"], cube.transform.inverseAffine().multiplyPoint(camPos));
         cube.draw(gl);
 
         gl.uniformMatrix4fv(program.uniforms["uMVPmat"], false, mVP.multiply(sphere.transform));
         gl.uniformMatrix4fv(program.uniforms["uMmat"], false, sphere.transform);
-        gl.uniform3fv(program.uniforms["uViewPosInObjSpace"], sphere.transform.inverse().multiplyPoint(camPos));
+        gl.uniform3fv(program.uniforms["uViewPosInObjSpace"], sphere.transform.inverseAffine().multiplyPoint(camPos));
         sphere.draw(gl);
 
         requestAnimationFrame(draw);

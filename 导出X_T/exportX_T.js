@@ -30,7 +30,7 @@ window.addEventListener('DOMContentLoaded', () => {
 	function funcDownload(currentTarget, target, obj) {
 		const filename = target.textContent;
 		A.download = filename;
-		const fn = encodeURI(filename);
+		const fn = encodeURIComponent(filename);
 		A.href = `${cmdDownload}${fn}`;
 		A.click();
 	}
@@ -140,6 +140,7 @@ window.addEventListener('DOMContentLoaded', () => {
 	}
 
 	function reqDelFile(name) {
+		name = encodeURIComponent(name);
 		App.myHttpRequest("GET", `${cmdDelete}${name}`, true).then(
 			req => {
 				refresh();
@@ -203,7 +204,8 @@ window.addEventListener('DOMContentLoaded', () => {
 	}
 
 	function getTransferDataURL(file) {
-		return `application/file:${file}:${top.location.origin}${cmdDownload}${file}`;
+		let decodeURIfileName = encodeURIComponent(file);
+		return `application/file:${file}:${top.location.origin}${cmdDownload}${decodeURIfileName}`;
 	}
 
 
