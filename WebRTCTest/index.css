@@ -1,0 +1,139 @@
+@charset "utf-8";
+.inbox,
+.outbox {
+			position: relative;
+}
+
+.inbox::after,
+.outbox::after {
+    display: block;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    font-size: 30vmin;
+    line-height: 100vh;
+    text-align: center;
+    overflow: hidden;
+    z-index: -1;
+    border: 0;
+    border-radius: 0;
+    white-space: nowrap;
+    color: var(--back-color-disabled);
+}
+
+.inbox::after {
+    content: "📥";
+}
+
+.outbox::after {
+    content: "📤";
+}
+
+.list {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 1em;
+    bottom: 0;
+    overflow: auto;
+}
+
+.list>li {
+    padding-top: 3px;
+    padding-bottom: 3px;
+}
+
+.list>li:hover{
+    background-color: var(--preselect-color);
+}
+
+.list>li:hover::before {
+    content: "➧ ";
+}
+
+.list>li[selected] {
+    background-color: var(--selected-color);
+    color: white;
+}
+.is_assem_part{
+    border: 1px solid var(--border-color);
+    border-radius: 0 0 1em 1em ;
+    padding: 1em;
+    padding-top: 0;
+    padding-bottom: 0.5em;
+}
+.is_assem_part:hover{
+    background-color: var(--preselect-color);
+    padding-bottom: 1em;
+}
+/* 		#pg{
+    width: 100px;
+    position:relative;
+}
+#pg::before{
+    content: attr(data-percent);
+    text-align: center;
+    position: absolute;
+    padding: 3px;
+    transform: scale(0.7);
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    line-height: .5em;
+} */
+
+.myfile{
+    /* background-color: springgreen; */
+    text-shadow: springgreen 1px 1px 10px;
+}
+
+.infobox{
+    position: absolute;
+    width: 20em;
+    height: 10em;
+    border-radius: 1em;
+    border: 1px solid var(--border-color);
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+    filter: drop-shadow(2px 4px 6px var(--color)) opacity(0.3);
+    /* backdrop-filter: blur(3px); */
+    transition: filter 3s;
+}
+.infobox:hover{
+    filter: drop-shadow(-2px -4px 6px var(--color)) opacity(1);
+    transition: filter 1s;    
+}
+.infook{
+    color: springgreen;
+}
+
+.infofail{
+    color: red;
+}
+#resultList{
+    overflow: auto;
+	width: 100%;
+	height: 100%;
+	margin: 0;
+}
+#resultList>li{
+    white-space: nowrap;
+}
+#btnClearResult{
+    position: absolute;
+    left: 0;
+    top: 0;
+    padding: 0.2em;
+    border: 1px solid var(--border-color);
+    margin: 0;
+}
+#btnClearResult:hover{
+    color:red;
+}
+#btnClearResult:active{
+    padding: 0.1em;
+}

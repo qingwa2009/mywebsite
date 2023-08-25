@@ -1,0 +1,40 @@
+<!doctype html>
+<html style="user-select: none">
+
+<head>
+	<meta http-equiv="X-UA-Compatible" content="chrome=1">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+
+	<title>WebRTC Test</title>
+	<!--外部引用样式-->
+	<!-- 
+	<link rel="stylesheet" type="text/css" href="./css/cssVar.css">
+	<link rel="stylesheet" type="text/css" href="./css/commStyle.css">
+	-->
+	<link rel="stylesheet" type="text/css" href="index.css"> 
+	<!--内联样式-->
+	<style type="text/css">
+		/*css*/
+	</style>
+	<!--内联脚本-->
+	<script type="text/javascript">
+		'use strict';
+	</script>
+</head>
+
+<body style="display:flex;flex-flow: column nowrap;">
+	<video id="v0" autoplay>
+
+	</video>
+	<div>
+		<button id="btnShare">共享屏幕</button>		
+	</div>
+	<ol id="list"></ol>
+	<!--module类型的脚本可以调用import引用模块-->
+	<script type="module" src="index.js"></script>
+	<!--普通脚本-->
+	<!-- <script type="text/javascript" src="index.js"></script> -->
+</body>
+
+</html>
