@@ -192,10 +192,10 @@ import * as MySTL from "../js/STLFileReader.js";
 		return buf;
 	})(10, 100, 100, 100);
 
-	myShader.rayMarchingProgram.onSetProperties = function (gl) {
-		gl.uniform2fv(this.uniforms.uResolution, new Float32Array([cv.width, cv.height]));
-		if (this.uniforms.uTime) gl.uniform1f(this.uniforms.uTime, totalTime);
-	}
+	// myShader.rayMarchingProgram.onSetProperties = function (gl) {
+	// 	gl.uniform2fv(this.uniforms.uResolution, new Float32Array([cv.width, cv.height]));
+	// 	if (this.uniforms.uTime) gl.uniform1f(this.uniforms.uTime, totalTime);
+	// }
 
 	function draw() {
 		clear();
@@ -217,30 +217,30 @@ import * as MySTL from "../js/STLFileReader.js";
 			gl.bindVertexArray(null);
 		}
 
-		myShader.rayMarchingProgram.useProgram();
-		gl.bindVertexArray(rayMarchingObj.vao);
-		gl.drawElements(gl.TRIANGLES, rayMarchingObj.triangles.length, gl.UNSIGNED_SHORT, 0);
-		gl.bindVertexArray(null);
+		// myShader.rayMarchingProgram.useProgram();
+		// gl.bindVertexArray(rayMarchingObj.vao);
+		// gl.drawElements(gl.TRIANGLES, rayMarchingObj.triangles.length, gl.UNSIGNED_SHORT, 0);
+		// gl.bindVertexArray(null);
 
-		program.useProgram();
-		gl.bindBuffer(points.target, points.buffer);
-		gl.vertexAttribPointer(program.attributes.aPos, points.size, points.type, false, 0, 0);
-		gl.enableVertexAttribArray(program.attributes.aPos);
-		gl.enableVertexAttribArray(program.attributes.aSize);
-		var n = 3;
-		var offset = Math.PI / n;
-		for (var i = 0; i < n; i++) {
-			gl.bindBuffer(sizes.target, sizes.buffer);
-			gl.vertexAttribPointer(program.attributes.aSize, sizes.size, sizes.type, false, 0, 0);
-			updateCursorSize(i * offset);
-			gl.uniform1f(program.uniforms.offset, i * offset + Math.PI * totalTime / 1000 * 3);
-			gl.drawArrays(gl.POINTS, 0, points.count);
-		}
+		// program.useProgram();
+		// gl.bindBuffer(points.target, points.buffer);
+		// gl.vertexAttribPointer(program.attributes.aPos, points.size, points.type, false, 0, 0);
+		// gl.enableVertexAttribArray(program.attributes.aPos);
+		// gl.enableVertexAttribArray(program.attributes.aSize);
+		// var n = 3;
+		// var offset = Math.PI / n;
+		// for (var i = 0; i < n; i++) {
+		// 	gl.bindBuffer(sizes.target, sizes.buffer);
+		// 	gl.vertexAttribPointer(program.attributes.aSize, sizes.size, sizes.type, false, 0, 0);
+		// 	updateCursorSize(i * offset);
+		// 	gl.uniform1f(program.uniforms.offset, i * offset + Math.PI * totalTime / 1000 * 3);
+		// 	gl.drawArrays(gl.POINTS, 0, points.count);
+		// }
 
 	}
 
 	function clear() {
-		gl.clearColor(0, 0, 0, 1);
+		gl.clearColor(0.8, 0.8, 0.8, 1);
 		gl.clearDepth(1);
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 	}
